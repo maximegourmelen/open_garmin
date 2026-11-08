@@ -6,11 +6,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from cryptography.fernet import Fernet
-from sqlalchemy import create_engine, event, select
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from .models import Activity, ActivitySamples, Base
+from .models import Base
 
 
 class Store:
@@ -58,15 +58,6 @@ class Store:
 
         self.sessions = sessionmaker(self.engine, expire_on_commit=False)
         Base.metadata.create_all(self.engine)
-        # Upgrade the initial pilot's inline samples once, without a network call.
-        # Keeping streams separate makes ordinary dashboard polls inexpensive.
-        with self.sessions.begin() as db:
-            for row in db.scalars(select(Activity).execution_options(yield_per=20)):
-                samples = row.data.get("samples", [])
-                if len(samples) > 80 and not db.get(ActivitySamples, (row.user_id, row.id)):
-                    db.add(ActivitySamples(user_id=row.user_id, activity_id=row.id, samples=samples))
-                    step = max(1, (len(samples) + 69) // 70)
-                    row.data = {**row.data, "samples": samples[::step], "sample_count": len(samples)}
 
     def encrypt(self, value: str) -> str:
         return self.fernet.encrypt(value.encode()).decode()

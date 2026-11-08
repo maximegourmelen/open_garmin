@@ -62,7 +62,9 @@ def register(app):
                     }
                     for job in jobs
                 ],
-                "rederive": {"state": "idle", "progress": 100},
+                "rederive": request.app.state.rederive
+                if ws.mode == "live"
+                else {"state": "idle", "progress": 100},
                 "data_through": data_through,
                 "unseen": {"milestones": milestones, "recap_week": recap_week},
             }

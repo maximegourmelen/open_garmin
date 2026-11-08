@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
@@ -12,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from .demo.seed import build_demo_workspace
+from .derive import rederive_all
 from .garmin import GarminClient
 from .security import install_security
 from .storage import Job, Store
@@ -140,15 +142,30 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     store = store or Store()
     worker = Worker(store, client_factory)
 
+    def run_rederive(app):
+        try:
+            rederive_all(
+                store,
+                lambda progress: setattr(app.state, "rederive", {"state": "running", "progress": progress}),
+            )
+        except Exception:
+            app.state.rederive = {"state": "idle", "progress": 0}
+        else:
+            app.state.rederive = {"state": "idle", "progress": 100}
+
     @asynccontextmanager
     async def lifespan(app):
         if start_worker:
+            app.state.rederive = {"state": "running", "progress": 0}
+            thread = threading.Thread(target=run_rederive, args=(app,), daemon=True)
+            thread.start()
             worker.start()
         yield
         worker.stop()
 
     app = FastAPI(title="Open Garmin", version="0.1.0", lifespan=lifespan)
     app.state.store, app.state.worker = store, worker
+    app.state.rederive = {"state": "idle", "progress": 100}
     app.state.demo_workspace = build_demo_workspace()
 
     current_user, set_session, limit = install_security(app, store)
