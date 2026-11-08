@@ -6,7 +6,6 @@ This script never treats a discovered paper as reviewed or app-approved.
 from __future__ import annotations
 
 import json
-import re
 import time
 import urllib.parse
 import urllib.request
@@ -28,7 +27,10 @@ SEED_PMCS = ["PMC11135706", "PMC11664494", "PMC11052887", "PMC8507742", "PMC1156
              "PMC11336318", "PMC7047972", "PMC12592170", "PMC12748164", "PMC13219871",
              "PMC9253837", "PMC9653533", "PMC12946864", "PMC12942261", "PMC9319953",
              "PMC12305619", "PMC12440572", "PMC12941826", "PMC13558445", "PMC12821614"]
-DIRECT_PUBLISHER = {"34489178": "https://www.sciencedirect.com/science/article/pii/S1440244021001080"}
+DIRECT_PUBLISHER = {
+    "34489178": "https://www.sciencedirect.com/science/article/pii/S1440244021001080",
+    "33352457": "https://www.sciencedirect.com/science/article/pii/S1389945720305281",
+}
 
 
 def get(url: str) -> bytes:

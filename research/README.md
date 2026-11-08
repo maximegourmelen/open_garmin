@@ -11,7 +11,7 @@ Current pass: 152 candidates, 19 locally saved full texts, seven focused reviews
 The following seed papers have metadata but no reviewed full text in this library. If you have a lawful copy, place it in `research/papers/` and add a review before using it for an app claim.
 
 - [HRV-guided endurance training review — ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1440244021001080), DOI `10.1016/j.jsams.2021.04.012`.
-- [Sleep extension in athletes — publisher DOI](https://doi.org/10.1016/j.sleep.2020.11.028).
+- [Sleep extension in athletes — ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1389945720305281), DOI `10.1016/j.sleep.2020.11.028`.
 - [Training-intensity distribution in runners — publisher DOI](https://doi.org/10.1055/a-1559-3623).
 - [Periodization and intensity distribution in runners — publisher DOI](https://doi.org/10.1123/ijspp.2017-0327).
 
