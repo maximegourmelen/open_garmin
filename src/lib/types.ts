@@ -5,6 +5,30 @@ export type Sport =
 export type Pose = 'wave' | 'cheer' | 'proud' | 'thinking' | 'sleepy' | 'calm' | 'oops' | 'stretch';
 export type Range = '7D' | '4W' | '3M' | '1Y';
 
+export interface StatusResponse {
+  mode: 'live' | 'demo';
+  local_mode: boolean;
+  user: { name: string };
+  connection: {
+    connected: boolean;
+    state: string;
+    last_checked: string | null;
+    last_success: string | null;
+    message: string | null;
+    region: 'com' | 'cn';
+  };
+  jobs: {
+    id: string;
+    kind: 'sync' | 'activity';
+    state: string;
+    progress: number;
+    message: string;
+  }[];
+  rederive: { state: 'idle' | 'running'; progress: number };
+  data_through: string | null;
+  unseen: { milestones: number; recap_week: string | null };
+}
+
 export interface CompanionMessage {
   id: string;
   text: string;

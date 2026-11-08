@@ -1,0 +1,51 @@
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
+import { afterEach, expect, test, vi } from 'vitest';
+import { ThemeProvider } from './providers';
+import { WorkspaceContext } from './workspace-context';
+import AppShell from './AppShell';
+
+vi.mock('../lib/queries', () => ({
+  useStatus: () => ({ data: { mode: 'demo', jobs: [], connection: { connected: false } } }),
+}));
+afterEach(() => cleanup());
+window.scrollTo = vi.fn();
+
+function renderAt(path: string) {
+  const client = new QueryClient();
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <ThemeProvider initialTheme="dark">
+        <QueryClientProvider client={client}>
+          <WorkspaceContext.Provider
+            value={{
+              mode: 'demo',
+              setMode: vi.fn(),
+              session: null,
+              booting: false,
+              refreshSession: vi.fn(),
+            }}
+          >
+            <AppShell />
+          </WorkspaceContext.Provider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </MemoryRouter>,
+  );
+}
+
+test('old routes redirect into the new shell', () => {
+  renderAt('/training');
+  expect(screen.getByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
+  expect(screen.getAllByRole('navigation', { name: 'Mobile navigation' })).toHaveLength(1);
+});
+
+test('primary navigation and command palette work', () => {
+  renderAt('/');
+  expect(screen.getByRole('heading', { name: 'Today', level: 2 })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Search activities' }));
+  expect(screen.getByRole('dialog', { name: 'Search and jump' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Journey' }));
+  expect(screen.getByRole('heading', { name: 'Journey', level: 2 })).toBeTruthy();
+});
