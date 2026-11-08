@@ -35,6 +35,7 @@ def test_every_demo_method_has_registry_entry():
             "journey",
             "progress",
             "progress/deeper",
+            "today",
         ]
         responses = []
         for path in paths:

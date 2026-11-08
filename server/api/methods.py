@@ -253,6 +253,23 @@ METHODS = [
         ["activities", "effort points"],
         "One recorded activity",
     ),
+    _entry(
+        "today_suggestion@1",
+        "Today's suggestion",
+        "A gentle movement idea from your available signals.",
+        "Classify sleep, HRV, Body Battery, resting heart rate, check-in and recent effort; "
+        "choose rest, easy, go or unknown by the published rule order.",
+        ["daily readings", "check-in", "effort points"],
+        "Two signals for a go suggestion; fewer returns unknown",
+    ),
+    _entry(
+        "today_overview@1",
+        "Today overview",
+        "Your most relevant movement and recovery information in one place.",
+        "Combine the latest readings, week progress and evidence-backed insights.",
+        ["activities", "daily readings", "goals", "check-ins"],
+        "A workspace; cards appear when data is available",
+    ),
 ]
 
 for kind, title, inputs in (
