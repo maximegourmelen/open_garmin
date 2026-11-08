@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy import select
 
 from server.garmin import GarminError
@@ -61,6 +63,8 @@ def test_repeated_sync_is_idempotent_and_empty_hrv_is_not_a_failure(tmp_path):
         daily = db.get(Daily, (uid, "2026-10-20"))
         assert daily.data["steps"] == 8000
         assert daily.data["sleep_seconds"] == 28000
+        assert daily.data["normalizer_version"] == 2
+        assert any(row.data["resting_hr"] == 50 for row in db.scalars(select(Daily)))
         assert db.get(Job, job).state == "complete"
         assert db.get(Connection, uid).state == "ok"
 
@@ -107,3 +111,33 @@ def test_rate_limit_sets_a_persistent_cooldown(tmp_path):
         conn = db.get(Connection, uid)
         assert conn.state == "rate_limited"
         assert conn.profile["_retry_after"] > 0
+
+
+def test_sync_checks_ten_newest_missing_details(tmp_path):
+    class CountingGarmin(FakeGarmin):
+        def __init__(self, key, region):
+            super().__init__(key, region)
+            self.detail_calls = 0
+
+        def get(self, path, params=None, binary=False):
+            if path.startswith("/activity-service/activity/"):
+                self.detail_calls += 1
+            return super().get(path, params, binary)
+
+    store, uid = setup_store(tmp_path)
+    with store.sessions.begin() as db:
+        for i in range(11):
+            db.add(
+                Activity(
+                    user_id=uid,
+                    id=str(100 + i),
+                    date=f"2026-10-{21 + i:02}",
+                    data={"id": str(100 + i), "date": f"2026-10-{21 + i:02}"},
+                    raw={},
+                )
+            )
+    worker = Worker(store, CountingGarmin)
+    client = CountingGarmin("key", "com")
+    job_id = worker.enqueue(uid, 1)
+    worker.sync(client, uid, job_id, date(2026, 10, 31), date(2026, 10, 31), 1)
+    assert client.detail_calls == 10

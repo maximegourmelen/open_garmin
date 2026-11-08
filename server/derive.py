@@ -106,3 +106,10 @@ def rederive_all(store: Store, report: Callable[[int], None] | None = None) -> N
         rederive_user(store, user_id)
         if report:
             report(round(index / len(user_ids) * 100))
+
+
+def after_sync(
+    store: Store, user_id: str, activity_ids: list[str] | None = None, dates: list[str] | None = None
+) -> None:
+    """Refresh derived rows after an import; scoped updates are added with analytics modules."""
+    rederive_user(store, user_id)

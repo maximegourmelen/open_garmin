@@ -7,14 +7,14 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from sqlalchemy import select, update
 
+from .derive import after_sync
 from .garmin import (
     GarminClient,
     GarminError,
     chunks,
-    normalize_activity,
-    normalize_daily,
+    normalize_activity_v2,
+    normalize_daily_v2,
     parse_original,
-    sleep_values,
 )
 from .storage import Activity, ActivitySamples, Connection, Daily, Job, Store, User, now_iso
 
@@ -141,6 +141,10 @@ class Worker:
                 warnings = self.sync(
                     client, user_id, job_id, today - timedelta(days=days - 1), today, revision
                 )
+            with self.store.sessions() as db:
+                if not self.check_revision(db, user_id, revision):
+                    return
+            after_sync(self.store, user_id)
             with self.store.sessions.begin() as db:
                 job = db.get(Job, job_id)
                 conn = db.get(Connection, user_id)
@@ -225,7 +229,7 @@ class Worker:
                 if not self.check_revision(db, user_id, revision):
                     return ["Connection changed during sync"]
                 for item in raw:
-                    values = normalize_activity(item)
+                    values = normalize_activity_v2(item)
                     if not values["id"] or not values["date"]:
                         continue
                     row = db.get(Activity, (user_id, values["id"]))
@@ -284,7 +288,7 @@ class Worker:
             if not isinstance(rows, list):
                 raise GarminError("Garmin returned an unexpected daily summary response.")
             for item in rows:
-                values = normalize_daily(item)
+                values = normalize_daily_v2({"summary": item})
                 if values["date"]:
                     self.save_daily(user_id, values["date"], values, "summary", item, revision)
         self.progress(job_id, 45, "Bringing in sleep and HRV")
@@ -312,14 +316,9 @@ class Worker:
                         if not day:
                             continue
                         if domain == "sleep":
-                            values = sleep_values(item)
+                            values = normalize_daily_v2({"sleep": item})
                         else:
-                            values = {
-                                "hrv": item.get("lastNightAvg"),
-                                "hrv_weekly": item.get("weeklyAvg"),
-                                "hrv_status": item.get("status"),
-                                "hrv_baseline": item.get("baseline"),
-                            }
+                            values = normalize_daily_v2({"hrv": item})
                         self.save_daily(user_id, day, values, domain, item, revision)
                 except GarminError as exc:
                     if exc.status in (401, 429):
@@ -333,7 +332,7 @@ class Worker:
                 self.save_daily(
                     user_id,
                     last.isoformat(),
-                    {k: v for k, v in normalize_daily(raw).items() if v is not None},
+                    normalize_daily_v2({"summary_legacy": raw}),
                     "summary_legacy",
                     raw,
                     revision,
@@ -349,11 +348,11 @@ class Worker:
                     select(Activity)
                     .where(Activity.user_id == user_id, Activity.details_loaded.is_(False))
                     .order_by(Activity.date.desc())
-                    .limit(3)
+                    .limit(10)
                 )
             ]
         for i, aid in enumerate(newest):
-            self.progress(job_id, 75 + i * 7, f"Reading activity details ({i + 1}/{len(newest)})")
+            self.progress(job_id, 75 + i * 2, f"Reading activity details ({i + 1}/{len(newest)})")
             try:
                 self.load_activity(client, user_id, aid, revision)
             except GarminError as exc:
@@ -375,17 +374,20 @@ class Worker:
             if not self.check_revision(db, uid, revision):
                 return
             row = db.get(Daily, (uid, day))
+            combined_raw = {**(row.raw if row else {}), domain: raw}
+            normalized = normalize_daily_v2(combined_raw)
+            normalized["date"] = day
             if not row:
                 db.add(
                     Daily(
                         user_id=uid,
                         date=day,
-                        data={"date": day, "source": "garmin", **values},
-                        raw={domain: raw},
+                        data=normalized,
+                        raw=combined_raw,
                     )
                 )
             else:
-                row.data, row.raw = {**row.data, **values}, {**row.raw, domain: raw}
+                row.data, row.raw = {**row.data, **normalized}, combined_raw
 
     def detail_error(self, uid, aid, message, revision):
         with self.store.sessions.begin() as db:
@@ -398,7 +400,7 @@ class Worker:
         raw = client.get(f"/activity-service/activity/{aid}")
         if not isinstance(raw, dict):
             raise GarminError("This activity summary is unavailable.")
-        values = normalize_activity(raw)
+        values = normalize_activity_v2(raw)
         with self.store.sessions.begin() as db:
             row = db.get(Activity, (uid, aid))
             if not row or not self.check_revision(db, uid, revision):

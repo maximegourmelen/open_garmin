@@ -239,6 +239,11 @@ def normalize_daily_v2(raw_by_domain: dict) -> dict:
     hrv = raw_by_domain.get("hrv") or {}
     legacy = raw_by_domain.get("summary_legacy") or {}
     result = normalize_daily(summary)
+    if legacy:
+        legacy_values = normalize_daily(legacy)
+        for key, value in legacy_values.items():
+            if result.get(key) is None and value is not None:
+                result[key] = value
     result["date"] = pick(
         result["date"], sleep.get("calendarDate"), hrv.get("calendarDate"), legacy.get("calendarDate")
     )
