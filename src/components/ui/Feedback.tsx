@@ -1,8 +1,9 @@
-import { ChevronDown, CircleAlert, Sparkles } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { Button } from './Button';
+import { Pip } from '../companion/Pip';
 
 export function Skeleton({ className }: { className?: string }) {
   return (
@@ -21,7 +22,7 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center rounded-card border border-dashed border-border-strong bg-surface p-8 text-center text-text">
-      <Sparkles size={36} className="text-accent" aria-hidden="true" />
+      <Pip pose="thinking" size={72} />
       <h2 className="mt-3 text-lg font-semibold">{title}</h2>
       <p className="mt-1 max-w-md text-sm text-text-2">{text}</p>
       {action && <div className="mt-4">{action}</div>}
@@ -35,7 +36,7 @@ export function ErrorState({ message, retry }: { message: string; retry: () => v
       role="alert"
       className="flex flex-col items-center rounded-card border border-border bg-surface p-8 text-center text-text"
     >
-      <CircleAlert size={36} className="text-warning" aria-hidden="true" />
+      <Pip pose="oops" size={72} />
       <h2 className="mt-3 text-lg font-semibold">Something went wrong loading this</h2>
       <p className="mt-1 max-w-md text-sm text-text-2">{message}</p>
       <Button className="mt-4" onClick={retry}>

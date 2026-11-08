@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useTheme } from './app/theme-context';
+import { Celebration, CompanionMessage, Pip } from './components/companion';
+import type { Pose } from './lib/types';
 import { BigNumber, DeltaChip, MetricRow, StatGrid, StatTile } from './components/data';
 import {
   BandLineChart,
@@ -38,6 +40,7 @@ export default function GalleryPage() {
   const [range, setRange] = useState('4W');
   const [enabled, setEnabled] = useState(true);
   const [dialog, setDialog] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
   const [selected, setSelected] = useState('a');
   const [tab, setTab] = useState('one');
   const days = Array.from({ length: 7 }, (_, i) => ({
@@ -80,6 +83,34 @@ export default function GalleryPage() {
           ]}
         />
       </header>
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Pip</h2>
+        <div className="flex flex-wrap items-end gap-5">
+          {(
+            ['wave', 'cheer', 'proud', 'thinking', 'sleepy', 'calm', 'oops', 'stretch'] as Pose[]
+          ).map((pose) => (
+            <div key={pose} className="flex flex-col items-center gap-1">
+              <Pip pose={pose} size={72} />
+              <span className="text-xs text-text-2">{pose}</span>
+            </div>
+          ))}
+        </div>
+        <CompanionMessage
+          message={{
+            id: 'gallery',
+            text: 'You have been moving consistently this week.',
+            pose: 'wave',
+            data_refs: [],
+          }}
+        />
+        <Button onClick={() => setCelebrate(true)}>Show celebration</Button>
+        <Celebration
+          open={celebrate}
+          onClose={() => setCelebrate(false)}
+          title="A new milestone"
+          text="You reached 50 km in total. That is a lot of time spent moving."
+        />
+      </section>
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Controls and states</h2>
         <div className="flex flex-wrap gap-2">

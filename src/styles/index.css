@@ -78,6 +78,21 @@
 }
 
 @layer utilities {
+  @keyframes pip-breathe {
+    50% {
+      transform: scale(1.03);
+    }
+  }
+
+  .pip-breathe {
+    animation: pip-breathe 4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pip-breathe {
+      animation: none;
+    }
+  }
   .font-num {
     font-family: var(--font-num);
     font-variant-numeric: tabular-nums;
