@@ -8,6 +8,7 @@ from pathlib import Path
 from fastapi import Depends, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
 
+from ..analytics.common import downsample_samples
 from ..main import (
     NoteInput,
 )
@@ -23,9 +24,13 @@ def register(app, store, worker, current_user, limit):
                 raise HTTPException(404, "This activity is not in your workspace.")
             note = db.get(Note, (user.id, activity_id))
             samples = db.get(ActivitySamples, (user.id, activity_id))
+            full_samples = samples.samples if samples else row.data.get("samples", [])
             return {
                 **row.data,
-                "samples": samples.samples if samples else row.data.get("samples", []),
+                "samples": downsample_samples(full_samples),
+                "sample_count": len(full_samples)
+                if samples
+                else row.data.get("sample_count", len(full_samples)),
                 "note": {"text": note.text, "rpe": note.rpe, "tags": note.tags}
                 if note
                 else {"text": "", "rpe": None, "tags": []},
