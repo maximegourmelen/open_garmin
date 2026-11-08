@@ -4,7 +4,9 @@
 
 Run `python3 research/build_corpus.py` from the repository root to refresh candidate metadata and retrieve selected licensed PMC full texts. The script stores machine-readable XML and extracted text in `research/papers/`, which Git ignores. It records the license returned with each open paper. Do not redistribute local files without checking their individual licenses.
 
-Current pass: 152 candidates, 19 locally saved full texts, seven focused reviews, three approved context claims. The other downloaded papers are awaiting review. These counts are a research queue, not a claim that every record is relevant or sound.
+Run `python3 research/download_pdfs.py` to fetch three open publisher PDFs where a direct file URL is verified. The XML remains the searchable full-text copy.
+
+Current pass: 152 candidates, 19 locally saved full texts (three also in PDF), seven focused reviews, three approved context claims. The other downloaded papers are awaiting review. These counts are a research queue, not a claim that every record is relevant or sound.
 
 ## Full text requests
 
