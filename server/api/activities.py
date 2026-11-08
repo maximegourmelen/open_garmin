@@ -3,44 +3,112 @@ from __future__ import annotations
 import hashlib
 import io
 import zipfile
+from datetime import date
 from pathlib import Path
+from typing import Annotated
+from xml.etree import ElementTree as ET
 
-from fastapi import Depends, HTTPException, Request, UploadFile
+from fastapi import Depends, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse
+from sqlalchemy import select
 
-from ..analytics.common import downsample_samples
 from ..main import (
     NoteInput,
 )
-from ..storage import Activity, ActivityDerived, ActivitySamples, Connection, Note
+from ..storage import Activity, ActivityDerived, ActivityFeel, ActivitySamples, Connection, Note
 from ..workspace import workspace
+from .activity_views import detail as activity_detail
+from .activity_views import summary as activity_summary
 
 
 def register(app, store, worker, current_user, limit):
+    def read_list(source_store, user_id, from_date, to_date, sport, q, page_limit, cursor):
+        with source_store.sessions() as db:
+            rows = list(
+                db.scalars(
+                    select(Activity)
+                    .where(Activity.user_id == user_id)
+                    .order_by(Activity.date.desc(), Activity.id.desc())
+                )
+            )
+            derived = {
+                row.activity_id: row.data
+                for row in db.scalars(select(ActivityDerived).where(ActivityDerived.user_id == user_id))
+            }
+        sports = {value.strip() for value in sport.split(",") if value.strip()} if sport else None
+        query = q.strip().casefold()
+        items = []
+        for row in rows:
+            data = row.data
+            if from_date and row.date < from_date.isoformat() or to_date and row.date > to_date.isoformat():
+                continue
+            if sports and data.get("sport") not in sports:
+                continue
+            search = " ".join(
+                (
+                    data.get("name", ""),
+                    data.get("sport", ""),
+                    data.get("location_name") or "",
+                    row.date,
+                    date.fromisoformat(row.date).strftime("%b %d"),
+                )
+            ).casefold()
+            if query and query not in search:
+                continue
+            items.append(activity_summary(data, derived.get(row.id)))
+        parents = {row.id: row.data.get("parent_id") for row in rows}
+        top_level = [item for item in items if not parents.get(item["id"])]
+        totals = {
+            "sessions": len(top_level),
+            "duration": round(sum(item["duration"] or 0 for item in top_level)),
+            "distance": round(sum(item["distance"] or 0 for item in top_level), 1),
+            "effort_points": round(sum(item["effort_points"] or 0 for item in top_level)),
+        }
+        page = items[cursor : cursor + page_limit]
+        next_cursor = str(cursor + page_limit) if cursor + page_limit < len(items) else None
+        return {"items": page, "next_cursor": next_cursor, "totals": totals}
+
+    @app.get("/api/activities")
+    def list_activities(
+        from_date: Annotated[date | None, Query(alias="from")] = None,
+        to_date: Annotated[date | None, Query(alias="to")] = None,
+        sport: str = "",
+        q: str = "",
+        limit: int = Query(default=50, ge=1, le=100),
+        cursor: int = Query(default=0, ge=0),
+        user=Depends(current_user),  # noqa: B008 - FastAPI dependency declaration
+    ):
+        return read_list(store, user.id, from_date, to_date, sport, q, limit, cursor)
+
+    @app.get("/api/demo/activities")
+    def demo_list_activities(
+        request: Request,
+        from_date: Annotated[date | None, Query(alias="from")] = None,
+        to_date: Annotated[date | None, Query(alias="to")] = None,
+        sport: str = "",
+        q: str = "",
+        limit: int = Query(default=50, ge=1, le=100),
+        cursor: int = Query(default=0, ge=0),
+    ):
+        ws = workspace(request)
+        return read_list(ws.store, ws.user_id, from_date, to_date, sport, q, limit, cursor)
+
     def read_activity(source_store, user_id, activity_id):
         with source_store.sessions() as db:
             row = db.get(Activity, (user_id, activity_id))
             if not row:
                 raise HTTPException(404, "This activity is not in your workspace.")
             note = db.get(Note, (user_id, activity_id))
+            feel = db.get(ActivityFeel, (user_id, activity_id))
             samples = db.get(ActivitySamples, (user_id, activity_id))
             derived = db.get(ActivityDerived, (user_id, activity_id))
             full_samples = samples.samples if samples else row.data.get("samples", [])
-            return {
-                **row.data,
-                "effort_points": derived.data.get("effort_points") if derived else None,
-                "zone_minutes": derived.data.get("zone_minutes") if derived else None,
-                "zone_source": derived.data.get("zone_source") if derived else None,
-                "effort_source": "calculated" if derived else None,
-                "effort_method": "effort_points@1" if derived else None,
-                "samples": downsample_samples(full_samples),
-                "sample_count": len(full_samples)
-                if samples
-                else row.data.get("sample_count", len(full_samples)),
-                "note": {"text": note.text, "rpe": note.rpe, "tags": note.tags}
+            note_data = (
+                {"text": note.text, "rpe": note.rpe, "feel": feel.feel if feel else None, "tags": note.tags}
                 if note
-                else {"text": "", "rpe": None, "tags": []},
-            }
+                else None
+            )
+            return activity_detail(row.data, derived.data if derived else None, full_samples, note_data)
 
     @app.get("/api/activities/{activity_id}")
     def activity(activity_id: str, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
@@ -50,6 +118,43 @@ def register(app, store, worker, current_user, limit):
     def demo_activity(activity_id: str, request: Request):
         ws = workspace(request)
         return read_activity(ws.store, ws.user_id, activity_id)
+
+    def read_gpx(source_store, user_id, activity_id):
+        with source_store.sessions() as db:
+            row = db.get(Activity, (user_id, activity_id))
+            if not row:
+                raise HTTPException(404, "This activity is not in your workspace.")
+            stream = db.get(ActivitySamples, (user_id, activity_id))
+            samples = stream.samples if stream else row.data.get("samples", [])
+            gps = [
+                sample
+                for sample in samples
+                if sample.get("lat") is not None and sample.get("lon") is not None
+            ]
+            if len(gps) < 2:
+                raise HTTPException(404, "This activity has no route to export.")
+            root = ET.Element(
+                "gpx", version="1.1", creator="Open Garmin", xmlns="http://www.topografix.com/GPX/1/1"
+            )
+            track = ET.SubElement(root, "trk")
+            ET.SubElement(track, "name").text = row.data.get("name", "Activity")
+            segment = ET.SubElement(track, "trkseg")
+            for sample in gps:
+                point = ET.SubElement(segment, "trkpt", lat=str(sample["lat"]), lon=str(sample["lon"]))
+                if sample.get("elevation") is not None:
+                    ET.SubElement(point, "ele").text = str(sample["elevation"])
+            return Response(
+                ET.tostring(root, encoding="utf-8", xml_declaration=True), media_type="application/gpx+xml"
+            )
+
+    @app.get("/api/activities/{activity_id}/gpx")
+    def gpx(activity_id: str, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        return read_gpx(store, user.id, activity_id)
+
+    @app.get("/api/demo/activities/{activity_id}/gpx")
+    def demo_gpx(activity_id: str, request: Request):
+        ws = workspace(request)
+        return read_gpx(ws.store, ws.user_id, activity_id)
 
     @app.post("/api/activities/{activity_id}/details")
     def load_details(activity_id: str, request: Request, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
@@ -63,17 +168,31 @@ def register(app, store, worker, current_user, limit):
                 raise HTTPException(409, "Reconnect Garmin to download this original.")
         return {"job_id": worker.enqueue(user.id, activity_id=activity_id)}
 
-    @app.put("/api/activities/{activity_id}/note")
-    def note(activity_id: str, body: NoteInput, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
-        with store.sessions.begin() as db:
-            if not db.get(Activity, (user.id, activity_id)):
+    def write_note(source_store, user_id, activity_id, body):
+        with source_store.sessions.begin() as db:
+            if not db.get(Activity, (user_id, activity_id)):
                 raise HTTPException(404, "Activity not found.")
-            row = db.get(Note, (user.id, activity_id))
+            row = db.get(Note, (user_id, activity_id))
             if not row:
-                row = Note(user_id=user.id, activity_id=activity_id)
+                row = Note(user_id=user_id, activity_id=activity_id)
                 db.add(row)
             row.text, row.rpe, row.tags = body.text, body.rpe, [t[:40] for t in body.tags]
+            if "feel" in body.model_fields_set:
+                feel = db.get(ActivityFeel, (user_id, activity_id))
+                if not feel:
+                    feel = ActivityFeel(user_id=user_id, activity_id=activity_id)
+                    db.add(feel)
+                feel.feel = body.feel
         return {"ok": True}
+
+    @app.put("/api/activities/{activity_id}/note")
+    def note(activity_id: str, body: NoteInput, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        return write_note(store, user.id, activity_id, body)
+
+    @app.put("/api/demo/activities/{activity_id}/note")
+    def demo_note(activity_id: str, body: NoteInput, request: Request):
+        ws = workspace(request)
+        return write_note(ws.store, ws.user_id, activity_id, body)
 
     @app.post("/api/import/fit")
     async def import_fit(file: UploadFile, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration

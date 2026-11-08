@@ -7,6 +7,7 @@ from collections.abc import Callable
 
 from sqlalchemy import select
 
+from .analytics.activity import derive_activity
 from .analytics.common import local_today
 from .analytics.zones import activity_zones, effort_points, estimate_max_hr
 from .db.models import Activity, ActivityDerived, ActivitySamples, Daily, User
@@ -103,12 +104,14 @@ def rederive_user(store: Store, user_id: str) -> None:
                 intensity = None
             derived_data = {
                 "effort_points": effort["effort_points"],
+                "effort_method": effort["method"],
                 "zone_minutes": minutes,
                 "zone_source": zones["source"],
                 "intensity": intensity,
                 "source": "calculated",
                 "method": "effort_points@1",
                 "version": ANALYTICS_VERSION,
+                **derive_activity(data, samples, intensity),
             }
             derived = db.get(ActivityDerived, (user_id, row.id))
             if derived is None:

@@ -156,3 +156,10 @@ class WeeklyRecap(Base):
     version: Mapped[int] = mapped_column(Integer)
     data: Mapped[dict] = mapped_column(JSON)
     seen: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ActivityFeel(Base):
+    __tablename__ = "activity_feel"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    activity_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    feel: Mapped[int | None] = mapped_column(Integer, nullable=True)

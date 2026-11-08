@@ -18,7 +18,7 @@ from ..main import (
     Preferences,
     update_job_cancel,
 )
-from ..storage import Activity, ActivitySamples, Connection, Daily, Job, Note, User
+from ..storage import Activity, ActivityFeel, ActivitySamples, Connection, Daily, Job, Note, User
 
 
 def register(app, store, worker, current_user, limit, client_factory):
@@ -175,7 +175,7 @@ def register(app, store, worker, current_user, limit, client_factory):
             if conn:
                 conn.encrypted_key, conn.state = None, "disconnected"
                 conn.revision += 1
-            for model in (Note, Activity, Daily, Job):
+            for model in (Note, ActivityFeel, Activity, Daily, Job):
                 db.execute(delete(model).where(model.user_id == uid))
             folder = store.directory / "originals" / hashlib.sha256(uid.encode()).hexdigest()
             if folder.exists():

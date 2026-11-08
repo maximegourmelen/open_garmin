@@ -124,7 +124,7 @@ def test_notes_export_and_rpe_validation(app):
             == 200
         )
         a = client.get("/api/activities/42").json()
-        assert a["note"] == {"text": "Felt steady", "rpe": 4, "tags": ["easy"]}
+        assert a["note"] == {"text": "Felt steady", "rpe": 4, "feel": None, "tags": ["easy"]}
         assert client.put("/api/activities/42/note", json={"rpe": 11}).status_code == 422
         exported = client.get("/api/export").json()
         assert exported["notes"][0]["rpe"] == 4

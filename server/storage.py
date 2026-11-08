@@ -3,6 +3,7 @@
 from .db.models import (
     Activity,
     ActivityDerived,
+    ActivityFeel,
     ActivitySamples,
     Base,
     BestEffort,
@@ -22,6 +23,7 @@ from .db.store import Store
 __all__ = [
     "Activity",
     "ActivityDerived",
+    "ActivityFeel",
     "ActivitySamples",
     "Base",
     "BestEffort",

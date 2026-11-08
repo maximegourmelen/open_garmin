@@ -34,6 +34,7 @@ class KeyInput(BaseModel):
 class NoteInput(BaseModel):
     text: str = Field(default="", max_length=10000)
     rpe: int | None = Field(default=None, ge=0, le=10)
+    feel: int | None = Field(default=None, ge=1, le=5)
     tags: list[str] = Field(default_factory=list, max_length=12)
 
 

@@ -41,6 +41,7 @@ def build_demo_workspace() -> Workspace:
                 "detail_state": "ready",
                 "sample_count": len(item["samples"]),
                 "parser_version": 2,
+                "has_route": any(sample["lat"] is not None for sample in item["samples"]),
             }
             activity_id = data["id"]
             db.add(
