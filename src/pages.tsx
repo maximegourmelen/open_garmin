@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import {
   Area,
   CartesianGrid,
@@ -11,20 +11,16 @@ import {
   YAxis,
 } from 'recharts';
 import {
-  ArrowDown,
-  ArrowDownRight,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   CalendarDays,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
   Download,
   Filter,
-  Flame,
   Footprints,
   Heart,
   Info,
@@ -33,21 +29,17 @@ import {
   LockKeyhole,
   Moon,
   Mountain,
-  Plus,
   RefreshCw,
   Search,
-  Settings2,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkles,
   Target,
   Trash2,
   TrendingUp,
   X,
-  Zap,
 } from 'lucide-react';
 import { useApp } from './context';
-import type { Activity, Insight, Prefs, Sample } from './types';
+import type { Activity, Insight, Prefs } from './types';
 import {
   ActivityRows,
   Dialog,
@@ -73,7 +65,6 @@ import {
   formatPace,
   insightsFor,
   latestWith,
-  mean,
   median,
   recentDaily,
   sportLabels,
@@ -1357,6 +1348,8 @@ export function ActivityPage() {
   const [saving, setSaving] = useState(false);
   const imperial = data.preferences.units === 'imperial';
   useEffect(() => {
+    // TODO(P5): replace legacy activity loading with a query hook.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDetail(null);
     if (demo) {
       setDetail(listActivity ?? null);
@@ -1372,14 +1365,19 @@ export function ActivityPage() {
     return () => {
       cancelled = true;
     };
+    // TODO(P5): query keys will replace this expression.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, demo, data.jobs.map((j) => `${j.id}:${j.state}`).join('|')]);
   const activity = detail ?? listActivity;
   useEffect(() => {
     if (activity) {
+      // TODO(P5): note editing moves into an activity-specific component.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNote(activity.note?.text || '');
       setRpe(activity.note?.rpe == null ? '' : String(activity.note.rpe));
       setTags(activity.note?.tags.join(', ') || '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activity?.id, detail?.id]);
   if (!activity)
     return (
@@ -1899,6 +1897,8 @@ export function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [confirm, setConfirm] = useState<'data' | 'account' | null>(null);
   const [deleting, setDeleting] = useState(false);
+  // TODO(P5): settings form will key its draft to the workspace.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setPrefs(data.preferences), [data.preferences]);
   const save = async (e: React.FormEvent) => {
     e.preventDefault();

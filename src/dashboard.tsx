@@ -146,6 +146,8 @@ export function DashboardPage() {
   const key = `og_dashboard_v1_${demo ? 'demo' : data.user.email || 'local'}`;
   const [layout, setLayout] = useState<Layout>(() => readLayout(key));
   const [editing, setEditing] = useState(false);
+  // TODO(P5): dashboard layout moves to server preferences.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setLayout(readLayout(key)), [key]);
   const update = (widgets: Widget[]) => {
     const next = { version: 1 as const, widgets };

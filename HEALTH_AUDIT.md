@@ -14,19 +14,19 @@ Authentication supports password/MFA and a manual browser-ticket fallback. Passw
 
 ## Data currently consumed
 
-| Group | Fields or structures consumed | Origin and limitations |
-| --- | --- | --- |
-| Daily totals | Total/active/resting calories; resting/min/max heart rate; steps/goal; distance; floors; moderate/vigorous intensity minutes/goal | Custom daily-summary fetch, not just the extraction database |
-| Daily wellness | Stress average/max; Body Battery high/low/charged/drained/latest; SpO2 average/low; waking respiration average | Custom summary parser; raw response retained |
-| Time series | Heart rate, stress, Body Battery, respiration, steps, floors and intensity minutes | Extraction tables; source cadence varies; not a claim of continuous sensor-resolution data |
-| Sleep | Start/end/date/offset; stage durations and intervals; scores/qualifiers; movement/restlessness; HRV/status; SpO2; respiration; sleep need; breathing disruption | Summary and child tables; absent data must be distinguished from unsupported features |
-| Activities | Identifiers, names/types, timing, durations, distance, elevation, speed, calories, HR/zones, training effects, device metadata and parent relationships | Activity JSON and original files; individual activities populate different subsets |
-| Detailed activities | GPS, heart rate, cadence, speed, distance, altitude, power, running dynamics; laps/splits/events; user effort/feel | FIT/TCX and supplemental metrics; not all files contain every metric |
-| Strength | Active/rest sets, exercise guesses, repetitions, duration, weight, start time | App reads retained exercise-set JSON because normalized extraction tables are empty locally |
-| Fitness | Running/cycling VO2 max, fitness age and its contributing factors, records and race predictions | Some custom fetches; availability differs by history/device/account |
-| Context | Activity weather; gear details/totals and activity associations | Custom unofficial Connect endpoints |
-| Coach | Active plan, adaptive week, workout steps and pace/HR/power targets | Custom training-plan/workout endpoints |
-| Training analysis | Load, load focus, status, readiness, recovery estimates | Mixture of FIT-decoded values and app calculations; not all Garmin-reported values |
+| Group               | Fields or structures consumed                                                                                                                                   | Origin and limitations                                                                      |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Daily totals        | Total/active/resting calories; resting/min/max heart rate; steps/goal; distance; floors; moderate/vigorous intensity minutes/goal                               | Custom daily-summary fetch, not just the extraction database                                |
+| Daily wellness      | Stress average/max; Body Battery high/low/charged/drained/latest; SpO2 average/low; waking respiration average                                                  | Custom summary parser; raw response retained                                                |
+| Time series         | Heart rate, stress, Body Battery, respiration, steps, floors and intensity minutes                                                                              | Extraction tables; source cadence varies; not a claim of continuous sensor-resolution data  |
+| Sleep               | Start/end/date/offset; stage durations and intervals; scores/qualifiers; movement/restlessness; HRV/status; SpO2; respiration; sleep need; breathing disruption | Summary and child tables; absent data must be distinguished from unsupported features       |
+| Activities          | Identifiers, names/types, timing, durations, distance, elevation, speed, calories, HR/zones, training effects, device metadata and parent relationships         | Activity JSON and original files; individual activities populate different subsets          |
+| Detailed activities | GPS, heart rate, cadence, speed, distance, altitude, power, running dynamics; laps/splits/events; user effort/feel                                              | FIT/TCX and supplemental metrics; not all files contain every metric                        |
+| Strength            | Active/rest sets, exercise guesses, repetitions, duration, weight, start time                                                                                   | App reads retained exercise-set JSON because normalized extraction tables are empty locally |
+| Fitness             | Running/cycling VO2 max, fitness age and its contributing factors, records and race predictions                                                                 | Some custom fetches; availability differs by history/device/account                         |
+| Context             | Activity weather; gear details/totals and activity associations                                                                                                 | Custom unofficial Connect endpoints                                                         |
+| Coach               | Active plan, adaptive week, workout steps and pace/HR/power targets                                                                                             | Custom training-plan/workout endpoints                                                      |
+| Training analysis   | Load, load focus, status, readiness, recovery estimates                                                                                                         | Mixture of FIT-decoded values and app calculations; not all Garmin-reported values          |
 
 Sources: [daily summary mapping](/Users/maximeg/Documents/Python/personal_suite/apps/health/garmin.py:600), [watch read model](/Users/maximeg/Documents/Python/personal_suite/apps/health/watch.py:1), [Coach fetches](/Users/maximeg/Documents/Python/personal_suite/apps/health/coachworkout.py:208), [FIT interpretation](/Users/maximeg/Documents/Python/personal_suite/apps/health/firstbeat.py:1), [training calculations](/Users/maximeg/Documents/Python/personal_suite/apps/health/training.py:1).
 

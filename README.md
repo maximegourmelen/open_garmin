@@ -119,12 +119,12 @@ contains. There is no assumption that every watch supports every metric.
 Copy `.env.example` as a reference. Export environment variables in your shell,
 or start Uvicorn with `--env-file .env`. Important options:
 
-| Variable | Purpose |
-| --- | --- |
-| `OPEN_GARMIN_DATA_DIR` | Private runtime directory; default `.runtime` |
-| `OPEN_GARMIN_DATABASE_URL` | SQLAlchemy URL; SQLite default, PostgreSQL optional |
-| `OPEN_GARMIN_SECURE_COOKIES` | Set `1` for HTTPS hosting |
-| `OPEN_GARMIN_ALLOWED_ORIGINS` | Comma-separated authorized frontend origins |
+| Variable                         | Purpose                                              |
+| -------------------------------- | ---------------------------------------------------- |
+| `OPEN_GARMIN_DATA_DIR`           | Private runtime directory; default `.runtime`        |
+| `OPEN_GARMIN_DATABASE_URL`       | SQLAlchemy URL; SQLite default, PostgreSQL optional  |
+| `OPEN_GARMIN_SECURE_COOKIES`     | Set `1` for HTTPS hosting                            |
+| `OPEN_GARMIN_ALLOWED_ORIGINS`    | Comma-separated authorized frontend origins          |
 | `OPEN_GARMIN_ALLOW_REGISTRATION` | Set `1` only when intentionally opening registration |
 
 For PostgreSQL, install `.[postgres]` and set a

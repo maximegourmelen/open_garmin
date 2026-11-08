@@ -24,7 +24,7 @@ import {
 } from 'recharts';
 import { Link } from 'react-router-dom';
 import type { Activity, Sample, Sport } from './types';
-import { activityMetric, displayDate, formatDuration, formatPace, sportLabels } from './analytics';
+import { activityMetric, displayDate, formatDuration, sportLabels } from './analytics';
 
 export const sportColor: Record<string, string> = {
   running: 'var(--orange)',

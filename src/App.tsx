@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity,
@@ -21,7 +21,6 @@ import {
   Sparkles,
   X,
   Check,
-  LogOut,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -38,7 +37,7 @@ import {
   SettingsPage,
 } from './pages';
 import { Dialog, SportBadge } from './components';
-import { displayDate, todayKey } from './analytics';
+import { displayDate } from './analytics';
 import { DashboardPage } from './dashboard';
 import { ResearchPage } from './research-page';
 import type { Activity as ActivityType, DashboardData, Prefs } from './types';
@@ -87,6 +86,8 @@ export default function App() {
   const pageLocation = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0 });
+    // TODO(P5): move navigation state into the new app shell.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false);
   }, [pageLocation.pathname, pageLocation.search]);
   const toast = useCallback((message: string) => setNotice(message), []);
@@ -231,25 +232,21 @@ export default function App() {
     exploreDemo();
     toast('Signed out');
   };
-  const ctx = useMemo(
-    () => ({
-      data,
-      loading,
-      online,
-      demo,
-      connect,
-      refresh,
-      sync,
-      toast,
-      savePreferences,
-      saveNote,
-      exploreDemo,
-      useLive,
-      logout,
-    }),
-    [data, loading, online, demo, session, refresh, toast],
-  );
-  const today = todayKey(data.preferences.timezone);
+  const ctx = {
+    data,
+    loading,
+    online,
+    demo,
+    connect,
+    refresh,
+    sync,
+    toast,
+    savePreferences,
+    saveNote,
+    exploreDemo,
+    useLive,
+    logout,
+  };
   const activeJob = data.jobs.find((j) => ['running', 'queued'].includes(j.state));
   const matches = data.activities
     .filter((a) => `${a.name} ${a.sport} ${a.date}`.toLowerCase().includes(search.toLowerCase()))

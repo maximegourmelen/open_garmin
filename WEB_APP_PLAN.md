@@ -25,12 +25,12 @@ The first version should feel valuable to an FR165 owner without limiting the da
 
 Bevel's current product includes a daily timeline, a training calendar, configurable fitness charts, detailed activity/interval breakdowns, and strength progression. WHOOP connects activity effort with recovery and trends. These are useful workflow references; neither basic activity charts nor a recovery score alone would distinguish this product. [Bevel feature notes](https://help.bevel.health/en/articles/11194113), [WHOOP Strain overview](https://www.whoop.com/us/en/thelocker/how-does-whoop-strain-work-101/).
 
-| Design influence | Apply it here |
-| --- | --- |
-| Bevel's calm presentation | Clear hierarchy, restrained color, understandable summaries, deliberate spacing |
+| Design influence                               | Apply it here                                                                       |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Bevel's calm presentation                      | Clear hierarchy, restrained color, understandable summaries, deliberate spacing     |
 | WHOOP's connection between effort and response | Put a session in the context of the surrounding training and next morning's signals |
-| Garmin's depth | Preserve sport-specific measures, units, laps, sensor data and long-term trends |
-| Open-source analysis | Explain formulas, expose source data, version calculations, support exports |
+| Garmin's depth                                 | Preserve sport-specific measures, units, laps, sensor data and long-term trends     |
+| Open-source analysis                           | Explain formulas, expose source data, version calculations, support exports         |
 
 Use an original visual language. A screen should move from **summary → evidence → detail**. Its first view should be understandable in seconds, while a curious athlete can inspect exact values, select intervals, compare sessions, and export the result.
 
@@ -53,13 +53,13 @@ The product experience remains a public website in either case. A demo and optio
 
 Use five destinations: **Today, Activities, Training, Recovery, Insights**. Keep connection, exports, units and preferences in Settings. On mobile, use a compact bottom navigation; on desktop, use a quiet side navigation and give charts more space.
 
-| Screen | Main purpose | Essential content |
-| --- | --- | --- |
-| Today | Understand today's position quickly | Briefing, this week's progress, latest session, recovery context, sync freshness |
-| Activities | Review and compare training sessions | Searchable history, calendar/list views, filters, rich activity detail, comparison |
-| Training | Understand volume, intensity and progression | Weekly volume, zone distribution, comparable load series, sport-specific trends, goals |
-| Recovery | Inspect the response to training | Sleep, HRV, resting HR, respiration and Body Battery trends where available |
-| Insights | Review meaningful changes and questions | Session observations, weekly review, progress trends, evidence and caveats |
+| Screen     | Main purpose                                 | Essential content                                                                      |
+| ---------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Today      | Understand today's position quickly          | Briefing, this week's progress, latest session, recovery context, sync freshness       |
+| Activities | Review and compare training sessions         | Searchable history, calendar/list views, filters, rich activity detail, comparison     |
+| Training   | Understand volume, intensity and progression | Weekly volume, zone distribution, comparable load series, sport-specific trends, goals |
+| Recovery   | Inspect the response to training             | Sleep, HRV, resting HR, respiration and Body Battery trends where available            |
+| Insights   | Review meaningful changes and questions      | Session observations, weekly review, progress trends, evidence and caveats             |
 
 **Today** should have one dominant element: a short briefing linked to evidence. Below it, show the current training week and recent activities. Put recovery context alongside these on desktop and immediately after them on mobile. Daily steps and calories belong in a secondary section that users can pin if they care about them.
 
@@ -87,16 +87,16 @@ No-GPS activities still receive complete usable pages. Treadmill sessions, pool 
 
 Start with deterministic calculations and templated language. Each insight must retain its inputs, dates, comparison group, method version and source links. Optional generative text can later paraphrase validated results; it must not invent metrics, calculate statistics itself, or receive the user's data without an explicit product choice.
 
-| Insight | Required evidence | Initial rule and guardrails |
-| --- | --- | --- |
-| Weekly training change | Complete activity summaries | Compare the same portion of each week; separate sports and distinguish missing sync from rest |
-| Intensity distribution | Valid HR samples or reported zone times, plus zone definitions | Show minutes and shares; display measurement coverage; unknown time remains unknown |
-| Session execution | Recorded laps/steps and an explicit target | Compare planned and actual intervals; a workout name alone does not establish its target |
-| Easy-session progression | Several genuinely comparable steady sessions | Compare speed at similar HR or HR at similar speed; show sample count and matching criteria |
-| Activity context | Session timestamps, preceding training, next-day measurements | Describe temporal association without claiming the session caused the response |
-| Sleep consistency | Valid local sleep start/end history | Show duration and timing variability; preserve travel/DST context |
-| Strength progression | Exercise identity, valid sets/reps/weights | Compare the same exercise and equipment; body-weight work is not zero load |
-| Personal bests | Sufficient historical activity samples | Label “best in imported history”; disclose incomplete history and pause rules |
+| Insight                  | Required evidence                                              | Initial rule and guardrails                                                                   |
+| ------------------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Weekly training change   | Complete activity summaries                                    | Compare the same portion of each week; separate sports and distinguish missing sync from rest |
+| Intensity distribution   | Valid HR samples or reported zone times, plus zone definitions | Show minutes and shares; display measurement coverage; unknown time remains unknown           |
+| Session execution        | Recorded laps/steps and an explicit target                     | Compare planned and actual intervals; a workout name alone does not establish its target      |
+| Easy-session progression | Several genuinely comparable steady sessions                   | Compare speed at similar HR or HR at similar speed; show sample count and matching criteria   |
+| Activity context         | Session timestamps, preceding training, next-day measurements  | Describe temporal association without claiming the session caused the response                |
+| Sleep consistency        | Valid local sleep start/end history                            | Show duration and timing variability; preserve travel/DST context                             |
+| Strength progression     | Exercise identity, valid sets/reps/weights                     | Compare the same exercise and equipment; body-weight work is not zero load                    |
+| Personal bests           | Sufficient historical activity samples                         | Label “best in imported history”; disclose incomplete history and pause rules                 |
 
 For the MVP, ship the first two, sleep consistency, and a concise weekly review. Add progression and session-execution analysis after the activity data model is proven.
 
@@ -110,15 +110,15 @@ Do not infer injury risk, diagnose illness, or declare a session safe based on t
 
 The published Personal API includes activity summaries/originals and wellness domains such as sleep, HRV, heart rate, Body Battery, SpO2 and fitness age. Its documented paths do not establish full parity with Garmin Connect. Detailed training-status/readiness, adaptive Coach schedules, gear, weather, and full sleep-stage timelines need separate validation. Their absence from the documented path list is a limitation to investigate, not a promise that an alternative response will supply them. [Personal API reference](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/).
 
-| Data class | Planned treatment |
-| --- | --- |
-| Activity and wellness summaries | Base MVP, after live contract verification |
+| Data class                                           | Planned treatment                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------- |
+| Activity and wellness summaries                      | Base MVP, after live contract verification                    |
 | Activity sample streams, laps, GPS and sensor fields | Decode preserved original files; conditional on file contents |
-| Garmin training effects/load/VO2 values | Display only when returned; retain source and units |
-| Advanced running/cycling/swimming metrics | Optional sections activated by observed, valid data |
-| Strength exercise edits and set metadata | Verify API/FIT parity; add local corrections if needed |
-| App-calculated trends, comparisons and notes | Label as calculated or entered here |
-| Unavailable or unverified domains | Omit dependent features gracefully; explain why on request |
+| Garmin training effects/load/VO2 values              | Display only when returned; retain source and units           |
+| Advanced running/cycling/swimming metrics            | Optional sections activated by observed, valid data           |
+| Strength exercise edits and set metadata             | Verify API/FIT parity; add local corrections if needed        |
+| App-calculated trends, comparisons and notes         | Label as calculated or entered here                           |
+| Unavailable or unverified domains                    | Omit dependent features gracefully; explain why on request    |
 
 Support is a combination of endpoint coverage, device capability, settings, sensors and history. Do not hardcode a simple watch-model allowlist as the source of truth. Record whether a feature is documented, observed, tested, unavailable or unknown. Changes of device and sensor should be visible in longitudinal analysis.
 
@@ -185,13 +185,13 @@ The initial release should not depend on a new universal recovery score, all-day
 
 Engineering estimate: approximately **6–8 focused weeks for one experienced full-time developer** for a controlled public beta. This is a planning estimate, not a commitment; Garmin access decisions and external approvals are outside it.
 
-| Phase | Approximate effort | Deliverable and exit criterion |
-| --- | --- | --- |
-| Feasibility and access | 3–5 days | Verify hosted access route; run bounded API pilot; record coverage and history limits; identify required feature reductions |
-| Product prototype | 4–5 days | Clickable Today, Activity detail and Training views; representative synthetic missing-data states; test main tasks with prospective users |
-| Data foundation | 7–10 days | Isolated connections, progressive sync, originals, parsing, checkpoints and replay; source-to-normalized reconciliation passes |
-| Core application | 7–10 days | Real-data activity exploration, training week and recovery context; responsive keyboard-accessible interactions |
-| Insights and beta hardening | 5–8 days | Reproducible weekly insights, exports/deletion, performance/security checks and feedback from a small external cohort |
+| Phase                       | Approximate effort | Deliverable and exit criterion                                                                                                            |
+| --------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Feasibility and access      | 3–5 days           | Verify hosted access route; run bounded API pilot; record coverage and history limits; identify required feature reductions               |
+| Product prototype           | 4–5 days           | Clickable Today, Activity detail and Training views; representative synthetic missing-data states; test main tasks with prospective users |
+| Data foundation             | 7–10 days          | Isolated connections, progressive sync, originals, parsing, checkpoints and replay; source-to-normalized reconciliation passes            |
+| Core application            | 7–10 days          | Real-data activity exploration, training week and recovery context; responsive keyboard-accessible interactions                           |
+| Insights and beta hardening | 5–8 days           | Reproducible weekly insights, exports/deletion, performance/security checks and feedback from a small external cohort                     |
 
 Begin limited technical validation with the current FR165 account, then recruit roughly 10–20 beta testers across at least three relevant device/activity groups. This is a recruitment target, not an assumption that users are already available.
 

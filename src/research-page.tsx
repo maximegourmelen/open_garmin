@@ -5,7 +5,7 @@ import { papers, reviews } from './research';
 export function ResearchPage() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'reviewed' | 'downloaded' | 'all'>('reviewed');
-  const reviewed = new Set(reviews.map((r) => r.paper_id));
+  const reviewed = useMemo(() => new Set(reviews.map((r) => r.paper_id)), []);
   const rows = useMemo(
     () =>
       papers
@@ -19,7 +19,7 @@ export function ResearchPage() {
               .includes(query.toLowerCase()),
         )
         .slice(0, 100),
-    [query, filter],
+    [query, filter, reviewed],
   );
   return (
     <>

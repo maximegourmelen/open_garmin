@@ -16,15 +16,15 @@ Many existing READMEs still say personal API access does not exist or that `pyth
 
 ## Available access routes
 
-| Route | Suitable use | Limitation and decision |
-| --- | --- | --- |
-| Official Personal API | Individuals reading their own account | Preferred candidate for Health; establish actual coverage before migration |
-| Official business APIs | Applications integrating multiple users | Separate access program and deployment model; not automatically supplied by distributing an open-source library |
-| Unofficial Garmin Connect endpoints | Features absent from the Personal API | Broader surface, with authentication and endpoint maintenance costs; keep optional and explicit |
-| Garmin account export | Initial archive, recovery, offline imports | User requests an asynchronous export; not a continuous API feed |
-| Original activity files and device files | Detailed activity parsing | Preserve originals; cloud summaries and FIT files contain different information |
-| Direct Bluetooth | Live nearby-watch telemetry | Separate hardware integration problem; not a substitute for cloud account history |
-| Connect IQ / Health mobile SDKs | On-device applications or mobile device integration | Separate from an ordinary Python cloud-data client |
+| Route                                    | Suitable use                                        | Limitation and decision                                                                                         |
+| ---------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Official Personal API                    | Individuals reading their own account               | Preferred candidate for Health; establish actual coverage before migration                                      |
+| Official business APIs                   | Applications integrating multiple users             | Separate access program and deployment model; not automatically supplied by distributing an open-source library |
+| Unofficial Garmin Connect endpoints      | Features absent from the Personal API               | Broader surface, with authentication and endpoint maintenance costs; keep optional and explicit                 |
+| Garmin account export                    | Initial archive, recovery, offline imports          | User requests an asynchronous export; not a continuous API feed                                                 |
+| Original activity files and device files | Detailed activity parsing                           | Preserve originals; cloud summaries and FIT files contain different information                                 |
+| Direct Bluetooth                         | Live nearby-watch telemetry                         | Separate hardware integration problem; not a substitute for cloud account history                               |
+| Connect IQ / Health mobile SDKs          | On-device applications or mobile device integration | Separate from an ordinary Python cloud-data client                                                              |
 
 Garmin's current overview distinguishes Personal pull access, Starter business push access with limited users and no historical data, and Enterprise push or ping/pull access with historical-data options. The current business FAQ describes approval and OAuth2. Do not assume old “free business API” descriptions or third-party pricing summaries remain applicable; public pages inspected did not establish a complete numerical pricing schedule. [Program overview](https://developer.garmin.com/gc-developer-program/overview/), [current business FAQ](https://developer.garmin.com/gc-developer-program/enterprise/program-faq/).
 
@@ -38,20 +38,20 @@ Garmin Health SDKs target Android/iOS enterprise integrations, with evaluation a
 
 These are evidence-based assessments of fit, not claims that every library was installed and live-tested.
 
-| Project | What is useful | What limits its fit here | Recommended treatment |
-| --- | --- | --- | --- |
-| Garmin's official Personal API client | Documented authentication, endpoint wrappers, JSON access, downloads, CLI | Small transport/client layer; not a complete local archive and synchronization system | Evaluate first |
-| `python-garminconnect` | Broad Connect endpoint coverage, including gear, training and account features; active releases | Unofficial endpoints and SSO; broad read/write surface; authentication can break | Optional adapter for a demonstrated missing feature |
-| `garmin-health-data` | Local originals plus SQLite, extraction/processing separation, flexible activity metrics, replay | CLI/database-oriented integration; bundled unofficial auth; application must inspect partial completeness | Keep as current baseline and investigate contributing fixes |
-| GarminDB | Established download/import workflow, retained source files, summaries, notebooks, plugins | More configuration and database conventions than a minimal Python client; current dependencies remain relevant to auth failures | Existing archive/analysis option |
-| Garth | Historically useful SSO and Connect client | Explicitly deprecated and unmaintained after authentication changes | Do not choose as a new foundation |
-| `garminexport` | Incremental activity-file backup design | Explicitly no longer maintained; authentication/bot protection drove that decision | Learn from its backup workflow |
-| `aio-garmin-personal` | Async official-API client, typed common fields, raw payload retention, caller-owned HTTP session | Young project; some domains documented as not account-validated; no full archive orchestration | Consider contributing or using for an async requirement |
-| Garmy | Metric registration, typed access, optional SQLite and MCP | Smaller project; production compatibility needs verification beyond feature descriptions | Architectural reference; not an established replacement on this evidence |
-| `garmin-givemydata` | Browser-backed extraction, SQLite, files and MCP | Browser dependency; AGPL-3.0; several introductory claims are outdated | Existing alternative, not code to casually copy into a permissive package |
-| `garmin-grafana` | Practical scheduled ingestion, historical backfill and dashboards | Docker/InfluxDB/Grafana application stack rather than a small library | Evidence that end-to-end user workflows already exist |
-| `garmin-personal-mcp` | Uses the official client and adds endpoint tools and range chunking | Focuses on assistant access rather than an application data layer | Shows that an official-API companion ecosystem already exists |
-| `garmin-ble` | Direct GFDI V2 telemetry, simulator/replay, typed readings | AGPL-3.0; hardware/OS compatibility; file transfer remains on its roadmap | Separate future integration, not MVP scope |
+| Project                               | What is useful                                                                                   | What limits its fit here                                                                                                        | Recommended treatment                                                     |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Garmin's official Personal API client | Documented authentication, endpoint wrappers, JSON access, downloads, CLI                        | Small transport/client layer; not a complete local archive and synchronization system                                           | Evaluate first                                                            |
+| `python-garminconnect`                | Broad Connect endpoint coverage, including gear, training and account features; active releases  | Unofficial endpoints and SSO; broad read/write surface; authentication can break                                                | Optional adapter for a demonstrated missing feature                       |
+| `garmin-health-data`                  | Local originals plus SQLite, extraction/processing separation, flexible activity metrics, replay | CLI/database-oriented integration; bundled unofficial auth; application must inspect partial completeness                       | Keep as current baseline and investigate contributing fixes               |
+| GarminDB                              | Established download/import workflow, retained source files, summaries, notebooks, plugins       | More configuration and database conventions than a minimal Python client; current dependencies remain relevant to auth failures | Existing archive/analysis option                                          |
+| Garth                                 | Historically useful SSO and Connect client                                                       | Explicitly deprecated and unmaintained after authentication changes                                                             | Do not choose as a new foundation                                         |
+| `garminexport`                        | Incremental activity-file backup design                                                          | Explicitly no longer maintained; authentication/bot protection drove that decision                                              | Learn from its backup workflow                                            |
+| `aio-garmin-personal`                 | Async official-API client, typed common fields, raw payload retention, caller-owned HTTP session | Young project; some domains documented as not account-validated; no full archive orchestration                                  | Consider contributing or using for an async requirement                   |
+| Garmy                                 | Metric registration, typed access, optional SQLite and MCP                                       | Smaller project; production compatibility needs verification beyond feature descriptions                                        | Architectural reference; not an established replacement on this evidence  |
+| `garmin-givemydata`                   | Browser-backed extraction, SQLite, files and MCP                                                 | Browser dependency; AGPL-3.0; several introductory claims are outdated                                                          | Existing alternative, not code to casually copy into a permissive package |
+| `garmin-grafana`                      | Practical scheduled ingestion, historical backfill and dashboards                                | Docker/InfluxDB/Grafana application stack rather than a small library                                                           | Evidence that end-to-end user workflows already exist                     |
+| `garmin-personal-mcp`                 | Uses the official client and adds endpoint tools and range chunking                              | Focuses on assistant access rather than an application data layer                                                               | Shows that an official-API companion ecosystem already exists             |
+| `garmin-ble`                          | Direct GFDI V2 telemetry, simulator/replay, typed readings                                       | AGPL-3.0; hardware/OS compatibility; file transfer remains on its roadmap                                                       | Separate future integration, not MVP scope                                |
 
 Sources for the assessments:
 

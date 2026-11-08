@@ -1,0 +1,8 @@
+node_modules
+dist
+.runtime*
+.venv
+docs/screenshots
+plan.md
+research
+*.lock
