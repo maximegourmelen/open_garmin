@@ -134,6 +134,19 @@ def sport_name(key: str) -> str:
     return "other"
 
 
+def device_name(raw: dict) -> str:
+    """Retain reported model names without maintaining a watch-model allowlist."""
+    for source in (raw, raw.get("summaryDTO"), raw.get("deviceInfo")):
+        if not isinstance(source, dict):
+            continue
+        for key in ("deviceName", "deviceModel", "productName", "displayName"):
+            value = source.get(key)
+            if isinstance(value, str) and value.strip():
+                name = value.strip()[:80]
+                return name if name.lower().startswith("garmin ") else f"Garmin {name}"
+    return "Garmin"
+
+
 def normalize_activity(raw: dict) -> dict:
     summary = raw.get("summaryDTO") or raw
     typ = raw.get("activityTypeDTO") or raw.get("activityType") or {}
@@ -156,7 +169,7 @@ def normalize_activity(raw: dict) -> dict:
         "vo2max": number(pick(summary.get("vO2MaxValue"), summary.get("vo2MaxValue"))),
         "description": raw.get("description") or "", "parent_id": raw.get("parentId"),
         "is_parent": bool(raw.get("isMultiSportParent") or raw.get("isParent") or raw.get("parent")),
-        "device": "Garmin",
+        "device": device_name(raw),
         "source": "garmin", "zones": [number(summary.get(f"hrTimeInZone_{i}")) for i in range(1, 6)],
         "samples": [], "laps": [], "sets": [], "detail_state": "not_loaded",
     }

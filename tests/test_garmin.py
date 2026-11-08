@@ -16,6 +16,13 @@ def token():
     return f"header.{payload}.signature"
 
 
+def test_device_model_is_preserved_without_model_allowlist():
+    base = {"activityId": 7, "startTimeLocal": "2026-10-20T10:00:00"}
+    assert normalize_activity({**base, "deviceName": "Forerunner 965"})["device"] == "Garmin Forerunner 965"
+    assert normalize_activity({**base, "deviceName": "Garmin Venu 4"})["device"] == "Garmin Venu 4"
+    assert normalize_activity(base)["device"] == "Garmin"
+
+
 def test_personal_key_is_exchanged_and_never_used_as_bearer():
     requests = []
     def handle(request):
