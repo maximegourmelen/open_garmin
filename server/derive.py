@@ -5,12 +5,13 @@ from __future__ import annotations
 import hashlib
 from collections.abc import Callable
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from .analytics.activity import derive_activity
 from .analytics.common import local_today
+from .analytics.efforts import collect_best_efforts
 from .analytics.zones import activity_zones, effort_points, estimate_max_hr
-from .db.models import Activity, ActivityDerived, ActivitySamples, Daily, User
+from .db.models import Activity, ActivityDerived, ActivitySamples, BestEffort, Daily, User
 from .db.store import Store
 from .garmin.fit import parse_original
 from .garmin.normalize import normalize_activity_v2, normalize_daily_v2
@@ -123,6 +124,16 @@ def rederive_user(store: Store, user_id: str) -> None:
             elif derived.version != ANALYTICS_VERSION or derived.data != derived_data:
                 derived.version = ANALYTICS_VERSION
                 derived.data = derived_data
+        db.flush()
+        derived_by_id = {
+            item.activity_id: item.data
+            for item in db.scalars(select(ActivityDerived).where(ActivityDerived.user_id == user_id))
+        }
+        candidates = collect_best_efforts(
+            [{"activity": row.data, "derived": derived_by_id.get(row.id, {})} for row in activities]
+        )
+        db.execute(delete(BestEffort).where(BestEffort.user_id == user_id))
+        db.add_all(BestEffort(user_id=user_id, **candidate) for candidate in candidates)
         for row in db.scalars(select(Daily).where(Daily.user_id == user_id)).all():
             if row.data.get("normalizer_version") == NORMALIZER_VERSION:
                 continue
