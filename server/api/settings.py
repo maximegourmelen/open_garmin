@@ -1,0 +1,195 @@
+from __future__ import annotations
+
+import csv
+import hashlib
+import io
+import json
+import shutil
+import time
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+from fastapi import Depends, HTTPException, Request, Response
+from sqlalchemy import delete, select
+
+from ..config import COOKIE
+from ..garmin import GarminError
+from ..main import (
+    KeyInput,
+    Preferences,
+    update_job_cancel,
+)
+from ..storage import Activity, ActivitySamples, Connection, Daily, Job, Note, User
+
+
+def register(app, store, worker, current_user, limit, client_factory):
+    @app.post("/api/connection")
+    def connect(body: KeyInput, request: Request, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        limit(request, "connect", 4)
+        if body.region not in ("com", "cn"):
+            raise HTTPException(422, "Choose a valid Garmin region.")
+        key = body.api_key.strip()
+        if len(key) < 16:
+            raise HTTPException(422, "Enter the complete Personal API key.")
+        client = client_factory(key, body.region)
+        try:
+            profile = client.get("/userprofile-service/userprofile/settings")
+            if not isinstance(profile, dict):
+                raise GarminError("Garmin returned an unexpected profile response.")
+        except GarminError as exc:
+            raise HTTPException(exc.status if exc.status in (401, 403, 429) else 502, str(exc)) from None
+        finally:
+            client.close()
+        with store.sessions.begin() as db:
+            conn = db.get(Connection, user.id)
+            if not conn:
+                conn = Connection(user_id=user.id)
+                db.add(conn)
+                revision = 1
+            else:
+                if (
+                    conn.profile.get("displayName")
+                    and profile.get("displayName")
+                    and conn.profile["displayName"] != profile["displayName"]
+                ):
+                    raise HTTPException(
+                        409,
+                        "This key belongs to a different Garmin profile. Export and delete the existing imported data before connecting another account.",  # noqa: E501 - existing literal
+                    )
+                revision = conn.revision + 1
+            conn.encrypted_key, conn.region, conn.profile, conn.state = (
+                store.encrypt(key),
+                body.region,
+                profile,
+                "connected",
+            )
+            conn.revision, conn.message = revision, None
+        return {"ok": True, "job_id": worker.enqueue(user.id, 90)}
+
+    @app.delete("/api/connection")
+    def disconnect(user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        with store.sessions.begin() as db:
+            conn = db.get(Connection, user.id)
+            if conn:
+                conn.encrypted_key, conn.state, conn.message = None, "disconnected", None
+                conn.revision += 1
+            db.execute(update_job_cancel(user.id))
+        return {"ok": True}
+
+    @app.post("/api/sync")
+    def sync(request: Request, days: int = 3, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        limit(request, "sync", 6)
+        if not 1 <= days <= 366:
+            raise HTTPException(422, "Choose between 1 and 366 days.")
+        with store.sessions() as db:
+            conn = db.get(Connection, user.id)
+            if not conn or not conn.encrypted_key:
+                raise HTTPException(409, "Connect your Garmin account first.")
+            if conn.profile.get("_retry_after", 0) > time.time():
+                raise HTTPException(429, "Garmin requested a cooldown. Please wait before syncing again.")
+        return {"job_id": worker.enqueue(user.id, days)}
+
+    @app.put("/api/preferences")
+    def preferences(body: Preferences, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        if (
+            body.units not in ("metric", "imperial")
+            or body.week_start not in ("monday", "sunday")
+            or body.theme not in ("light", "dark")
+        ):
+            raise HTTPException(422, "Choose valid preferences.")
+        try:
+            ZoneInfo(body.timezone)
+        except ZoneInfoNotFoundError:
+            raise HTTPException(422, "Choose a valid IANA timezone, such as America/Toronto.") from None
+        with store.sessions.begin() as db:
+            db.get(User, user.id).preferences = body.model_dump()
+        return {"ok": True}
+
+    @app.get("/api/export")
+    def export(format: str = "json", user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        with store.sessions() as db:
+            streams = {
+                s.activity_id: s.samples
+                for s in db.scalars(select(ActivitySamples).where(ActivitySamples.user_id == user.id))
+            }
+            activities = [
+                {**r.data, "samples": streams.get(r.id, r.data.get("samples", [])), "raw": r.raw}
+                for r in db.scalars(select(Activity).where(Activity.user_id == user.id))
+            ]
+            daily = [
+                {**r.data, "raw": r.raw} for r in db.scalars(select(Daily).where(Daily.user_id == user.id))
+            ]
+            notes = [
+                {"activity_id": n.activity_id, "text": n.text, "rpe": n.rpe, "tags": n.tags}
+                for n in db.scalars(select(Note).where(Note.user_id == user.id))
+            ]
+        if format == "csv":
+            out = io.StringIO()
+            fields = [
+                "id",
+                "name",
+                "date",
+                "sport",
+                "distance",
+                "duration",
+                "average_hr",
+                "elevation",
+                "power",
+                "source",
+            ]
+            writer = csv.DictWriter(out, fieldnames=fields, extrasaction="ignore")
+            writer.writeheader()
+            for a in activities:
+                # Prevent spreadsheet formula injection in exported user-defined names.
+                writer.writerow(
+                    {
+                        k: "'" + v
+                        if isinstance(v := a.get(k), str) and v.startswith(("=", "+", "-", "@"))
+                        else v
+                        for k in fields
+                    }
+                )
+            return Response(
+                out.getvalue(),
+                media_type="text/csv",
+                headers={"Content-Disposition": 'attachment; filename="open-garmin-activities.csv"'},
+            )
+        if format != "json":
+            raise HTTPException(422, "Choose JSON or CSV.")
+        payload = {
+            "schema_version": 1,
+            "attribution": "Garmin device-sourced data. App notes and derived metrics are identified separately.",  # noqa: E501 - existing literal
+            "activities": activities,
+            "daily": daily,
+            "notes": notes,
+            "preferences": user.preferences,
+        }
+        return Response(
+            json.dumps(payload, allow_nan=False),
+            media_type="application/json",
+            headers={"Content-Disposition": 'attachment; filename="open-garmin-export.json"'},
+        )
+
+    def erase_data(uid):
+        with store.archive_lock, store.sessions.begin() as db:
+            conn = db.get(Connection, uid)
+            if conn:
+                conn.encrypted_key, conn.state = None, "disconnected"
+                conn.revision += 1
+            for model in (Note, Activity, Daily, Job):
+                db.execute(delete(model).where(model.user_id == uid))
+            folder = store.directory / "originals" / hashlib.sha256(uid.encode()).hexdigest()
+            if folder.exists():
+                shutil.rmtree(folder)
+
+    @app.delete("/api/data")
+    def delete_data(user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        erase_data(user.id)
+        return {"ok": True}
+
+    @app.delete("/api/account")
+    def delete_account(response: Response, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        erase_data(user.id)
+        with store.sessions.begin() as db:
+            db.execute(delete(User).where(User.id == user.id))
+        response.delete_cookie(COOKIE)
+        return {"ok": True}
