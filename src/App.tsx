@@ -418,6 +418,14 @@ export default function App() {
           )}
           <main id="main-content" className="main-content">
             <Routes>
+              {import.meta.env.DEV && (
+                <Route
+                  path="/__tailwind-check"
+                  element={
+                    <div className="bg-surface text-text rounded-xl p-6">Tailwind is ready</div>
+                  }
+                />
+              )}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/today" element={<TodayPage />} />
