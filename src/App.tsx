@@ -1,72 +1,785 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, ArrowRight, ArrowUpRight, BookOpen, CalendarDays, ChevronDown, CircleHelp, Compass, HeartPulse, LayoutDashboard, LineChart, Menu, Info, RefreshCw, Search, Settings, ShieldCheck, Sparkles, X, Check, LogOut, Eye, EyeOff } from 'lucide-react';
+import {
+  Activity,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  CalendarDays,
+  ChevronDown,
+  CircleHelp,
+  Compass,
+  HeartPulse,
+  LayoutDashboard,
+  LineChart,
+  Menu,
+  Info,
+  RefreshCw,
+  Search,
+  Settings,
+  ShieldCheck,
+  Sparkles,
+  X,
+  Check,
+  LogOut,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 import { api, setCsrf } from './api';
 import { makeDemo } from './demo';
 import { AppContext } from './context';
-import { ActivityPage, ActivitiesPage, TodayPage, TrainingPage, RecoveryPage, InsightsPage, SettingsPage } from './pages';
+import {
+  ActivityPage,
+  ActivitiesPage,
+  TodayPage,
+  TrainingPage,
+  RecoveryPage,
+  InsightsPage,
+  SettingsPage,
+} from './pages';
 import { Dialog, SportBadge } from './components';
 import { displayDate, todayKey } from './analytics';
 import { DashboardPage } from './dashboard';
 import { ResearchPage } from './research-page';
 import type { Activity as ActivityType, DashboardData, Prefs } from './types';
 
-const nav=[{path:'/dashboard',label:'Dashboard',icon:LayoutDashboard},{path:'/today',label:'Today',icon:CalendarDays},{path:'/activities',label:'Activities',icon:Activity},{path:'/training',label:'Training',icon:LineChart},{path:'/recovery',label:'Recovery',icon:HeartPulse},{path:'/insights',label:'Insights',icon:Sparkles},{path:'/research',label:'Research',icon:BookOpen}];
-type Session={user:{name:string;email:string}|null;csrf_token:string|null;registration_open?:boolean;local_mode?:boolean};
-export default function App(){
-  const [demoData,setDemoData]=useState(()=>{const d=makeDemo();try{d.preferences={...d.preferences,...JSON.parse(localStorage.getItem('og_demo_preferences')||'{}')};}catch{/* defaults */}return d;});
-  const [liveData,setLiveData]=useState<DashboardData|null>(null); const [demo,setDemo]=useState(true);
-  const [session,setSession]=useState<Session>({user:null,csrf_token:null}); const [loading,setLoading]=useState(false);
-  const [online,setOnline]=useState(true);const [error,setError]=useState('');const [notice,setNotice]=useState('');
-  const [connectOpen,setConnectOpen]=useState(false);const [searchOpen,setSearchOpen]=useState(false);const [mobileOpen,setMobileOpen]=useState(false);
-  const [search,setSearch]=useState('');const [help,setHelp]=useState(false);const navigate=useNavigate();
-  const pageLocation=useLocation();
-  useEffect(()=>{window.scrollTo({top:0});setMobileOpen(false);},[pageLocation.pathname,pageLocation.search]);
-  const toast=useCallback((message:string)=>setNotice(message),[]);
-  useEffect(()=>{if(!notice)return;const timeout=setTimeout(()=>setNotice(''),6000);return()=>clearTimeout(timeout);},[notice]);
-  const refresh=useCallback(async()=>{try{const d=await api<DashboardData>('/data');setLiveData(d);setOnline(true);setError('');}catch(e){setError((e as Error).message);throw e;}},[]);
-  useEffect(()=>{let cancelled=false;api<Session>('/session').then(async initial=>{if(cancelled)return;let s=initial;if(!s.user&&s.local_mode){try{s=await api<Session>('/auth/local',{method:'POST'});}catch{/* Existing multi-user installations retain sign-in. */}}if(cancelled)return;setSession(s);setCsrf(s.csrf_token);if(s.user){setLoading(true);try{await refresh();if(!cancelled)setDemo(localStorage.getItem('og_view')==='demo');}catch{/* visible error */}finally{setLoading(false);}}}).catch(()=>setOnline(false));return()=>{cancelled=true;};},[refresh]);
-  const syncing=liveData?.jobs.some(j=>['running','queued'].includes(j.state));
-  useEffect(()=>{if(!session.user)return;const t=setInterval(()=>refresh().catch(()=>{}),syncing?3500:30000);return()=>clearInterval(t);},[session.user,syncing,refresh]);
-  const data=demo?demoData:liveData??{...demoData,mode:'live' as const,activities:[],daily:[],user:session.user??{name:'Athlete',email:''},jobs:[],status:{...demoData.status,state:'not_connected'}};
-  useEffect(()=>{document.documentElement.dataset.theme=data.preferences.theme;document.querySelector('meta[name="theme-color"]')?.setAttribute('content',data.preferences.theme==='dark'?'#151a21':'#f7f8fa');},[data.preferences.theme]);
-  useEffect(()=>{const listener=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();setSearchOpen(o=>!o);}};window.addEventListener('keydown',listener);return()=>window.removeEventListener('keydown',listener);},[]);
-  const connect=()=>setConnectOpen(true);
-  const sync=async(days=3)=>{if(demo){connect();return;}try{await api('/sync?days='+days,{method:'POST'});await refresh();toast('Sync started. You can keep exploring.');}catch(e){toast((e as Error).message);}};
-  const savePreferences=async(prefs:Prefs)=>{if(demo){setDemoData(d=>({...d,preferences:prefs}));localStorage.setItem('og_demo_preferences',JSON.stringify(prefs));}else{await api('/preferences',{method:'PUT',body:JSON.stringify(prefs)});await refresh();}toast('Preferences saved');};
-  const saveNote=async(id:string,note:ActivityType['note'])=>{if(demo)setDemoData(d=>({...d,activities:d.activities.map(a=>a.id===id?{...a,note}:a)}));else{await api(`/activities/${id}/note`,{method:'PUT',body:JSON.stringify(note)});await refresh();}toast(demo?'Demo note saved for this session':'Activity note saved');};
-  const exploreDemo=()=>{setDemo(true);localStorage.setItem('og_view','demo');navigate('/today');};
-  const useLive=()=>{if(!session.user){connect();return;}setDemo(false);localStorage.setItem('og_view','live');refresh().catch(()=>{});navigate('/today');};
-  const logout=async()=>{await api('/auth/logout',{method:'POST'});setSession({user:null,csrf_token:null});setCsrf(null);setLiveData(null);exploreDemo();toast('Signed out');};
-  const ctx=useMemo(()=>({data,loading,online,demo,connect,refresh,sync,toast,savePreferences,saveNote,exploreDemo,useLive,logout}),[data,loading,online,demo,session,refresh,toast]);
-  const today=todayKey(data.preferences.timezone); const activeJob=data.jobs.find(j=>['running','queued'].includes(j.state));
-  const matches=data.activities.filter(a=>`${a.name} ${a.sport} ${a.date}`.toLowerCase().includes(search.toLowerCase())).slice(0,8);
-  return <AppContext.Provider value={ctx}><a href="#main-content" className="skip-link">Skip to content</a><div className="app-shell">
-    <aside className={`sidebar ${mobileOpen?'mobile-open':''}`}><Link to="/today" className="brand" onClick={()=>setMobileOpen(false)}><span className="brand-mark"><Activity size={23} strokeWidth={2.2}/></span><span>open<span className="brand-light">garmin</span><small>YOUR TRAINING, IN FOCUS</small></span></Link><button className="mobile-close icon-button" onClick={()=>setMobileOpen(false)} aria-label="Close navigation"><X size={20}/></button>
-      <div className="workspace-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{nav.map(({path,label,icon:Icon})=><NavLink key={path} to={path} onClick={()=>setMobileOpen(false)} className={({isActive})=>`nav-item ${isActive?'active':''}`}><Icon size={19}/><span>{label}</span>{path==='/insights'&&<span className="nav-dot"/>}</NavLink>)}</nav>
-      <div className="sidebar-bottom"><div className="sidebar-callout"><div className="callout-orbit"><Compass size={22}/></div><strong>Your data. Your perspective.</strong><p>Built for curiosity.<br/>Open by design.</p><button onClick={()=>setHelp(true)}>About the project <ArrowUpRight size={14}/></button></div><NavLink to="/settings" className="nav-item"><Settings size={18}/>Settings</NavLink><button className="nav-item" onClick={()=>setHelp(true)}><CircleHelp size={18}/>Help & methodology</button><div className="sidebar-user"><span className="avatar">{demo?'A':data.user.name[0]?.toUpperCase()||'A'}</span><div><strong>{demo?'Demo athlete':data.user.name}</strong><span>{demo?'Explore the possibilities':'Personal workspace'}</span></div><ChevronDown size={14}/></div></div>
-    </aside>{mobileOpen&&<button className="mobile-scrim" aria-label="Close navigation" onClick={()=>setMobileOpen(false)}/>}
-    <div className="main-shell"><header className="topbar"><div className="topbar-left"><button className="mobile-menu icon-button" aria-label="Open navigation" onClick={()=>setMobileOpen(true)}><Menu size={21}/></button><span className="breadcrumb">Workspace <span>/</span> <strong>{nav.find(n=>location.pathname.startsWith(n.path))?.label??'Settings'}</strong></span></div><div className="topbar-right"><button className="search-button" onClick={()=>setSearchOpen(true)}><Search size={16}/><span>Search your activities</span><kbd>⌘ K</kbd></button><span className={`connection-dot ${data.status.connected?'connected':''}`}/><span className="connection-caption">{demo?'Demo workspace':data.status.connected?'Garmin connected':'Not connected'}</span><button className="button small" onClick={demo&&session.user&&liveData?.status.connected?useLive:connect}>{demo&&session.user&&liveData?.status.connected?'My workspace':data.status.connected?'Manage connection':'Connect Garmin'}<ArrowUpRight size={15}/></button></div></header>
-    {demo&&<div className="demo-banner"><span><span className="demo-pill">DEMO</span> A feel for what’s possible. All data shown is synthetic.</span><button onClick={session.user&&liveData?.status.connected?useLive:connect}>{session.user&&liveData?.status.connected?'Go to my workspace':'Connect Garmin'}<ArrowRight size={14}/></button></div>}
-    {!online&&<div className="notice-banner">The local app server is offline. You can still explore the demo. Start the server to connect Garmin.</div>}
-    {error&&!demo&&<div className="notice-banner error" role="alert">{error}<button onClick={()=>refresh().catch(()=>{})}>Try again</button></div>}
-    {activeJob&&!demo&&<div className="sync-banner"><RefreshCw className="spin" size={15}/><span>{activeJob.message}</span><div className="sync-progress"><span style={{width:`${activeJob.progress}%`}}/></div><small>{activeJob.progress}%</small></div>}
-    {!demo&&data.status.message&&!activeJob&&<div className="notice-banner"><Info size={15}/><span>{data.status.message}</span><Link to="/settings">View connection</Link></div>}
-    <main id="main-content" className="main-content"><Routes><Route path="/" element={<Navigate to="/dashboard" replace/>}/><Route path="/dashboard" element={<DashboardPage/>}/><Route path="/today" element={<TodayPage/>}/><Route path="/activities" element={<ActivitiesPage/>}/><Route path="/activities/:id" element={<ActivityPage/>}/><Route path="/training" element={<TrainingPage/>}/><Route path="/recovery" element={<RecoveryPage/>}/><Route path="/insights" element={<InsightsPage/>}/><Route path="/research" element={<ResearchPage/>}/><Route path="/settings" element={<SettingsPage/>}/><Route path="*" element={<Navigate to="/today" replace/>}/></Routes></main>
-    <footer className="app-footer"><span><span className="tiny-mark"/> Open Garmin · Independent & open source</span><span>{demo?'Synthetic demo data':<>Garmin device-sourced data <span className="dot-separator">·</span> {data.status.last_checked?`Checked ${new Date(data.status.last_checked).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:data.preferences.timezone})}`:'Not yet synced'}</>}</span></footer></div>
-    <nav className="mobile-bottom-nav" aria-label="Mobile navigation">{nav.map(({path,label,icon:Icon})=><NavLink key={path} to={path}><Icon size={19}/><span>{label}</span></NavLink>)}</nav>
-    {notice&&<div className="toast" role="status"><Check size={17}/>{notice}<button aria-label="Dismiss notification" onClick={()=>setNotice('')}><X size={15}/></button></div>}
-    {connectOpen&&<ConnectDialog session={session} setSession={setSession} onClose={()=>setConnectOpen(false)} onConnected={async()=>{setDemo(false);localStorage.setItem('og_view','live');setConnectOpen(false);await refresh();navigate('/dashboard');toast('Garmin connected. Your first import has started.');}}/>}
-    {searchOpen&&<Dialog title="Find an activity" onClose={()=>{setSearchOpen(false);setSearch('');}}><div className="search-field"><Search size={18}/><input autoFocus placeholder="Name, sport or date…" value={search} onChange={e=>setSearch(e.target.value)}/></div><div className="command-results">{matches.map(a=><button key={a.id} onClick={()=>{navigate(`/activities/${a.id}`);setSearchOpen(false);setSearch('');}}><SportBadge sport={a.sport}/><span><strong>{a.name}</strong><small>{displayDate(a.date)}</small></span><ArrowUpRight size={16}/></button>)}{!matches.length&&<p className="muted">No activities match your search.</p>}</div></Dialog>}
-    {help&&<Dialog title="A clearer view of your training" onClose={()=>setHelp(false)}><div className="prose"><div className="about-icon"><Compass size={30}/></div><p>Open Garmin is an independent training workspace. Explore your activities, understand your progress, and keep the evidence behind every insight.</p><h3>Measurements first</h3><p>Garmin-reported measurements, your notes and app-calculated comparisons are kept distinct. Missing data stays missing. A weekly trend is not a diagnosis or a readiness score.</p><h3>How insights work</h3><p>Volume comparisons align the same weekdays. Sleep and HRV comparisons use a preceding personal median with at least 14 valid observations. Every insight includes its dates and calculation method.</p><h3>Your data stays yours</h3><p>The demo is synthetic. Connected data stays in your installation, and you can export it or delete it in Settings. Garmin keys are encrypted on the server.</p><p className="muted">Not affiliated with, sponsored by or endorsed by Garmin. Data availability depends on your device and the Personal API.</p><button className="button primary" onClick={()=>setHelp(false)}>Back to exploring <ArrowRight size={16}/></button></div></Dialog>}
-  </div></AppContext.Provider>;
+const nav = [
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/today', label: 'Today', icon: CalendarDays },
+  { path: '/activities', label: 'Activities', icon: Activity },
+  { path: '/training', label: 'Training', icon: LineChart },
+  { path: '/recovery', label: 'Recovery', icon: HeartPulse },
+  { path: '/insights', label: 'Insights', icon: Sparkles },
+  { path: '/research', label: 'Research', icon: BookOpen },
+];
+type Session = {
+  user: { name: string; email: string } | null;
+  csrf_token: string | null;
+  registration_open?: boolean;
+  local_mode?: boolean;
+};
+export default function App() {
+  const [demoData, setDemoData] = useState(() => {
+    const d = makeDemo();
+    try {
+      d.preferences = {
+        ...d.preferences,
+        ...JSON.parse(localStorage.getItem('og_demo_preferences') || '{}'),
+      };
+    } catch {
+      /* defaults */
+    }
+    return d;
+  });
+  const [liveData, setLiveData] = useState<DashboardData | null>(null);
+  const [demo, setDemo] = useState(true);
+  const [session, setSession] = useState<Session>({ user: null, csrf_token: null });
+  const [loading, setLoading] = useState(false);
+  const [online, setOnline] = useState(true);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [connectOpen, setConnectOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [help, setHelp] = useState(false);
+  const navigate = useNavigate();
+  const pageLocation = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+    setMobileOpen(false);
+  }, [pageLocation.pathname, pageLocation.search]);
+  const toast = useCallback((message: string) => setNotice(message), []);
+  useEffect(() => {
+    if (!notice) return;
+    const timeout = setTimeout(() => setNotice(''), 6000);
+    return () => clearTimeout(timeout);
+  }, [notice]);
+  const refresh = useCallback(async () => {
+    try {
+      const d = await api<DashboardData>('/data');
+      setLiveData(d);
+      setOnline(true);
+      setError('');
+    } catch (e) {
+      setError((e as Error).message);
+      throw e;
+    }
+  }, []);
+  useEffect(() => {
+    let cancelled = false;
+    api<Session>('/session')
+      .then(async (initial) => {
+        if (cancelled) return;
+        let s = initial;
+        if (!s.user && s.local_mode) {
+          try {
+            s = await api<Session>('/auth/local', { method: 'POST' });
+          } catch {
+            /* Existing multi-user installations retain sign-in. */
+          }
+        }
+        if (cancelled) return;
+        setSession(s);
+        setCsrf(s.csrf_token);
+        if (s.user) {
+          setLoading(true);
+          try {
+            await refresh();
+            if (!cancelled) setDemo(localStorage.getItem('og_view') === 'demo');
+          } catch {
+            /* visible error */
+          } finally {
+            setLoading(false);
+          }
+        }
+      })
+      .catch(() => setOnline(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [refresh]);
+  const syncing = liveData?.jobs.some((j) => ['running', 'queued'].includes(j.state));
+  useEffect(() => {
+    if (!session.user) return;
+    const t = setInterval(() => refresh().catch(() => {}), syncing ? 3500 : 30000);
+    return () => clearInterval(t);
+  }, [session.user, syncing, refresh]);
+  const data = demo
+    ? demoData
+    : (liveData ?? {
+        ...demoData,
+        mode: 'live' as const,
+        activities: [],
+        daily: [],
+        user: session.user ?? { name: 'Athlete', email: '' },
+        jobs: [],
+        status: { ...demoData.status, state: 'not_connected' },
+      });
+  useEffect(() => {
+    document.documentElement.dataset.theme = data.preferences.theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', data.preferences.theme === 'dark' ? '#151a21' : '#f7f8fa');
+  }, [data.preferences.theme]);
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((o) => !o);
+      }
+    };
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
+  }, []);
+  const connect = () => setConnectOpen(true);
+  const sync = async (days = 3) => {
+    if (demo) {
+      connect();
+      return;
+    }
+    try {
+      await api('/sync?days=' + days, { method: 'POST' });
+      await refresh();
+      toast('Sync started. You can keep exploring.');
+    } catch (e) {
+      toast((e as Error).message);
+    }
+  };
+  const savePreferences = async (prefs: Prefs) => {
+    if (demo) {
+      setDemoData((d) => ({ ...d, preferences: prefs }));
+      localStorage.setItem('og_demo_preferences', JSON.stringify(prefs));
+    } else {
+      await api('/preferences', { method: 'PUT', body: JSON.stringify(prefs) });
+      await refresh();
+    }
+    toast('Preferences saved');
+  };
+  const saveNote = async (id: string, note: ActivityType['note']) => {
+    if (demo)
+      setDemoData((d) => ({
+        ...d,
+        activities: d.activities.map((a) => (a.id === id ? { ...a, note } : a)),
+      }));
+    else {
+      await api(`/activities/${id}/note`, { method: 'PUT', body: JSON.stringify(note) });
+      await refresh();
+    }
+    toast(demo ? 'Demo note saved for this session' : 'Activity note saved');
+  };
+  const exploreDemo = () => {
+    setDemo(true);
+    localStorage.setItem('og_view', 'demo');
+    navigate('/today');
+  };
+  const useLive = () => {
+    if (!session.user) {
+      connect();
+      return;
+    }
+    setDemo(false);
+    localStorage.setItem('og_view', 'live');
+    refresh().catch(() => {});
+    navigate('/today');
+  };
+  const logout = async () => {
+    await api('/auth/logout', { method: 'POST' });
+    setSession({ user: null, csrf_token: null });
+    setCsrf(null);
+    setLiveData(null);
+    exploreDemo();
+    toast('Signed out');
+  };
+  const ctx = useMemo(
+    () => ({
+      data,
+      loading,
+      online,
+      demo,
+      connect,
+      refresh,
+      sync,
+      toast,
+      savePreferences,
+      saveNote,
+      exploreDemo,
+      useLive,
+      logout,
+    }),
+    [data, loading, online, demo, session, refresh, toast],
+  );
+  const today = todayKey(data.preferences.timezone);
+  const activeJob = data.jobs.find((j) => ['running', 'queued'].includes(j.state));
+  const matches = data.activities
+    .filter((a) => `${a.name} ${a.sport} ${a.date}`.toLowerCase().includes(search.toLowerCase()))
+    .slice(0, 8);
+  return (
+    <AppContext.Provider value={ctx}>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <div className="app-shell">
+        <aside className={`sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
+          <Link to="/today" className="brand" onClick={() => setMobileOpen(false)}>
+            <span className="brand-mark">
+              <Activity size={23} strokeWidth={2.2} />
+            </span>
+            <span>
+              open<span className="brand-light">garmin</span>
+              <small>YOUR TRAINING, IN FOCUS</small>
+            </span>
+          </Link>
+          <button
+            className="mobile-close icon-button"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close navigation"
+          >
+            <X size={20} />
+          </button>
+          <div className="workspace-label">YOUR WORKSPACE</div>
+          <nav aria-label="Main navigation">
+            {nav.map(({ path, label, icon: Icon }) => (
+              <NavLink
+                key={path}
+                to={path}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <Icon size={19} />
+                <span>{label}</span>
+                {path === '/insights' && <span className="nav-dot" />}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="sidebar-bottom">
+            <div className="sidebar-callout">
+              <div className="callout-orbit">
+                <Compass size={22} />
+              </div>
+              <strong>Your data. Your perspective.</strong>
+              <p>
+                Built for curiosity.
+                <br />
+                Open by design.
+              </p>
+              <button onClick={() => setHelp(true)}>
+                About the project <ArrowUpRight size={14} />
+              </button>
+            </div>
+            <NavLink to="/settings" className="nav-item">
+              <Settings size={18} />
+              Settings
+            </NavLink>
+            <button className="nav-item" onClick={() => setHelp(true)}>
+              <CircleHelp size={18} />
+              Help & methodology
+            </button>
+            <div className="sidebar-user">
+              <span className="avatar">{demo ? 'A' : data.user.name[0]?.toUpperCase() || 'A'}</span>
+              <div>
+                <strong>{demo ? 'Demo athlete' : data.user.name}</strong>
+                <span>{demo ? 'Explore the possibilities' : 'Personal workspace'}</span>
+              </div>
+              <ChevronDown size={14} />
+            </div>
+          </div>
+        </aside>
+        {mobileOpen && (
+          <button
+            className="mobile-scrim"
+            aria-label="Close navigation"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+        <div className="main-shell">
+          <header className="topbar">
+            <div className="topbar-left">
+              <button
+                className="mobile-menu icon-button"
+                aria-label="Open navigation"
+                onClick={() => setMobileOpen(true)}
+              >
+                <Menu size={21} />
+              </button>
+              <span className="breadcrumb">
+                Workspace <span>/</span>{' '}
+                <strong>
+                  {nav.find((n) => location.pathname.startsWith(n.path))?.label ?? 'Settings'}
+                </strong>
+              </span>
+            </div>
+            <div className="topbar-right">
+              <button className="search-button" onClick={() => setSearchOpen(true)}>
+                <Search size={16} />
+                <span>Search your activities</span>
+                <kbd>⌘ K</kbd>
+              </button>
+              <span className={`connection-dot ${data.status.connected ? 'connected' : ''}`} />
+              <span className="connection-caption">
+                {demo
+                  ? 'Demo workspace'
+                  : data.status.connected
+                    ? 'Garmin connected'
+                    : 'Not connected'}
+              </span>
+              <button
+                className="button small"
+                onClick={demo && session.user && liveData?.status.connected ? useLive : connect}
+              >
+                {demo && session.user && liveData?.status.connected
+                  ? 'My workspace'
+                  : data.status.connected
+                    ? 'Manage connection'
+                    : 'Connect Garmin'}
+                <ArrowUpRight size={15} />
+              </button>
+            </div>
+          </header>
+          {demo && (
+            <div className="demo-banner">
+              <span>
+                <span className="demo-pill">DEMO</span> A feel for what’s possible. All data shown
+                is synthetic.
+              </span>
+              <button onClick={session.user && liveData?.status.connected ? useLive : connect}>
+                {session.user && liveData?.status.connected
+                  ? 'Go to my workspace'
+                  : 'Connect Garmin'}
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          )}
+          {!online && (
+            <div className="notice-banner">
+              The local app server is offline. You can still explore the demo. Start the server to
+              connect Garmin.
+            </div>
+          )}
+          {error && !demo && (
+            <div className="notice-banner error" role="alert">
+              {error}
+              <button onClick={() => refresh().catch(() => {})}>Try again</button>
+            </div>
+          )}
+          {activeJob && !demo && (
+            <div className="sync-banner">
+              <RefreshCw className="spin" size={15} />
+              <span>{activeJob.message}</span>
+              <div className="sync-progress">
+                <span style={{ width: `${activeJob.progress}%` }} />
+              </div>
+              <small>{activeJob.progress}%</small>
+            </div>
+          )}
+          {!demo && data.status.message && !activeJob && (
+            <div className="notice-banner">
+              <Info size={15} />
+              <span>{data.status.message}</span>
+              <Link to="/settings">View connection</Link>
+            </div>
+          )}
+          <main id="main-content" className="main-content">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/today" element={<TodayPage />} />
+              <Route path="/activities" element={<ActivitiesPage />} />
+              <Route path="/activities/:id" element={<ActivityPage />} />
+              <Route path="/training" element={<TrainingPage />} />
+              <Route path="/recovery" element={<RecoveryPage />} />
+              <Route path="/insights" element={<InsightsPage />} />
+              <Route path="/research" element={<ResearchPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="*" element={<Navigate to="/today" replace />} />
+            </Routes>
+          </main>
+          <footer className="app-footer">
+            <span>
+              <span className="tiny-mark" /> Open Garmin · Independent & open source
+            </span>
+            <span>
+              {demo ? (
+                'Synthetic demo data'
+              ) : (
+                <>
+                  Garmin device-sourced data <span className="dot-separator">·</span>{' '}
+                  {data.status.last_checked
+                    ? `Checked ${new Date(data.status.last_checked).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: data.preferences.timezone })}`
+                    : 'Not yet synced'}
+                </>
+              )}
+            </span>
+          </footer>
+        </div>
+        <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+          {nav.map(({ path, label, icon: Icon }) => (
+            <NavLink key={path} to={path}>
+              <Icon size={19} />
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
+        {notice && (
+          <div className="toast" role="status">
+            <Check size={17} />
+            {notice}
+            <button aria-label="Dismiss notification" onClick={() => setNotice('')}>
+              <X size={15} />
+            </button>
+          </div>
+        )}
+        {connectOpen && (
+          <ConnectDialog
+            session={session}
+            setSession={setSession}
+            onClose={() => setConnectOpen(false)}
+            onConnected={async () => {
+              setDemo(false);
+              localStorage.setItem('og_view', 'live');
+              setConnectOpen(false);
+              await refresh();
+              navigate('/dashboard');
+              toast('Garmin connected. Your first import has started.');
+            }}
+          />
+        )}
+        {searchOpen && (
+          <Dialog
+            title="Find an activity"
+            onClose={() => {
+              setSearchOpen(false);
+              setSearch('');
+            }}
+          >
+            <div className="search-field">
+              <Search size={18} />
+              <input
+                autoFocus
+                placeholder="Name, sport or date…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <div className="command-results">
+              {matches.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => {
+                    navigate(`/activities/${a.id}`);
+                    setSearchOpen(false);
+                    setSearch('');
+                  }}
+                >
+                  <SportBadge sport={a.sport} />
+                  <span>
+                    <strong>{a.name}</strong>
+                    <small>{displayDate(a.date)}</small>
+                  </span>
+                  <ArrowUpRight size={16} />
+                </button>
+              ))}
+              {!matches.length && <p className="muted">No activities match your search.</p>}
+            </div>
+          </Dialog>
+        )}
+        {help && (
+          <Dialog title="A clearer view of your training" onClose={() => setHelp(false)}>
+            <div className="prose">
+              <div className="about-icon">
+                <Compass size={30} />
+              </div>
+              <p>
+                Open Garmin is an independent training workspace. Explore your activities,
+                understand your progress, and keep the evidence behind every insight.
+              </p>
+              <h3>Measurements first</h3>
+              <p>
+                Garmin-reported measurements, your notes and app-calculated comparisons are kept
+                distinct. Missing data stays missing. A weekly trend is not a diagnosis or a
+                readiness score.
+              </p>
+              <h3>How insights work</h3>
+              <p>
+                Volume comparisons align the same weekdays. Sleep and HRV comparisons use a
+                preceding personal median with at least 14 valid observations. Every insight
+                includes its dates and calculation method.
+              </p>
+              <h3>Your data stays yours</h3>
+              <p>
+                The demo is synthetic. Connected data stays in your installation, and you can export
+                it or delete it in Settings. Garmin keys are encrypted on the server.
+              </p>
+              <p className="muted">
+                Not affiliated with, sponsored by or endorsed by Garmin. Data availability depends
+                on your device and the Personal API.
+              </p>
+              <button className="button primary" onClick={() => setHelp(false)}>
+                Back to exploring <ArrowRight size={16} />
+              </button>
+            </div>
+          </Dialog>
+        )}
+      </div>
+    </AppContext.Provider>
+  );
 }
 
-function ConnectDialog({session,setSession,onClose,onConnected}:{session:Session;setSession:(s:Session)=>void;onClose:()=>void;onConnected:()=>Promise<void>}){
-  const [mode,setMode]=useState<'login'|'register'>(session.registration_open?'register':'login');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [name,setName]=useState('');const [key,setKey]=useState('');const [region,setRegion]=useState('com');const [error,setError]=useState('');const [busy,setBusy]=useState(false);const [visible,setVisible]=useState(false);
-  const keyFlow=!!session.user||!!session.local_mode;
-  const submit=async(e:React.FormEvent)=>{e.preventDefault();setBusy(true);setError('');try{if(keyFlow){if(!session.user){const s=await api<Session>('/auth/local',{method:'POST'});setSession(s);setCsrf(s.csrf_token);}await api('/connection',{method:'POST',body:JSON.stringify({api_key:key,region})});setKey('');await onConnected();}else{const s=await api<Session>(`/auth/${mode}`,{method:'POST',body:JSON.stringify({email,password,name:name||'Athlete'})});setSession(s);setCsrf(s.csrf_token);setPassword('');const existing=await api<DashboardData>('/data');if(existing.status.connected||existing.activities.length)await onConnected();}}catch(e){setError((e as Error).message);}finally{setBusy(false);}};
-  return <Dialog title={keyFlow?'Bring your training into focus':mode==='register'?'Your own training workspace':'Welcome back'} onClose={onClose}><form onSubmit={submit} className="connection-form"><div className="connection-illustration"><Activity size={30}/><span className="connection-line"/><span className="garmin-word">GARMIN</span></div><p className="muted">{keyFlow?'Connect with a revocable Personal API key. Your Garmin password is never needed.':mode==='register'?'Create a private workspace, then connect your Garmin data.':'Sign in to your workspace to access your connected data.'}</p>
-    {!keyFlow?<>{mode==='register'&&<label>Your name<input autoComplete="given-name" value={name} onChange={e=>setName(e.target.value)} placeholder="What should we call you?" required maxLength={120}/></label>}<label>Email<input type="email" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" required/></label><label>Password<div className="password-field"><input type={visible?'text':'password'} autoComplete={mode==='register'?'new-password':'current-password'} value={password} onChange={e=>setPassword(e.target.value)} placeholder="At least 10 characters" minLength={10} required/><button type="button" aria-label={visible?'Hide password':'Show password'} onClick={()=>setVisible(!visible)}>{visible?<EyeOff size={17}/>:<Eye size={17}/>}</button></div></label></>:<><ol className="connection-steps"><li><span>1</span><div>Open <a href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noreferrer">Garmin’s Personal API key page <ArrowUpRight size={12}/></a></div></li><li><span>2</span><div>Create a key, choose its expiry, and copy it.</div></li><li><span>3</span><div>Paste it below. Your recent training loads first.</div></li></ol><label>Personal API key<input type="password" value={key} onChange={e=>setKey(e.target.value)} placeholder="Paste your key" autoComplete="off" spellCheck={false} required minLength={16}/></label><label>Garmin account region<select value={region} onChange={e=>setRegion(e.target.value)}><option value="com">Global · garmin.com</option><option value="cn">China · garmin.cn</option></select></label><div className="privacy-note"><ShieldCheck size={17}/><span>Encrypted in your workspace. Read-only access. You can disconnect at any time.</span></div></>}
-    {error&&<div className="form-error" role="alert">{error}</div>}<button className="button primary full" disabled={busy}>{busy?<><RefreshCw size={16} className="spin"/> {keyFlow?'Connecting securely…':'Signing in…'}</>:<>{keyFlow?'Connect Garmin':mode==='register'?'Create workspace':'Sign in'}<ArrowRight size={16}/></>}</button>{!keyFlow&&<p className="auth-switch">{mode==='register'?'Already have a workspace?':'New here?'} <button type="button" onClick={()=>{setMode(mode==='login'?'register':'login');setError('');}}>{mode==='register'?'Sign in':'Create a workspace'}</button></p>}</form></Dialog>;
+function ConnectDialog({
+  session,
+  setSession,
+  onClose,
+  onConnected,
+}: {
+  session: Session;
+  setSession: (s: Session) => void;
+  onClose: () => void;
+  onConnected: () => Promise<void>;
+}) {
+  const [mode, setMode] = useState<'login' | 'register'>(
+    session.registration_open ? 'register' : 'login',
+  );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [key, setKey] = useState('');
+  const [region, setRegion] = useState('com');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const keyFlow = !!session.user || !!session.local_mode;
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      if (keyFlow) {
+        if (!session.user) {
+          const s = await api<Session>('/auth/local', { method: 'POST' });
+          setSession(s);
+          setCsrf(s.csrf_token);
+        }
+        await api('/connection', {
+          method: 'POST',
+          body: JSON.stringify({ api_key: key, region }),
+        });
+        setKey('');
+        await onConnected();
+      } else {
+        const s = await api<Session>(`/auth/${mode}`, {
+          method: 'POST',
+          body: JSON.stringify({ email, password, name: name || 'Athlete' }),
+        });
+        setSession(s);
+        setCsrf(s.csrf_token);
+        setPassword('');
+        const existing = await api<DashboardData>('/data');
+        if (existing.status.connected || existing.activities.length) await onConnected();
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Dialog
+      title={
+        keyFlow
+          ? 'Bring your training into focus'
+          : mode === 'register'
+            ? 'Your own training workspace'
+            : 'Welcome back'
+      }
+      onClose={onClose}
+    >
+      <form onSubmit={submit} className="connection-form">
+        <div className="connection-illustration">
+          <Activity size={30} />
+          <span className="connection-line" />
+          <span className="garmin-word">GARMIN</span>
+        </div>
+        <p className="muted">
+          {keyFlow
+            ? 'Connect with a revocable Personal API key. Your Garmin password is never needed.'
+            : mode === 'register'
+              ? 'Create a private workspace, then connect your Garmin data.'
+              : 'Sign in to your workspace to access your connected data.'}
+        </p>
+        {!keyFlow ? (
+          <>
+            {mode === 'register' && (
+              <label>
+                Your name
+                <input
+                  autoComplete="given-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="What should we call you?"
+                  required
+                  maxLength={120}
+                />
+              </label>
+            )}
+            <label>
+              Email
+              <input
+                type="email"
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+            <label>
+              Password
+              <div className="password-field">
+                <input
+                  type={visible ? 'text' : 'password'}
+                  autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 10 characters"
+                  minLength={10}
+                  required
+                />
+                <button
+                  type="button"
+                  aria-label={visible ? 'Hide password' : 'Show password'}
+                  onClick={() => setVisible(!visible)}
+                >
+                  {visible ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
+            </label>
+          </>
+        ) : (
+          <>
+            <ol className="connection-steps">
+              <li>
+                <span>1</span>
+                <div>
+                  Open{' '}
+                  <a
+                    href="https://connect.garmin.com/app/settings/personalApiToken"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Garmin’s Personal API key page <ArrowUpRight size={12} />
+                  </a>
+                </div>
+              </li>
+              <li>
+                <span>2</span>
+                <div>Create a key, choose its expiry, and copy it.</div>
+              </li>
+              <li>
+                <span>3</span>
+                <div>Paste it below. Your recent training loads first.</div>
+              </li>
+            </ol>
+            <label>
+              Personal API key
+              <input
+                type="password"
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                placeholder="Paste your key"
+                autoComplete="off"
+                spellCheck={false}
+                required
+                minLength={16}
+              />
+            </label>
+            <label>
+              Garmin account region
+              <select value={region} onChange={(e) => setRegion(e.target.value)}>
+                <option value="com">Global · garmin.com</option>
+                <option value="cn">China · garmin.cn</option>
+              </select>
+            </label>
+            <div className="privacy-note">
+              <ShieldCheck size={17} />
+              <span>
+                Encrypted in your workspace. Read-only access. You can disconnect at any time.
+              </span>
+            </div>
+          </>
+        )}
+        {error && (
+          <div className="form-error" role="alert">
+            {error}
+          </div>
+        )}
+        <button className="button primary full" disabled={busy}>
+          {busy ? (
+            <>
+              <RefreshCw size={16} className="spin" />{' '}
+              {keyFlow ? 'Connecting securely…' : 'Signing in…'}
+            </>
+          ) : (
+            <>
+              {keyFlow ? 'Connect Garmin' : mode === 'register' ? 'Create workspace' : 'Sign in'}
+              <ArrowRight size={16} />
+            </>
+          )}
+        </button>
+        {!keyFlow && (
+          <p className="auth-switch">
+            {mode === 'register' ? 'Already have a workspace?' : 'New here?'}{' '}
+            <button
+              type="button"
+              onClick={() => {
+                setMode(mode === 'login' ? 'register' : 'login');
+                setError('');
+              }}
+            >
+              {mode === 'register' ? 'Sign in' : 'Create a workspace'}
+            </button>
+          </p>
+        )}
+      </form>
+    </Dialog>
+  );
 }

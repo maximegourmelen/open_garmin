@@ -1,30 +1,503 @@
 import { useEffect, useId, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { ArrowDownRight, ArrowUpRight, Bike, Dumbbell, Footprints, Waves, Activity as ActivityIcon, ArrowUpRight as External } from 'lucide-react';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, ReferenceLine } from 'recharts';
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Bike,
+  Dumbbell,
+  Footprints,
+  Waves,
+  Activity as ActivityIcon,
+  ArrowUpRight as External,
+} from 'lucide-react';
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  ReferenceLine,
+} from 'recharts';
 import { Link } from 'react-router-dom';
 import type { Activity, Sample, Sport } from './types';
 import { activityMetric, displayDate, formatDuration, formatPace, sportLabels } from './analytics';
 
-export const sportColor: Record<string,string> = {running:'var(--orange)',cycling:'var(--blue)',strength:'var(--purple)',swimming:'var(--teal)',walking:'var(--green)',other:'var(--muted)'};
-export function SportIcon({sport,size=18}:{sport:Sport;size?:number}) { const Icon = sport==='cycling'?Bike:sport==='strength'?Dumbbell:sport==='swimming'?Waves:sport==='walking'?Footprints:sport==='running'?Footprints:ActivityIcon; return <Icon size={size} strokeWidth={1.8}/>; }
-export function SportBadge({sport}:{sport:Sport}) { return <span className={`sport-icon ${sport}`}><SportIcon sport={sport}/></span>; }
-export function Panel({title,kicker,action,children,className=''}:{title?:string;kicker?:string;action?:ReactNode;children:ReactNode;className?:string}) { return <section className={`panel ${className}`}>{(title||kicker||action)&&<div className="panel-heading"><div>{kicker&&<span className="eyebrow">{kicker}</span>}{title&&<h2>{title}</h2>}</div>{action}</div>}{children}</section>; }
-export function Empty({title='Nothing here yet',children,action}:{title?:string;children:ReactNode;action?:ReactNode}) { return <div className="empty-state"><ActivityIcon size={28} strokeWidth={1.4}/><h3>{title}</h3><p>{children}</p>{action}</div>; }
-export function Metric({label,value,unit,detail,trend}:{label:string;value:ReactNode;unit?:string;detail?:ReactNode;trend?:number|null}) { return <div className="metric"><span className="metric-label">{label}</span><div className="metric-number">{value}{unit&&<span>{unit}</span>}</div>{detail&&<div className="metric-detail">{trend!=null&&(trend>=0?<ArrowUpRight size={13}/>:<ArrowDownRight size={13}/>)}{detail}</div>}</div>; }
-export function Spark({values,color='var(--green)'}:{values:number[];color?:string}) { if(values.length<2)return <span className="spark-placeholder">History building</span>; const lo=Math.min(...values)-2,hi=Math.max(...values)+2; const path=values.map((v,i)=>`${i===0?'M':'L'}${i/(values.length-1)*110},${32-(v-lo)/(hi-lo)*25}`).join(' '); return <svg className="spark" viewBox="0 0 112 36" aria-label="Recent trend" role="img"><path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"/></svg>; }
-export function ActivityRows({activities,imperial=false,compact=false,selected=[],onSelect}:{activities:Activity[];imperial?:boolean;compact?:boolean;selected?:string[];onSelect?:(id:string)=>void}) { return <div className={`activity-list ${compact?'compact':''}`}>{activities.map(a=><div className="activity-row" key={a.id}>{onSelect&&<input type="checkbox" aria-label={`Compare ${a.name}`} checked={selected.includes(a.id)} onChange={()=>onSelect(a.id)}/>}<Link to={`/activities/${a.id}`} className="activity-main"><SportBadge sport={a.sport}/><div><strong>{a.name}</strong><span>{displayDate(a.date,{weekday:'short',month:'short',day:'numeric'})} <span className="dot-separator">·</span> {sportLabels[a.sport]}</span></div></Link><div className="activity-value"><strong>{activityMetric(a,imperial)}</strong><span>{a.sport==='strength'?`${a.sets.length || '—'} recorded sets`:formatDuration(a.duration)}</span></div><div className="activity-hr"><strong>{a.average_hr??'—'} <small>bpm</small></strong><span>Avg. heart rate</span></div><Link className="row-open" aria-label={`Open ${a.name}`} to={`/activities/${a.id}`}><External size={18}/></Link></div>)}</div>; }
-const tooltipStyle = {background:'var(--panel)',border:'1px solid var(--border)',borderRadius:10,fontSize:12,color:'var(--ink)',boxShadow:'0 8px 32px #0001'};
-export function WeeklyChart({series,unit='minutes',height=220,distanceUnit='km'}:{series:{label:string;minutes:number;distance:number;running:number;cycling:number;strength:number;other:number}[];unit?:'minutes'|'distance';height?:number;distanceUnit?:'km'|'mi'}) { return <div className="chart" style={{height}} aria-label={`Training ${unit} by week`} role="img"><ResponsiveContainer width="100%" height="100%"><BarChart data={series} barCategoryGap="32%" margin={{top:12,right:10,left:-20,bottom:0}}><CartesianGrid stroke="var(--border)" vertical={false} strokeDasharray="3 5"/><XAxis dataKey="label" axisLine={false} tickLine={false} tick={{fill:'var(--muted)',fontSize:11}} minTickGap={20}/><YAxis axisLine={false} tickLine={false} tick={{fill:'var(--muted)',fontSize:11}}/><Tooltip cursor={{fill:'var(--hover)'}} contentStyle={tooltipStyle} formatter={(v,name)=>[`${Number(v).toFixed(0)} ${unit==='distance'?distanceUnit:'min'}`,String(name).charAt(0).toUpperCase()+String(name).slice(1)]}/>{unit==='distance'?<Bar dataKey="distance" fill="var(--orange)" radius={[4,4,0,0]}/>:<><Bar dataKey="running" stackId="training" fill="var(--orange)"/><Bar dataKey="cycling" stackId="training" fill="var(--blue)"/><Bar dataKey="strength" stackId="training" fill="var(--purple)"/><Bar dataKey="other" stackId="training" fill="var(--teal)" radius={[4,4,0,0]}/></>}</BarChart></ResponsiveContainer></div>; }
-export function TrendChart({rows,dataKey,color='var(--green)',label,unit,baseline,height=230}:{rows:object[];dataKey:string;color?:string;label:string;unit:string;baseline?:number|null;height?:number}) { const id=useId().replace(/:/g,''); return <div className="chart" style={{height}} role="img" aria-label={`${label} in ${unit} over time`}><ResponsiveContainer width="100%" height="100%"><AreaChart data={rows} margin={{top:18,right:15,left:-20,bottom:0}}><defs><linearGradient id={id} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={color} stopOpacity={.16}/><stop offset="100%" stopColor={color} stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5"/><XAxis dataKey="date" tickFormatter={v=>displayDate(String(v))} axisLine={false} tickLine={false} tick={{fill:'var(--muted)',fontSize:11}} minTickGap={40}/><YAxis domain={['auto','auto']} axisLine={false} tickLine={false} tick={{fill:'var(--muted)',fontSize:11}}/>{baseline!=null&&<ReferenceLine y={baseline} stroke="var(--muted)" strokeDasharray="4 4"/>}<Tooltip contentStyle={tooltipStyle} labelFormatter={v=>displayDate(String(v))} formatter={v=>[`${Number(v).toFixed(1)} ${unit}`,label]}/><Area type="monotone" dataKey={dataKey} name={label} stroke={color} strokeWidth={2.2} fill={`url(#${id})`} connectNulls={false} isAnimationActive={false}/></AreaChart></ResponsiveContainer></div>; }
-export function RouteMap({samples,activeIndex,large=false}:{samples:Sample[];activeIndex?:number;large?:boolean}) {
-  const points=samples.map((p,i)=>({...p,i})).filter(p=>p.lat!=null&&p.lon!=null&&Math.abs(p.lat!)<=90&&Math.abs(p.lon!)<=180);
-  if(points.length<2) return <div className={`route-placeholder ${large?'large':''}`}><SportIcon sport="running" size={24}/><span>No GPS route recorded</span></div>;
-  const minLat=Math.min(...points.map(p=>p.lat!)),maxLat=Math.max(...points.map(p=>p.lat!)),minLon=Math.min(...points.map(p=>p.lon!)),maxLon=Math.max(...points.map(p=>p.lon!));
-  const aspect=Math.cos((minLat+maxLat)/2*Math.PI/180); const w=(maxLon-minLon)*aspect,h=maxLat-minLat;const scale=Math.min(250/Math.max(w,.00001),150/Math.max(h,.00001));
-  const xy=(p:{lat:number|null;lon:number|null})=>[160+(p.lon!-(maxLon+minLon)/2)*aspect*scale,100-(p.lat!-(maxLat+minLat)/2)*scale];
-  const path=points.map((p,i)=>`${i?'L':'M'}${xy(p).join(',')}`).join(' '); const active=points.find(p=>p.i===activeIndex); const start=xy(points[0]),end=xy(points.at(-1)!);
-  return <div className={`route-map ${large?'large':''}`}><svg viewBox="0 0 320 200" role="img" aria-label="Recorded GPS route, drawn without sending coordinates to a map provider"><defs><pattern id="map-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="var(--map-grid)" strokeWidth=".6"/></pattern></defs><rect width="320" height="200" fill="var(--map-bg)"/><rect width="320" height="200" fill="url(#map-grid)"/><path d={path} fill="none" stroke="var(--panel)" strokeWidth="8" strokeLinejoin="round"/><path d={path} fill="none" stroke="var(--orange)" strokeWidth="3.5" strokeLinejoin="round"/><circle cx={start[0]} cy={start[1]} r="5" fill="var(--green)" stroke="var(--panel)" strokeWidth="2"/><circle cx={end[0]} cy={end[1]} r="5" fill="var(--orange)" stroke="var(--panel)" strokeWidth="2"/>{active&&<circle cx={xy(active)[0]} cy={xy(active)[1]} r="6" fill="var(--ink)" stroke="var(--panel)" strokeWidth="2"/>}</svg><span className="route-caption">Recorded route <span>Private by default</span></span></div>;
+export const sportColor: Record<string, string> = {
+  running: 'var(--orange)',
+  cycling: 'var(--blue)',
+  strength: 'var(--purple)',
+  swimming: 'var(--teal)',
+  walking: 'var(--green)',
+  other: 'var(--muted)',
+};
+export function SportIcon({ sport, size = 18 }: { sport: Sport; size?: number }) {
+  const Icon =
+    sport === 'cycling'
+      ? Bike
+      : sport === 'strength'
+        ? Dumbbell
+        : sport === 'swimming'
+          ? Waves
+          : sport === 'walking'
+            ? Footprints
+            : sport === 'running'
+              ? Footprints
+              : ActivityIcon;
+  return <Icon size={size} strokeWidth={1.8} />;
 }
-export function ZoneBars({values,coverage}:{values:number[];coverage:number}) { const total=values.reduce((a,b)=>a+b,0); const labels=['Recovery','Easy','Aerobic','Threshold','Maximum'];return total ? <div className="zones">{values.map((v,i)=><div className="zone-row" key={i}><span className="zone-index" style={{background:`var(--zone-${i+1})`}}>Z{i+1}</span><span className="zone-name">{labels[i]}</span><div className="zone-track"><div style={{width:`${v/total*100}%`,background:`var(--zone-${i+1})`}}/></div><strong>{Math.round(v)}<small> min</small></strong></div>)}<p className="footnote">Recorded HR zones · {coverage.toFixed(0)}% of training time covered</p></div>:<Empty title="Zone data is not available">Recorded zone times will appear when Garmin supplies them.</Empty>; }
-export function Dialog({title,children,onClose,wide=false}:{title:string;children:ReactNode;onClose:()=>void;wide?:boolean}) { const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{const el=ref.current;el?.showModal();return()=>el?.close();},[]);return <dialog ref={ref} className={`dialog ${wide?'wide':''}`} onCancel={onClose} onClick={e=>{if(e.target===e.currentTarget)onClose();}}><div className="dialog-head"><h2>{title}</h2><button className="icon-button close-button" aria-label="Close dialog" onClick={onClose}>×</button></div>{children}</dialog>; }
+export function SportBadge({ sport }: { sport: Sport }) {
+  return (
+    <span className={`sport-icon ${sport}`}>
+      <SportIcon sport={sport} />
+    </span>
+  );
+}
+export function Panel({
+  title,
+  kicker,
+  action,
+  children,
+  className = '',
+}: {
+  title?: string;
+  kicker?: string;
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`panel ${className}`}>
+      {(title || kicker || action) && (
+        <div className="panel-heading">
+          <div>
+            {kicker && <span className="eyebrow">{kicker}</span>}
+            {title && <h2>{title}</h2>}
+          </div>
+          {action}
+        </div>
+      )}
+      {children}
+    </section>
+  );
+}
+export function Empty({
+  title = 'Nothing here yet',
+  children,
+  action,
+}: {
+  title?: string;
+  children: ReactNode;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="empty-state">
+      <ActivityIcon size={28} strokeWidth={1.4} />
+      <h3>{title}</h3>
+      <p>{children}</p>
+      {action}
+    </div>
+  );
+}
+export function Metric({
+  label,
+  value,
+  unit,
+  detail,
+  trend,
+}: {
+  label: string;
+  value: ReactNode;
+  unit?: string;
+  detail?: ReactNode;
+  trend?: number | null;
+}) {
+  return (
+    <div className="metric">
+      <span className="metric-label">{label}</span>
+      <div className="metric-number">
+        {value}
+        {unit && <span>{unit}</span>}
+      </div>
+      {detail && (
+        <div className="metric-detail">
+          {trend != null &&
+            (trend >= 0 ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />)}
+          {detail}
+        </div>
+      )}
+    </div>
+  );
+}
+export function Spark({ values, color = 'var(--green)' }: { values: number[]; color?: string }) {
+  if (values.length < 2) return <span className="spark-placeholder">History building</span>;
+  const lo = Math.min(...values) - 2,
+    hi = Math.max(...values) + 2;
+  const path = values
+    .map(
+      (v, i) =>
+        `${i === 0 ? 'M' : 'L'}${(i / (values.length - 1)) * 110},${32 - ((v - lo) / (hi - lo)) * 25}`,
+    )
+    .join(' ');
+  return (
+    <svg className="spark" viewBox="0 0 112 36" aria-label="Recent trend" role="img">
+      <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+export function ActivityRows({
+  activities,
+  imperial = false,
+  compact = false,
+  selected = [],
+  onSelect,
+}: {
+  activities: Activity[];
+  imperial?: boolean;
+  compact?: boolean;
+  selected?: string[];
+  onSelect?: (id: string) => void;
+}) {
+  return (
+    <div className={`activity-list ${compact ? 'compact' : ''}`}>
+      {activities.map((a) => (
+        <div className="activity-row" key={a.id}>
+          {onSelect && (
+            <input
+              type="checkbox"
+              aria-label={`Compare ${a.name}`}
+              checked={selected.includes(a.id)}
+              onChange={() => onSelect(a.id)}
+            />
+          )}
+          <Link to={`/activities/${a.id}`} className="activity-main">
+            <SportBadge sport={a.sport} />
+            <div>
+              <strong>{a.name}</strong>
+              <span>
+                {displayDate(a.date, { weekday: 'short', month: 'short', day: 'numeric' })}{' '}
+                <span className="dot-separator">·</span> {sportLabels[a.sport]}
+              </span>
+            </div>
+          </Link>
+          <div className="activity-value">
+            <strong>{activityMetric(a, imperial)}</strong>
+            <span>
+              {a.sport === 'strength'
+                ? `${a.sets.length || '—'} recorded sets`
+                : formatDuration(a.duration)}
+            </span>
+          </div>
+          <div className="activity-hr">
+            <strong>
+              {a.average_hr ?? '—'} <small>bpm</small>
+            </strong>
+            <span>Avg. heart rate</span>
+          </div>
+          <Link className="row-open" aria-label={`Open ${a.name}`} to={`/activities/${a.id}`}>
+            <External size={18} />
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
+}
+const tooltipStyle = {
+  background: 'var(--panel)',
+  border: '1px solid var(--border)',
+  borderRadius: 10,
+  fontSize: 12,
+  color: 'var(--ink)',
+  boxShadow: '0 8px 32px #0001',
+};
+export function WeeklyChart({
+  series,
+  unit = 'minutes',
+  height = 220,
+  distanceUnit = 'km',
+}: {
+  series: {
+    label: string;
+    minutes: number;
+    distance: number;
+    running: number;
+    cycling: number;
+    strength: number;
+    other: number;
+  }[];
+  unit?: 'minutes' | 'distance';
+  height?: number;
+  distanceUnit?: 'km' | 'mi';
+}) {
+  return (
+    <div className="chart" style={{ height }} aria-label={`Training ${unit} by week`} role="img">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={series}
+          barCategoryGap="32%"
+          margin={{ top: 12, right: 10, left: -20, bottom: 0 }}
+        >
+          <CartesianGrid stroke="var(--border)" vertical={false} strokeDasharray="3 5" />
+          <XAxis
+            dataKey="label"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: 'var(--muted)', fontSize: 11 }}
+            minTickGap={20}
+          />
+          <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--muted)', fontSize: 11 }} />
+          <Tooltip
+            cursor={{ fill: 'var(--hover)' }}
+            contentStyle={tooltipStyle}
+            formatter={(v, name) => [
+              `${Number(v).toFixed(0)} ${unit === 'distance' ? distanceUnit : 'min'}`,
+              String(name).charAt(0).toUpperCase() + String(name).slice(1),
+            ]}
+          />
+          {unit === 'distance' ? (
+            <Bar dataKey="distance" fill="var(--orange)" radius={[4, 4, 0, 0]} />
+          ) : (
+            <>
+              <Bar dataKey="running" stackId="training" fill="var(--orange)" />
+              <Bar dataKey="cycling" stackId="training" fill="var(--blue)" />
+              <Bar dataKey="strength" stackId="training" fill="var(--purple)" />
+              <Bar dataKey="other" stackId="training" fill="var(--teal)" radius={[4, 4, 0, 0]} />
+            </>
+          )}
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+export function TrendChart({
+  rows,
+  dataKey,
+  color = 'var(--green)',
+  label,
+  unit,
+  baseline,
+  height = 230,
+}: {
+  rows: object[];
+  dataKey: string;
+  color?: string;
+  label: string;
+  unit: string;
+  baseline?: number | null;
+  height?: number;
+}) {
+  const id = useId().replace(/:/g, '');
+  return (
+    <div
+      className="chart"
+      style={{ height }}
+      role="img"
+      aria-label={`${label} in ${unit} over time`}
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={rows} margin={{ top: 18, right: 15, left: -20, bottom: 0 }}>
+          <defs>
+            <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.16} />
+              <stop offset="100%" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={(v) => displayDate(String(v))}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: 'var(--muted)', fontSize: 11 }}
+            minTickGap={40}
+          />
+          <YAxis
+            domain={['auto', 'auto']}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: 'var(--muted)', fontSize: 11 }}
+          />
+          {baseline != null && (
+            <ReferenceLine y={baseline} stroke="var(--muted)" strokeDasharray="4 4" />
+          )}
+          <Tooltip
+            contentStyle={tooltipStyle}
+            labelFormatter={(v) => displayDate(String(v))}
+            formatter={(v) => [`${Number(v).toFixed(1)} ${unit}`, label]}
+          />
+          <Area
+            type="monotone"
+            dataKey={dataKey}
+            name={label}
+            stroke={color}
+            strokeWidth={2.2}
+            fill={`url(#${id})`}
+            connectNulls={false}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+export function RouteMap({
+  samples,
+  activeIndex,
+  large = false,
+}: {
+  samples: Sample[];
+  activeIndex?: number;
+  large?: boolean;
+}) {
+  const points = samples
+    .map((p, i) => ({ ...p, i }))
+    .filter(
+      (p) => p.lat != null && p.lon != null && Math.abs(p.lat!) <= 90 && Math.abs(p.lon!) <= 180,
+    );
+  if (points.length < 2)
+    return (
+      <div className={`route-placeholder ${large ? 'large' : ''}`}>
+        <SportIcon sport="running" size={24} />
+        <span>No GPS route recorded</span>
+      </div>
+    );
+  const minLat = Math.min(...points.map((p) => p.lat!)),
+    maxLat = Math.max(...points.map((p) => p.lat!)),
+    minLon = Math.min(...points.map((p) => p.lon!)),
+    maxLon = Math.max(...points.map((p) => p.lon!));
+  const aspect = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
+  const w = (maxLon - minLon) * aspect,
+    h = maxLat - minLat;
+  const scale = Math.min(250 / Math.max(w, 0.00001), 150 / Math.max(h, 0.00001));
+  const xy = (p: { lat: number | null; lon: number | null }) => [
+    160 + (p.lon! - (maxLon + minLon) / 2) * aspect * scale,
+    100 - (p.lat! - (maxLat + minLat) / 2) * scale,
+  ];
+  const path = points.map((p, i) => `${i ? 'L' : 'M'}${xy(p).join(',')}`).join(' ');
+  const active = points.find((p) => p.i === activeIndex);
+  const start = xy(points[0]),
+    end = xy(points.at(-1)!);
+  return (
+    <div className={`route-map ${large ? 'large' : ''}`}>
+      <svg
+        viewBox="0 0 320 200"
+        role="img"
+        aria-label="Recorded GPS route, drawn without sending coordinates to a map provider"
+      >
+        <defs>
+          <pattern id="map-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+            <path d="M32 0H0V32" fill="none" stroke="var(--map-grid)" strokeWidth=".6" />
+          </pattern>
+        </defs>
+        <rect width="320" height="200" fill="var(--map-bg)" />
+        <rect width="320" height="200" fill="url(#map-grid)" />
+        <path d={path} fill="none" stroke="var(--panel)" strokeWidth="8" strokeLinejoin="round" />
+        <path
+          d={path}
+          fill="none"
+          stroke="var(--orange)"
+          strokeWidth="3.5"
+          strokeLinejoin="round"
+        />
+        <circle
+          cx={start[0]}
+          cy={start[1]}
+          r="5"
+          fill="var(--green)"
+          stroke="var(--panel)"
+          strokeWidth="2"
+        />
+        <circle
+          cx={end[0]}
+          cy={end[1]}
+          r="5"
+          fill="var(--orange)"
+          stroke="var(--panel)"
+          strokeWidth="2"
+        />
+        {active && (
+          <circle
+            cx={xy(active)[0]}
+            cy={xy(active)[1]}
+            r="6"
+            fill="var(--ink)"
+            stroke="var(--panel)"
+            strokeWidth="2"
+          />
+        )}
+      </svg>
+      <span className="route-caption">
+        Recorded route <span>Private by default</span>
+      </span>
+    </div>
+  );
+}
+export function ZoneBars({ values, coverage }: { values: number[]; coverage: number }) {
+  const total = values.reduce((a, b) => a + b, 0);
+  const labels = ['Recovery', 'Easy', 'Aerobic', 'Threshold', 'Maximum'];
+  return total ? (
+    <div className="zones">
+      {values.map((v, i) => (
+        <div className="zone-row" key={i}>
+          <span className="zone-index" style={{ background: `var(--zone-${i + 1})` }}>
+            Z{i + 1}
+          </span>
+          <span className="zone-name">{labels[i]}</span>
+          <div className="zone-track">
+            <div style={{ width: `${(v / total) * 100}%`, background: `var(--zone-${i + 1})` }} />
+          </div>
+          <strong>
+            {Math.round(v)}
+            <small> min</small>
+          </strong>
+        </div>
+      ))}
+      <p className="footnote">
+        Recorded HR zones · {coverage.toFixed(0)}% of training time covered
+      </p>
+    </div>
+  ) : (
+    <Empty title="Zone data is not available">
+      Recorded zone times will appear when Garmin supplies them.
+    </Empty>
+  );
+}
+export function Dialog({
+  title,
+  children,
+  onClose,
+  wide = false,
+}: {
+  title: string;
+  children: ReactNode;
+  onClose: () => void;
+  wide?: boolean;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    el?.showModal();
+    return () => el?.close();
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      className={`dialog ${wide ? 'wide' : ''}`}
+      onCancel={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="dialog-head">
+        <h2>{title}</h2>
+        <button className="icon-button close-button" aria-label="Close dialog" onClick={onClose}>
+          ×
+        </button>
+      </div>
+      {children}
+    </dialog>
+  );
+}
