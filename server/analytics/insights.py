@@ -16,6 +16,23 @@ RESEARCH = Path(__file__).resolve().parents[2] / "research"
 CLAIMS = json.loads((RESEARCH / "claims.json").read_text())["claims"]
 PAPERS = {paper["id"]: paper for paper in json.loads((RESEARCH / "index.json").read_text())["papers"]}
 CAUSATION = "This describes your data; it doesn't prove cause and effect."
+CATALOG_IDS = (
+    "weekly-volume",
+    "zone-distribution",
+    "sleep-context",
+    "hrv-context",
+    "ramp",
+    "goal-streak",
+    "new-best",
+    "rhr-trend",
+    "efficiency",
+    "sleep-rhythm",
+    "short-sleep-run",
+    "rest-days",
+    "steps-goal",
+    "checkin-energy",
+    "building-history",
+)
 
 
 def claims_for_insight(insight_id: str) -> list[dict]:
