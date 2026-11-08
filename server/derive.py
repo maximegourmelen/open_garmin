@@ -7,6 +7,8 @@ from collections.abc import Callable
 
 from sqlalchemy import select
 
+from .analytics.common import local_today
+from .analytics.zones import activity_zones, effort_points, estimate_max_hr
 from .db.models import Activity, ActivityDerived, ActivitySamples, Daily, User
 from .db.store import Store
 from .garmin.fit import parse_original
@@ -41,7 +43,12 @@ def _original_path(store: Store, user_id: str, activity_id: str):
 def rederive_user(store: Store, user_id: str) -> None:
     """Recompute from raw columns without changing them or original archive files."""
     with store.archive_lock, store.sessions.begin() as db:
-        for row in db.scalars(select(Activity).where(Activity.user_id == user_id)).all():
+        user = db.get(User, user_id)
+        prefs = user.preferences if user else {}
+        today = local_today({"timezone": prefs.get("timezone", "UTC")})
+        activities = db.scalars(select(Activity).where(Activity.user_id == user_id)).all()
+        estimated_max_hr = estimate_max_hr([row.data for row in activities], today)
+        for row in activities:
             data = dict(row.data)
             if data.get("normalizer_version") != NORMALIZER_VERSION:
                 fresh = (
@@ -82,14 +89,37 @@ def rederive_user(store: Store, user_id: str) -> None:
                 data = {**data, "samples": inline[::step], "sample_count": len(inline)}
             if data != row.data:
                 row.data = data
+            stream = db.get(ActivitySamples, (user_id, row.id))
+            samples = stream.samples if stream else data.get("samples", [])
+            zones = activity_zones(data, samples, prefs, estimated_max_hr)
+            effort = effort_points(zones["zone_minutes"])
+            minutes = zones["zone_minutes"]
+            if minutes and all(value is not None for value in minutes):
+                easy = minutes[0] + minutes[1]
+                moderate = minutes[2]
+                hard = minutes[3] + minutes[4]
+                intensity = max(((easy, "easy"), (moderate, "moderate"), (hard, "hard")))[1]
+            else:
+                intensity = None
+            derived_data = {
+                "effort_points": effort["effort_points"],
+                "zone_minutes": minutes,
+                "zone_source": zones["source"],
+                "intensity": intensity,
+                "source": "calculated",
+                "method": "effort_points@1",
+                "version": ANALYTICS_VERSION,
+            }
             derived = db.get(ActivityDerived, (user_id, row.id))
             if derived is None:
                 db.add(
-                    ActivityDerived(user_id=user_id, activity_id=row.id, version=ANALYTICS_VERSION, data={})
+                    ActivityDerived(
+                        user_id=user_id, activity_id=row.id, version=ANALYTICS_VERSION, data=derived_data
+                    )
                 )
-            elif derived.version != ANALYTICS_VERSION:
+            elif derived.version != ANALYTICS_VERSION or derived.data != derived_data:
                 derived.version = ANALYTICS_VERSION
-                derived.data = {}
+                derived.data = derived_data
         for row in db.scalars(select(Daily).where(Daily.user_id == user_id)).all():
             if row.data.get("normalizer_version") == NORMALIZER_VERSION:
                 continue

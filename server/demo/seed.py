@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from ..config import DEFAULT_PREFS
 from ..db.models import Activity, ActivitySamples, CheckIn, Daily, MilestoneAward, Note, User
 from ..db.store import Store
+from ..derive import rederive_user
 from ..workspace import Workspace
 from .generator import TIMEZONE, generate_demo
 
@@ -85,4 +86,5 @@ def build_demo_workspace() -> Workspace:
                 seen=False,
             )
         )
+    rederive_user(store, "demo")
     return Workspace(store, "demo", "demo", True)

@@ -12,21 +12,27 @@ from ..analytics.common import downsample_samples
 from ..main import (
     NoteInput,
 )
-from ..storage import Activity, ActivitySamples, Connection, Note
+from ..storage import Activity, ActivityDerived, ActivitySamples, Connection, Note
+from ..workspace import workspace
 
 
 def register(app, store, worker, current_user, limit):
-    @app.get("/api/activities/{activity_id}")
-    def activity(activity_id: str, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
-        with store.sessions() as db:
-            row = db.get(Activity, (user.id, activity_id))
+    def read_activity(source_store, user_id, activity_id):
+        with source_store.sessions() as db:
+            row = db.get(Activity, (user_id, activity_id))
             if not row:
                 raise HTTPException(404, "This activity is not in your workspace.")
-            note = db.get(Note, (user.id, activity_id))
-            samples = db.get(ActivitySamples, (user.id, activity_id))
+            note = db.get(Note, (user_id, activity_id))
+            samples = db.get(ActivitySamples, (user_id, activity_id))
+            derived = db.get(ActivityDerived, (user_id, activity_id))
             full_samples = samples.samples if samples else row.data.get("samples", [])
             return {
                 **row.data,
+                "effort_points": derived.data.get("effort_points") if derived else None,
+                "zone_minutes": derived.data.get("zone_minutes") if derived else None,
+                "zone_source": derived.data.get("zone_source") if derived else None,
+                "effort_source": "calculated" if derived else None,
+                "effort_method": "effort_points@1" if derived else None,
                 "samples": downsample_samples(full_samples),
                 "sample_count": len(full_samples)
                 if samples
@@ -35,6 +41,15 @@ def register(app, store, worker, current_user, limit):
                 if note
                 else {"text": "", "rpe": None, "tags": []},
             }
+
+    @app.get("/api/activities/{activity_id}")
+    def activity(activity_id: str, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        return read_activity(store, user.id, activity_id)
+
+    @app.get("/api/demo/activities/{activity_id}")
+    def demo_activity(activity_id: str, request: Request):
+        ws = workspace(request)
+        return read_activity(ws.store, ws.user_id, activity_id)
 
     @app.post("/api/activities/{activity_id}/details")
     def load_details(activity_id: str, request: Request, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
