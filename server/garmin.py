@@ -229,6 +229,8 @@ def parse_original(content: bytes) -> dict:
         return parse_tcx(data)
     samples, laps, sets, events, session_metrics = [], [], [], [], []
     started = None
+    sport = "other"
+    device = "Garmin"
     with fitdecode.FitReader(io.BytesIO(data), check_crc=fitdecode.CrcCheck.WARN) as reader:
         for frame in reader:
             if not isinstance(frame, fitdecode.FitDataMessage):
@@ -261,15 +263,20 @@ def parse_original(content: bytes) -> dict:
             elif frame.name == "event":
                 events.append({"event": str(f.get("event")), "type": str(f.get("event_type"))})
             elif frame.name == "session":
+                sport = sport_name(f.get("sport") or f.get("sub_sport") or sport)
                 for field in frame.fields:
                     value = number(field.value)
                     if value is not None and not field.name.startswith("unknown"):
                         session_metrics.append({"name": field.name, "value": value, "unit": field.units or "", "source": "original_fit"})
+            elif frame.name == "device_info":
+                product = f.get("product_name") or f.get("garmin_product")
+                if product:
+                    device = f"Garmin {str(product)[:80]}"
     if len(samples) > 6000:
         # Keep temporal endpoints; originals remain available for full-resolution export.
         step = math.ceil(len(samples) / 6000)
         samples = samples[::step] + ([samples[-1]] if (len(samples) - 1) % step else [])
-    return {"samples": samples, "laps": laps, "sets": sets, "events": events, "session_metrics": session_metrics, "detail_state": "ready", "sample_resolution": "Original samples; downsampled for display above 6,000 points"}
+    return {"samples": samples, "laps": laps, "sets": sets, "events": events, "session_metrics": session_metrics, "detail_state": "ready", "sample_resolution": "Original samples; downsampled for display above 6,000 points", "recorded_start": started.isoformat() if started else None, "recorded_sport": sport, "recorded_device": device}
 
 
 def parse_tcx(data: bytes) -> dict:

@@ -29,6 +29,23 @@ def seed(app, email, aid="42"):
         return user.id
 
 
+def test_fit_import_is_private_and_deduplicated(app, monkeypatch):
+    import server.app as app_module
+    monkeypatch.setattr(app_module, "parse_original", lambda _: {
+        "recorded_start": "2026-10-20T10:00:00+00:00", "recorded_sport": "running", "recorded_device": "Garmin Forerunner",
+        "samples": [{"time": 0, "distance": 0, "hr": 120}, {"time": 60, "distance": 180, "hr": 140}],
+        "laps": [], "sets": [], "events": [], "session_metrics": [], "detail_state": "ready"})
+    with TestClient(app) as client:
+        assert client.post("/api/import/fit", files={"file": ("run.fit", b"fixture")}).status_code == 401
+        register(client)
+        first = client.post("/api/import/fit", files={"file": ("run.fit", b"fixture")})
+        assert first.status_code == 200 and first.json()["status"] == "imported"
+        second = client.post("/api/import/fit", files={"file": ("run.fit", b"fixture")})
+        assert second.json() == {"id": first.json()["id"], "status": "duplicate"}
+        row = next(a for a in client.get("/api/data").json()["activities"] if a["id"] == first.json()["id"])
+        assert row["source"] == "imported_fit" and row["device"] == "Garmin Forerunner"
+
+
 def test_demo_requires_no_auth_but_real_data_does(app):
     with TestClient(app) as client:
         assert client.get("/api/session").json()["user"] is None
