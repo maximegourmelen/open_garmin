@@ -1,6 +1,109 @@
 @import 'tailwindcss';
+@import './tokens.css';
+@import './fonts.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @theme {
-  --color-surface: #13161c;
-  --color-text: #f3f5f8;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-celebrate: var(--celebrate);
+  --color-sport-walking: var(--sport-walking);
+  --color-sport-running: var(--sport-running);
+  --color-sport-cycling: var(--sport-cycling);
+  --color-sport-swimming: var(--sport-swimming);
+  --color-sport-strength: var(--sport-strength);
+  --color-sport-hiking: var(--sport-hiking);
+  --color-sport-other: var(--sport-other);
+  --color-z1: var(--z1);
+  --color-z2: var(--z2);
+  --color-z3: var(--z3);
+  --color-z4: var(--z4);
+  --color-z5: var(--z5);
+  --color-sleep-deep: var(--sleep-deep);
+  --color-sleep-light: var(--sleep-light);
+  --color-sleep-rem: var(--sleep-rem);
+  --color-sleep-awake: var(--sleep-awake);
+  --color-bb-level: var(--bb-level);
+  --color-bb-charged: var(--bb-charged);
+  --color-bb-drained: var(--bb-drained);
+  --color-stress-rest: var(--stress-rest);
+  --color-stress-low: var(--stress-low);
+  --color-stress-medium: var(--stress-medium);
+  --color-stress-high: var(--stress-high);
+  --color-hrv-balanced: var(--hrv-balanced);
+  --color-hrv-unbalanced: var(--hrv-unbalanced);
+  --color-hrv-low: var(--hrv-low);
+  --color-hrv-none: var(--hrv-none);
+  --color-mix-easy: var(--mix-easy);
+  --color-mix-moderate: var(--mix-moderate);
+  --color-mix-hard: var(--mix-hard);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-num: 'Barlow Semi Condensed', 'Inter Variable', ui-sans-serif, sans-serif;
+  --radius-card: 20px;
+  --radius-tile: 14px;
+  --radius-control: 12px;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .font-num {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .num-hero {
+    font-family: var(--font-num);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .num-xl {
+    font-family: var(--font-num);
+    font-size: 2.75rem;
+    font-weight: 700;
+    line-height: 3rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .num-lg {
+    font-family: var(--font-num);
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 2.125rem;
+    font-variant-numeric: tabular-nums;
+  }
 }
