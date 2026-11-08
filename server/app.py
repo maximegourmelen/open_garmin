@@ -154,14 +154,16 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
         return {"ok": True, "version": "0.1.0"}
 
     @app.get("/api/session")
-    def session(request: Request):
-        local_mode = os.environ.get("OPEN_GARMIN_LOCAL_MODE") == "1"
+    def session(request: Request, response: Response):
         with store.sessions() as db:
-            owner_exists = bool(db.scalar(select(func.count()).select_from(User)))
+            user_count = db.scalar(select(func.count()).select_from(User)) or 0
+        local_mode = os.environ.get("OPEN_GARMIN_LOCAL_MODE") == "1" and request.url.hostname in ("127.0.0.1", "localhost", "::1") and user_count <= 1
         try:
             user = current_user(request)
         except HTTPException:
-            return {"user": None, "csrf_token": None, "registration_open": not owner_exists or os.environ.get("OPEN_GARMIN_ALLOW_REGISTRATION") == "1", "local_mode": local_mode}
+            if local_mode:
+                return local_session(request, response)
+            return {"user": None, "csrf_token": None, "registration_open": not user_count or os.environ.get("OPEN_GARMIN_ALLOW_REGISTRATION") == "1", "local_mode": False}
         token = request.cookies[COOKIE]
         return {"user": {"name": user.name, "email": user.email}, "csrf_token": hmac.new(token.encode(), b"open-garmin-csrf", hashlib.sha256).hexdigest(), "registration_open": False, "local_mode": local_mode}
 
@@ -169,7 +171,8 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     def local_session(request: Request, response: Response):
         if os.environ.get("OPEN_GARMIN_LOCAL_MODE") != "1" or request.url.hostname not in ("127.0.0.1", "localhost", "::1"):
             raise HTTPException(404, "Local workspace is unavailable.")
-        limit(request, "local_auth", 10)
+        if request.method == "POST":
+            limit(request, "local_auth", 10)
         with store.sessions.begin() as db:
             users = list(db.scalars(select(User).limit(2)))
             if len(users) > 1:

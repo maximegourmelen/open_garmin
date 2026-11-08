@@ -121,9 +121,11 @@ def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch)
             pass
     local_app = create_app(Store(tmp_path), start_worker=False, client_factory=GarminStub)
     with TestClient(local_app, base_url="http://127.0.0.1:8000") as client:
-        assert client.get("/api/session").json()["local_mode"] is True
-        opened = client.post("/api/auth/local")
+        opened = client.get("/api/session")
         assert opened.status_code == 200
+        assert opened.json()["local_mode"] is True
+        assert opened.json()["user"] is not None
+        assert client.cookies.get("og_session")
         client.headers["X-CSRF-Token"] = opened.json()["csrf_token"]
         response = client.post("/api/connection", json={"api_key": "private-personal-key-12345", "region": "com"})
         assert response.status_code == 200 and response.json()["job_id"]
@@ -133,6 +135,10 @@ def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch)
             assert conn.encrypted_key != "private-personal-key-12345"
             assert local_app.state.store.decrypt(conn.encrypted_key) == "private-personal-key-12345"
         assert "private-personal-key-12345" not in client.get("/api/data").text
+    with TestClient(local_app, base_url="http://127.0.0.1:8000") as restarted:
+        resumed = restarted.get("/api/session")
+        assert resumed.json()["user"] is not None
+        assert restarted.get("/api/data").json()["status"]["connected"] is True
 
 
 def test_local_workspace_reuses_single_existing_user_and_rejects_other_hosts(tmp_path, monkeypatch):
