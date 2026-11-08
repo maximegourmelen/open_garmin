@@ -22,6 +22,9 @@ postgres = ["psycopg[binary]>=3.2"]
 [tool.setuptools.packages.find]
 include = ["server*"]
 
+[tool.setuptools.package-data]
+server = ["companion/journeys.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

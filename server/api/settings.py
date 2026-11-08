@@ -93,7 +93,7 @@ def register(app, store, worker, current_user, limit, client_factory):
         if (
             body.units not in ("metric", "imperial")
             or body.week_start not in ("monday", "sunday")
-            or body.theme not in ("light", "dark")
+            or body.theme not in ("light", "dark", "system")
         ):
             raise HTTPException(422, "Choose valid preferences.")
         try:

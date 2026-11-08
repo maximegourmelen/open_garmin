@@ -5,6 +5,7 @@ import hmac
 import os
 import re
 import secrets
+from copy import deepcopy
 
 from fastapi import Depends, HTTPException, Request, Response
 from sqlalchemy import delete, func, select
@@ -71,7 +72,7 @@ def register(app, store, worker, current_user, set_session, limit):
                     email="local@open-garmin.invalid",
                     name="Athlete",
                     password_hash=password_hash(secrets.token_urlsafe(32)),
-                    preferences=DEFAULT_PREFS.copy(),
+                    preferences=deepcopy(DEFAULT_PREFS),
                 )
                 db.add(user)
                 db.flush()
@@ -94,7 +95,7 @@ def register(app, store, worker, current_user, set_session, limit):
                     email=email,
                     name=body.name.strip() or "Athlete",
                     password_hash=password_hash(body.password),
-                    preferences=DEFAULT_PREFS.copy(),
+                    preferences=deepcopy(DEFAULT_PREFS),
                 )
                 db.add(user)
                 db.flush()

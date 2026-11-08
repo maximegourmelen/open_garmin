@@ -1,0 +1,115 @@
+[
+  {
+    "id": "move_more_8w",
+    "name": "Move more",
+    "focus": "move_more",
+    "weeks": [
+      { "minutes": 60, "sessions": 3, "tip": "Short walks count. Aim for three this week." },
+      { "minutes": 75, "sessions": 3, "tip": "A few extra minutes can fit into familiar routes." },
+      { "minutes": 90, "sessions": 3, "tip": "Try one walk that feels a little longer." },
+      { "minutes": 100, "sessions": 3, "tip": "Keep a pace that lets you talk." },
+      { "minutes": 115, "sessions": 3, "tip": "Your usual walks are building a steady rhythm." },
+      { "minutes": 125, "sessions": 3, "tip": "Add time where it feels comfortable." },
+      { "minutes": 140, "sessions": 3, "tip": "A relaxed outing counts as progress." },
+      { "minutes": 150, "sessions": 3, "tip": "You have built room for regular movement." }
+    ]
+  },
+  {
+    "id": "walk_to_run_9w",
+    "name": "Walk to run",
+    "focus": "start_running",
+    "weeks": [
+      {
+        "minutes": 60,
+        "sessions": 3,
+        "longest_minutes": 20,
+        "tip": "Try short jogs between easy walking breaks."
+      },
+      {
+        "minutes": 70,
+        "sessions": 3,
+        "longest_minutes": 22,
+        "tip": "Let your breathing guide the jog sections."
+      },
+      {
+        "minutes": 75,
+        "sessions": 3,
+        "longest_minutes": 25,
+        "tip": "Take walking breaks whenever they help."
+      },
+      {
+        "minutes": 80,
+        "sessions": 3,
+        "longest_minutes": 25,
+        "tip": "You can gently lengthen one jog section."
+      },
+      {
+        "minutes": 90,
+        "sessions": 3,
+        "longest_minutes": 28,
+        "tip": "Easy effort is enough this week."
+      },
+      {
+        "minutes": 90,
+        "sessions": 3,
+        "longest_minutes": 30,
+        "tip": "Repeat a comfortable pattern if you like."
+      },
+      {
+        "minutes": 100,
+        "sessions": 3,
+        "longest_minutes": 30,
+        "tip": "Notice how your easy pace feels."
+      },
+      {
+        "minutes": 100,
+        "sessions": 3,
+        "longest_minutes": 32,
+        "tip": "A walk break is part of the plan."
+      },
+      {
+        "minutes": 110,
+        "sessions": 3,
+        "longest_minutes": 35,
+        "tip": "Enjoy the distance you can now cover."
+      }
+    ]
+  },
+  {
+    "id": "habit_4w",
+    "name": "Build a habit",
+    "focus": "build_habit",
+    "weeks": [
+      { "sessions": 3, "tip": "Pick three times that fit your week." },
+      { "sessions": 3, "tip": "Repeat the times that worked well." },
+      { "sessions": 3, "tip": "Keep sessions short when life gets busy." },
+      { "sessions": 4, "tip": "Try one extra easy session if it suits you." }
+    ]
+  },
+  {
+    "id": "sleep_rhythm_4w",
+    "name": "Sleep rhythm",
+    "focus": "sleep_better",
+    "weeks": [
+      { "nights_at_need": 3, "tip": "Choose a bedtime that feels realistic." },
+      { "nights_at_need": 4, "tip": "A similar bedtime can make evenings easier." },
+      { "nights_at_need": 5, "tip": "Notice which evenings support rest." },
+      { "nights_at_need": 5, "tip": "Keep the rhythm that works for you." }
+    ]
+  },
+  {
+    "id": "steps_6w",
+    "name": "Step it up",
+    "focus": "move_more",
+    "steps_increment_per_week": 500,
+    "steps_cap_above_goal": 2000,
+    "weeks": [
+      { "tip": "Take a short walk when it fits." },
+      { "tip": "A few extra steps can add up." },
+      { "tip": "Explore a familiar route a bit farther." },
+      { "tip": "Enjoy an easy walk outside." },
+      { "tip": "Keep a pace that feels good." },
+      { "tip": "You have made walking part of your week." }
+    ]
+  }
+]

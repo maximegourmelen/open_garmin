@@ -105,3 +105,54 @@ class Job(Base):
     message: Mapped[str] = mapped_column(Text, default="Waiting to sync")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     completed_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
+
+
+class ActivityDerived(Base):
+    __tablename__ = "activity_derived"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    activity_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    version: Mapped[int] = mapped_column(Integer)
+    data: Mapped[dict] = mapped_column(JSON)
+
+
+class BestEffort(Base):
+    __tablename__ = "best_efforts"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    activity_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(60), primary_key=True)
+    date: Mapped[str] = mapped_column(String(10), index=True)
+    sport: Mapped[str] = mapped_column(String(20))
+    value: Mapped[float] = mapped_column(Float)
+    source: Mapped[str] = mapped_column(String(20))
+    start_offset_s: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+
+class CheckIn(Base):
+    __tablename__ = "checkins"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    date: Mapped[str] = mapped_column(String(10), primary_key=True)
+    mood: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    energy: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    soreness: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    note: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class MilestoneAward(Base):
+    __tablename__ = "milestone_awards"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    milestone_id: Mapped[str] = mapped_column(String(60), primary_key=True)
+    earned_on: Mapped[str] = mapped_column(String(10))
+    activity_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    seen: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class WeeklyRecap(Base):
+    __tablename__ = "weekly_recaps"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    week_start: Mapped[str] = mapped_column(String(10), primary_key=True)
+    version: Mapped[int] = mapped_column(Integer)
+    data: Mapped[dict] = mapped_column(JSON)
+    seen: Mapped[bool] = mapped_column(Boolean, default=False)
