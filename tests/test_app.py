@@ -108,6 +108,48 @@ def test_key_validation_errors_do_not_echo_submitted_credentials(app):
         assert secret not in r.text
 
 
+def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPEN_GARMIN_LOCAL_MODE", "1")
+    class GarminStub:
+        def __init__(self, key, region):
+            assert key == "private-personal-key-12345"
+            assert region == "com"
+        def get(self, path):
+            assert path == "/userprofile-service/userprofile/settings"
+            return {"displayName": "runner"}
+        def close(self):
+            pass
+    local_app = create_app(Store(tmp_path), start_worker=False, client_factory=GarminStub)
+    with TestClient(local_app, base_url="http://127.0.0.1:8000") as client:
+        assert client.get("/api/session").json()["local_mode"] is True
+        opened = client.post("/api/auth/local")
+        assert opened.status_code == 200
+        client.headers["X-CSRF-Token"] = opened.json()["csrf_token"]
+        response = client.post("/api/connection", json={"api_key": "private-personal-key-12345", "region": "com"})
+        assert response.status_code == 200 and response.json()["job_id"]
+        assert client.get("/api/data").json()["status"]["connected"] is True
+        with local_app.state.store.sessions() as db:
+            conn = db.scalar(select(Connection))
+            assert conn.encrypted_key != "private-personal-key-12345"
+            assert local_app.state.store.decrypt(conn.encrypted_key) == "private-personal-key-12345"
+        assert "private-personal-key-12345" not in client.get("/api/data").text
+
+
+def test_local_workspace_reuses_single_existing_user_and_rejects_other_hosts(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPEN_GARMIN_LOCAL_MODE", "1")
+    local_app = create_app(Store(tmp_path), start_worker=False)
+    with TestClient(local_app, base_url="http://127.0.0.1:8000") as client:
+        register(client)
+        user_id = seed(local_app, "athlete@example.test")
+        client.post("/api/auth/logout")
+        assert client.post("/api/auth/local").status_code == 200
+        assert client.get("/api/data").json()["activities"][0]["id"] == "42"
+        with local_app.state.store.sessions() as db:
+            assert db.scalar(select(User)).id == user_id
+    with TestClient(local_app, base_url="http://example.com") as remote:
+        assert remote.post("/api/auth/local").status_code == 404
+
+
 def test_preferences_validate_timezone_and_keep_goals(app):
     with TestClient(app) as client:
         register(client)

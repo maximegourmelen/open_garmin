@@ -26,11 +26,20 @@ Open [the app](http://127.0.0.1:8000). On macOS, after setup, `Start.command` st
 the app and opens it. In development run `npm run dev` in a second terminal and
 use its local URL; Vite proxies `/api` to the Python server.
 
+`Start.command` enables a single-user local workspace: choose **Connect Garmin**,
+paste your Personal API key, and select your Garmin region. A fresh installation
+creates its local workspace automatically. If this installation already has one
+workspace, it opens that same workspace and preserves its data. The key is
+validated against Garmin before being encrypted locally, and the first sync starts
+after connection. Local mode is only for a server bound to `127.0.0.1`; hosted
+deployments retain explicit account sign-in. If another server is already using
+port 8000, stop it before relaunching `Start.command` to load updated code.
+
 The local pilot created during validation has its generated sign-in details in
 `.runtime/local-login.json` (owner-readable only, ignored by Git). That file is
 specific to this installation and must never be published. Fresh installations
-create their first workspace in the app. Subsequent registration is disabled by
-default. No real email address or email delivery is required for the local pilot.
+create their first workspace automatically when started with `Start.command`.
+Manual server starts retain account sign-in unless local mode is explicitly enabled.
 
 ## Explore
 

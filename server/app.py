@@ -155,14 +155,32 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
 
     @app.get("/api/session")
     def session(request: Request):
+        local_mode = os.environ.get("OPEN_GARMIN_LOCAL_MODE") == "1"
         with store.sessions() as db:
             owner_exists = bool(db.scalar(select(func.count()).select_from(User)))
         try:
             user = current_user(request)
         except HTTPException:
-            return {"user": None, "csrf_token": None, "registration_open": not owner_exists or os.environ.get("OPEN_GARMIN_ALLOW_REGISTRATION") == "1"}
+            return {"user": None, "csrf_token": None, "registration_open": not owner_exists or os.environ.get("OPEN_GARMIN_ALLOW_REGISTRATION") == "1", "local_mode": local_mode}
         token = request.cookies[COOKIE]
-        return {"user": {"name": user.name, "email": user.email}, "csrf_token": hmac.new(token.encode(), b"open-garmin-csrf", hashlib.sha256).hexdigest(), "registration_open": False}
+        return {"user": {"name": user.name, "email": user.email}, "csrf_token": hmac.new(token.encode(), b"open-garmin-csrf", hashlib.sha256).hexdigest(), "registration_open": False, "local_mode": local_mode}
+
+    @app.post("/api/auth/local")
+    def local_session(request: Request, response: Response):
+        if os.environ.get("OPEN_GARMIN_LOCAL_MODE") != "1" or request.url.hostname not in ("127.0.0.1", "localhost", "::1"):
+            raise HTTPException(404, "Local workspace is unavailable.")
+        limit(request, "local_auth", 10)
+        with store.sessions.begin() as db:
+            users = list(db.scalars(select(User).limit(2)))
+            if len(users) > 1:
+                raise HTTPException(409, "This installation has multiple workspaces. Sign in to choose one.")
+            if users:
+                user = users[0]
+            else:
+                user = User(email="local@open-garmin.invalid", name="Athlete", password_hash=password_hash(secrets.token_urlsafe(32)), preferences=DEFAULT_PREFS.copy())
+                db.add(user)
+                db.flush()
+        return {**set_session(user, response), "local_mode": True}
 
     @app.post("/api/auth/register")
     def register(body: Credentials, request: Request, response: Response):
@@ -209,14 +227,17 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
             daily = [r.data for r in db.scalars(select(Daily).where(Daily.user_id == user.id).order_by(Daily.date))]
             jobs = [{"id": j.id, "kind": j.kind, "activity_id": j.activity_id, "state": j.state, "progress": j.progress, "message": j.message} for j in db.scalars(select(Job).where(Job.user_id == user.id).order_by(Job.created_at.desc()).limit(8))]
             status = {"connected": bool(conn and conn.encrypted_key), "state": conn.state if conn else "not_connected", "last_checked": conn.last_checked if conn else None, "last_success": conn.last_success if conn else None, "message": conn.message if conn else None, "region": conn.region if conn else "com"}
-        return {"mode": "live", "activities": activities, "daily": daily, "preferences": {**DEFAULT_PREFS, **user.preferences}, "status": status, "jobs": jobs, "user": {"name": user.name, "email": user.email}, "data_through": max((d["date"] for d in daily), default=None)}
+        return {"mode": "live", "activities": activities, "daily": daily, "preferences": {**DEFAULT_PREFS, **user.preferences}, "status": status, "jobs": jobs, "user": {"name": user.name, "email": user.email}, "data_through": max((d["date"] for d in daily), default=None), "local_mode": os.environ.get("OPEN_GARMIN_LOCAL_MODE") == "1"}
 
     @app.post("/api/connection")
     def connect(body: KeyInput, request: Request, user=Depends(current_user)):
         limit(request, "connect", 4)
         if body.region not in ("com", "cn"):
             raise HTTPException(422, "Choose a valid Garmin region.")
-        client = client_factory(body.api_key.strip(), body.region)
+        key = body.api_key.strip()
+        if len(key) < 16:
+            raise HTTPException(422, "Enter the complete Personal API key.")
+        client = client_factory(key, body.region)
         try:
             profile = client.get("/userprofile-service/userprofile/settings")
             if not isinstance(profile, dict):
@@ -235,7 +256,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
                 if conn.profile.get("displayName") and profile.get("displayName") and conn.profile["displayName"] != profile["displayName"]:
                     raise HTTPException(409, "This key belongs to a different Garmin profile. Export and delete the existing imported data before connecting another account.")
                 revision = conn.revision + 1
-            conn.encrypted_key, conn.region, conn.profile, conn.state = store.encrypt(body.api_key.strip()), body.region, profile, "connected"
+            conn.encrypted_key, conn.region, conn.profile, conn.state = store.encrypt(key), body.region, profile, "connected"
             conn.revision, conn.message = revision, None
         return {"ok": True, "job_id": worker.enqueue(user.id, 90)}
 

@@ -27,6 +27,7 @@ export interface Prefs { units: 'metric' | 'imperial'; timezone: string; week_st
 export interface Job { id: string; kind: string; activity_id: string | null; state: string; progress: number; message: string }
 export interface DashboardData {
   mode: 'demo' | 'live'; activities: Activity[]; daily: Daily[]; preferences: Prefs;
+  local_mode?: boolean;
   user: { name: string; email: string };
   status: { connected: boolean; state: string; last_checked: string | null; last_success: string | null; message: string | null; region: string };
   jobs: Job[]; data_through: string | null;
