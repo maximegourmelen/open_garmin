@@ -38,9 +38,9 @@ import {
 } from './pages';
 import { Dialog, SportBadge } from './components';
 import { displayDate } from './analytics';
-import { useTheme } from './app/theme-context';
 import { DashboardPage } from './dashboard';
 import { ResearchPage } from './research-page';
+import GalleryPage from './gallery';
 import type { Activity as ActivityType, DashboardData, Prefs } from './types';
 
 const nav = [
@@ -59,7 +59,6 @@ type Session = {
   local_mode?: boolean;
 };
 export default function App() {
-  const themeControl = useTheme();
   const [demoData, setDemoData] = useState(() => {
     const d = makeDemo();
     try {
@@ -420,23 +419,7 @@ export default function App() {
           )}
           <main id="main-content" className="main-content">
             <Routes>
-              {import.meta.env.DEV && (
-                <Route
-                  path="/__tailwind-check"
-                  element={
-                    <div className="bg-surface text-text rounded-xl p-6">
-                      Tailwind is ready
-                      <button
-                        onClick={() =>
-                          themeControl.setTheme(themeControl.resolved === 'dark' ? 'light' : 'dark')
-                        }
-                      >
-                        Toggle theme
-                      </button>
-                    </div>
-                  }
-                />
-              )}
+              {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/today" element={<TodayPage />} />
