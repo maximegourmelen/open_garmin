@@ -1,0 +1,2916 @@
+{
+  "schema_version": 1,
+  "papers": [
+    {
+      "id": "pmid:38809828",
+      "title": "Does overreaching from endurance-based training impair sleep: A systematic review and meta-analysis.",
+      "authors": "Murphy C, Svansdottir SA, Dupuy O, Louis J.",
+      "year": "2024",
+      "journal": "PLoS One",
+      "publication_type": "meta-analysis; research-article; systematic review; journal article",
+      "doi": "10.1371/journal.pone.0303748",
+      "pmid": "38809828",
+      "pmcid": "PMC11135706",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38809828/",
+      "publisher_url": "https://doi.org/10.1371/journal.pone.0303748",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC11135706.xml"
+    },
+    {
+      "id": "pmid:38165636",
+      "title": "Effect of Strength Training Programs in Middle- and Long-Distance Runners' Economy at Different Running Speeds: A Systematic Review with Meta-analysis.",
+      "authors": "Llanos-Lagos C, Ramirez-Campillo R, Moran J, Sáez de Villarreal E.",
+      "year": "2024",
+      "journal": "Sports Med",
+      "publication_type": "meta-analysis; systematic review; review-article; journal article",
+      "doi": "10.1007/s40279-023-01978-y",
+      "pmid": "38165636",
+      "pmcid": "PMC11052887",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38165636/",
+      "publisher_url": "https://doi.org/10.1007/s40279-023-01978-y",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "running_training",
+        "seed"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC11052887.xml"
+    },
+    {
+      "id": "pmid:31246714",
+      "title": "Extended Sleep Maintains Endurance Performance Better than Normal or Restricted Sleep.",
+      "authors": "Roberts SSH, Teo WP, Aisbett B, Warmington SA.",
+      "year": "2019",
+      "journal": "Med Sci Sports Exerc",
+      "publication_type": "research support, non-u.s. gov't; journal article",
+      "doi": "10.1249/mss.0000000000002071",
+      "pmid": "31246714",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/31246714/",
+      "publisher_url": "https://doi.org/10.1249/mss.0000000000002071",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:34639599",
+      "title": "Heart Rate Variability-Guided Training for Enhancing Cardiac-Vagal Modulation, Aerobic Fitness, and Endurance Performance: A Methodological Systematic Review with Meta-Analysis.",
+      "authors": "Manresa-Rocamora A, Sarabia JM, Javaloyes A, Flatt AA, Moya-Ramón M.",
+      "year": "2021",
+      "journal": "Int J Environ Res Public Health",
+      "publication_type": "meta-analysis; research support, non-u.s. gov't; systematic review; review-article; journal article",
+      "doi": "10.3390/ijerph181910299",
+      "pmid": "34639599",
+      "pmcid": "PMC8507742",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/34639599/",
+      "publisher_url": "https://doi.org/10.3390/ijerph181910299",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC8507742.xml"
+    },
+    {
+      "id": "pmid:39080098",
+      "title": "Keeping Pace with Wearables: A Living Umbrella Review of Systematic Reviews Evaluating the Accuracy of Consumer Wearable Technologies in Health Measurement.",
+      "authors": "Doherty C, Baldwin M, Keogh A, Caulfield B, Argent R.",
+      "year": "2024",
+      "journal": "Sports Med",
+      "publication_type": "systematic review; review-article; journal article",
+      "doi": "10.1007/s40279-024-02077-2",
+      "pmid": "39080098",
+      "pmcid": "PMC11560992",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/39080098/",
+      "publisher_url": "https://doi.org/10.1007/s40279-024-02077-2",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC11560992.xml"
+    },
+    {
+      "id": "pmid:34489178",
+      "title": "Monitoring and adapting endurance training on the basis of heart rate variability monitored by wearable technologies: A systematic review with meta-analysis.",
+      "authors": "Düking P, Zinner C, Trabelsi K, Reed JL, Holmberg HC, Kunz P, Sperlich B.",
+      "year": "2021",
+      "journal": "J Sci Med Sport",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1016/j.jsams.2021.04.012",
+      "pmid": "34489178",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/34489178/",
+      "publisher_url": "https://www.sciencedirect.com/science/article/pii/S1440244021001080",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:38697289",
+      "title": "Risk factors for running-related injuries: An umbrella systematic review.",
+      "authors": "Correia CK, Machado JM, Dominski FH, de Castro MP, de Brito Fontana H, Ruschel C.",
+      "year": "2024",
+      "journal": "J Sport Health Sci",
+      "publication_type": "research support, non-u.s. gov't; systematic review; review-article; journal article",
+      "doi": "10.1016/j.jshs.2024.04.011",
+      "pmid": "38697289",
+      "pmcid": "PMC11336318",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38697289/",
+      "publisher_url": "https://doi.org/10.1016/j.jshs.2024.04.011",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY-NC-ND",
+      "local_full_text": "research/papers/PMC11336318.xml"
+    },
+    {
+      "id": "pmid:33352457",
+      "title": "Sleep extension in athletes: what we know so far - A systematic review.",
+      "authors": "Silva AC, Silva A, Edwards BJ, Tod D, Souza Amaral A, de Alcântara Borba D, Grade I, Túlio de Mello M.",
+      "year": "2021",
+      "journal": "Sleep Med",
+      "publication_type": "research support, non-u.s. gov't; systematic review; journal article",
+      "doi": "10.1016/j.sleep.2020.11.028",
+      "pmid": "33352457",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/33352457/",
+      "publisher_url": "https://doi.org/10.1016/j.sleep.2020.11.028",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:29182410",
+      "title": "The Effect of Periodization and Training Intensity Distribution on Middle- and Long-Distance Running Performance: A Systematic Review.",
+      "authors": "Kenneally M, Casado A, Santos-Concejero J.",
+      "year": "2018",
+      "journal": "Int J Sports Physiol Perform",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.1123/ijspp.2017-0327",
+      "pmid": "29182410",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/29182410/",
+      "publisher_url": "https://doi.org/10.1123/ijspp.2017-0327",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:32158285",
+      "title": "The Relationship Between Acute: Chronic Workload Ratios and Injury Risk in Sports: A Systematic Review.",
+      "authors": "Maupin D, Schram B, Canetti E, Orr R.",
+      "year": "2020",
+      "journal": "Open Access J Sports Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.2147/oajsm.s231405",
+      "pmid": "32158285",
+      "pmcid": "PMC7047972",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/32158285/",
+      "publisher_url": "https://doi.org/10.2147/oajsm.s231405",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY-NC",
+      "local_full_text": "research/papers/PMC7047972.xml"
+    },
+    {
+      "id": "pmid:35418513",
+      "title": "Training Periodization, Methods, Intensity Distribution, and Volume in Highly Trained and Elite Distance Runners: A Systematic Review.",
+      "authors": "Casado A, González-Mohíno F, González-Ravé JM, Foster C.",
+      "year": "2022",
+      "journal": "Int J Sports Physiol Perform",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.1123/ijspp.2021-0435",
+      "pmid": "35418513",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35418513/",
+      "publisher_url": "https://doi.org/10.1123/ijspp.2021-0435",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:34749417",
+      "title": "Training-intensity Distribution on Middle- and Long-distance Runners: A Systematic Review.",
+      "authors": "Campos Y, Casado A, Vieira JG, Guimarães M, Sant'Ana L, Leitão L, da Silva SF, Silva Marques de Azevedo PH, Vianna J, Domínguez R.",
+      "year": "2022",
+      "journal": "Int J Sports Med",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.1055/a-1559-3623",
+      "pmid": "34749417",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/34749417/",
+      "publisher_url": "https://doi.org/10.1055/a-1559-3623",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ]
+    },
+    {
+      "id": "pmid:39713859",
+      "title": "Using Self-Reported Training Characteristics to Better Understand Who Is More Likely to Sustain Running-Related Injuries Than Others: The Garmin-RUNSAFE Running Health Study.",
+      "authors": "Abrahamson J, Lindman I, Eriksen MB, Kibsgaard A, Nielsen RO.",
+      "year": "2025",
+      "journal": "Scand J Med Sci Sports",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1111/sms.70004",
+      "pmid": "39713859",
+      "pmcid": "PMC11664494",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/39713859/",
+      "publisher_url": "https://doi.org/10.1111/sms.70004",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "seed"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC11664494.xml"
+    },
+    {
+      "id": "pmid:41802435",
+      "title": "[The Scientific Usage of GPS Data in Professional Football: Relevance, Norm Values and Practical Recommendations].",
+      "authors": "Mühl H, Granacher U.",
+      "year": "2026",
+      "journal": "Sportverletz Sportschaden",
+      "publication_type": "review; journal article; english abstract",
+      "doi": "10.1055/a-2777-3728",
+      "pmid": "41802435",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41802435/",
+      "publisher_url": "https://doi.org/10.1055/a-2777-3728",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:40527826",
+      "title": "A bibliometric analysis of wearable device research in sleep science: Trends and hotspots.",
+      "authors": "Lin X, Zhang G, Cao S, Wang S, Wang F, Xu M.",
+      "year": "2025",
+      "journal": "Medicine (Baltimore)",
+      "publication_type": "research-article; review; journal article",
+      "doi": "10.1097/md.0000000000042853",
+      "pmid": "40527826",
+      "pmcid": "PMC12173289",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40527826/",
+      "publisher_url": "https://doi.org/10.1097/md.0000000000042853",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42043084",
+      "title": "A Call for Consensus: A Narrative Review of GPS-Based External Training Load Monitoring in Male Youth Soccer Players.",
+      "authors": "Havanecz K, Matlák J, Ihász F, Géczi G, Kopper B, Sáfár S, Schuth G.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports14040152",
+      "pmid": "42043084",
+      "pmcid": "PMC13119910",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42043084/",
+      "publisher_url": "https://doi.org/10.3390/sports14040152",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42881724",
+      "title": "A Focused Narrative Review of Selected Evidence on Gymnastics Training Optimization, Technology, Athlete Health, and Injury Prevention.",
+      "authors": "Zaharie N, Neagu SG, Badescu D, Grosu VT, Mag AG, Stanciu C, Sopa IS.",
+      "year": "2026",
+      "journal": "Healthcare (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/healthcare14193285",
+      "pmid": "42881724",
+      "pmcid": "PMC13665496",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42881724/",
+      "publisher_url": "https://doi.org/10.3390/healthcare14193285",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:41668949",
+      "title": "A new conceptual framework for managing hamstring injury risk in soccer - implementing a data-informed approach: a narrative review.",
+      "authors": "Pillitteri G, Clemente FM, Petrucci M, Sarmento H, Figueiredo A, Bongiovanni T, Bianco A, Battaglia G, Gabbett TJ.",
+      "year": "2026",
+      "journal": "Biol Sport",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.5114/biolsport.2025.151660",
+      "pmid": "41668949",
+      "pmcid": "PMC12884901",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41668949/",
+      "publisher_url": "https://doi.org/10.5114/biolsport.2025.151660",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:41209300",
+      "title": "A review of uphill and downhill running: biomechanics, physiology and modulating factors.",
+      "authors": "Lu Z, Suo B, Deng L, Wang J, Fu W, Zhong Y, Jin J.",
+      "year": "2025",
+      "journal": "Front Bioeng Biotechnol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fbioe.2025.1690023",
+      "pmid": "41209300",
+      "pmcid": "PMC12592170",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41209300/",
+      "publisher_url": "https://doi.org/10.3389/fbioe.2025.1690023",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12592170.xml"
+    },
+    {
+      "id": "pmid:42834135",
+      "title": "A scoping review of integrated blink analysis technologies for ocular surface diseases.",
+      "authors": "Ong CW, Lim BX, Bhatia SK, van der Walt T, Nabhan T, Lim CHL.",
+      "year": "2026",
+      "journal": "Eye (Lond)",
+      "publication_type": "review; journal article",
+      "doi": "10.1038/s41433-026-04873-8",
+      "pmid": "42834135",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42834135/",
+      "publisher_url": "https://doi.org/10.1038/s41433-026-04873-8",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:35748066",
+      "title": "A systematic review of the effect of running shoes on running economy, performance and biomechanics: analysis by brand and model.",
+      "authors": "Ruiz-Alias SA, Molina-Molina A, Soto-Hermoso VM, García-Pinillos F.",
+      "year": "2023",
+      "journal": "Sports Biomech",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.1080/14763141.2022.2089589",
+      "pmid": "35748066",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35748066/",
+      "publisher_url": "https://doi.org/10.1080/14763141.2022.2089589",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41477023",
+      "title": "Accuracy of wearables for determining the maximal oxygen uptake and lactate threshold: a qualitative systematic review.",
+      "authors": "Železnik Mežan L.",
+      "year": "2025",
+      "journal": "Front Sports Act Living",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fspor.2025.1707991",
+      "pmid": "41477023",
+      "pmcid": "PMC12748164",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41477023/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2025.1707991",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12748164.xml"
+    },
+    {
+      "id": "pmid:42904147",
+      "title": "Acute Effects of Inspiratory Muscle Training with Different Loads on Peripheral Muscle Oxygenation Kinetics and Autonomic Response in Patients with COPD: A Protocol for a Randomized Crossover Study.",
+      "authors": "Borges NMDS, Nogueira PAMS, de Lima DT, Freitas AL, Carneiro HMLO, Gama TO, Pereira DAG, Lima Snr JHM, Pedrosa R, de França EET.",
+      "year": "2026",
+      "journal": "Int J Chron Obstruct Pulmon Dis",
+      "publication_type": "clinical trial protocol; brief-report; journal article",
+      "doi": "10.2147/copd.s557387",
+      "pmid": "42904147",
+      "pmcid": "PMC13682315",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42904147/",
+      "publisher_url": "https://doi.org/10.2147/copd.s557387",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42646861",
+      "title": "Adaptive Athlete Management in Youth Football: A Developmentally Informed Framework for Applied Practice.",
+      "authors": "Androulakis N, Koundourakis N.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports14080324",
+      "pmid": "42646861",
+      "pmcid": "PMC13517846",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42646861/",
+      "publisher_url": "https://doi.org/10.3390/sports14080324",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42088591",
+      "title": "An exploratory study of maximal heart rate determination in endurance athletes: laboratory testing vs. field based.",
+      "authors": "Ausland Å, Kelemen B, Seiler S.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3389/fspor.2026.1806303",
+      "pmid": "42088591",
+      "pmcid": "PMC13136085",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42088591/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1806303",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42807733",
+      "title": "An umbrella review of soccer small-sided games: developing an evidence-informed design model linking training components to performance outcomes.",
+      "authors": "Ulupınar S, Özbay S, Ateş O, Turan M, Coşkun K, Çabuk S, Gençoğlu C, Owen A, Barnes C.",
+      "year": "2026",
+      "journal": "Biol Sport",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.5114/biolsport.2026.161109",
+      "pmid": "42807733",
+      "pmcid": "PMC13617480",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42807733/",
+      "publisher_url": "https://doi.org/10.5114/biolsport.2026.161109",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:41975630",
+      "title": "Ankle Joint Biomechanics in Recreational Runners with Resolved and Incident Plantar Fasciitis: A One-Year Prospective 4HAIE Cohort Study.",
+      "authors": "Plesek J, Hamill J, Brtva P, Skypala J, Urbaczka J, Zahradnik D, Freedman Silvernail J, Cipryan L, Golian M, Sustek J, Jandacka D.",
+      "year": "2026",
+      "journal": "Scand J Med Sci Sports",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1111/sms.70281",
+      "pmid": "41975630",
+      "pmcid": "PMC13077024",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41975630/",
+      "publisher_url": "https://doi.org/10.1111/sms.70281",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41847782",
+      "title": "Anomalous Perceptual Experience During Ultra-Endurance Sport: A Systematic Review.",
+      "authors": "Davidson EE, Davidson SL, Glue P.",
+      "year": "2026",
+      "journal": "Wilderness Environ Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1177/10806032261423071",
+      "pmid": "41847782",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41847782/",
+      "publisher_url": "https://doi.org/10.1177/10806032261423071",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:40199339",
+      "title": "Apple watch accuracy in monitoring health metrics: a systematic review and meta-analysis.",
+      "authors": "Choe JP, Kang M.",
+      "year": "2025",
+      "journal": "Physiol Meas",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1088/1361-6579/adca82",
+      "pmid": "40199339",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40199339/",
+      "publisher_url": "https://doi.org/10.1088/1361-6579/adca82",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42646898",
+      "title": "Artificial Intelligence and Psychophysiological Monitoring for Integrated Performance Modeling in Elite Soccer: A Scoping Review of Applications, Evidence Gaps, and Translational Challenges.",
+      "authors": "Dergaa I, Dhahbi W, Dergaa MA, Razzak M, Ceylan Hİ, Ceylan Hİ, Stefanica V, Muntean RI, Guelmami N.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports14080360",
+      "pmid": "42646898",
+      "pmcid": "PMC13517148",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42646898/",
+      "publisher_url": "https://doi.org/10.3390/sports14080360",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42761794",
+      "title": "Artificial intelligence and sports genomics: advancing precision sports science and athletic performance.",
+      "authors": "Patani A, Patel B, Pandit R, Bagatharia S, Patel A.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fspor.2026.1906206",
+      "pmid": "42761794",
+      "pmcid": "PMC13587237",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42761794/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1906206",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42181776",
+      "title": "Association Between Global Positioning System-Based Training Load and Injury Risk in Recreational Runners: A Large Prospective Study.",
+      "authors": "Cloosterman KLA, de Vos RJ, Willemsen S, van Oeveren B, Visser E, Bierma-Zeinstra SMA, van Middelkoop M.",
+      "year": "2026",
+      "journal": "J Athl Train",
+      "publication_type": "randomized controlled trial; journal article",
+      "doi": "10.4085/1062-6050-0030.25",
+      "pmid": "42181776",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42181776/",
+      "publisher_url": "https://doi.org/10.4085/1062-6050-0030.25",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42936020",
+      "title": "Associations of cardiac autonomic modulation and urinary adrenal hormones with marathon finishing time in middle-aged male athletes.",
+      "authors": "De Antoni A, Giobbi LS, Bondarev S, Calligione M, Graziano F, Ungaro S, Pizzolato M, Gianni A, Pivetta G, Da Rin De Monego L, Architetto G, Antonelli G, Tretti G, Ceccato F, Carandina A, Furlan L, Salafia G, Magna F, Marques da Silva T, Montagnana M, Montano N, Zorzi A, Tobaldini E.",
+      "year": "2026",
+      "journal": "Front Cardiovasc Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3389/fcvm.2026.1932814",
+      "pmid": "42936020",
+      "pmcid": "PMC13696418",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42936020/",
+      "publisher_url": "https://doi.org/10.3389/fcvm.2026.1932814",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:41674320",
+      "title": "Baseline Inflammatory Markers as Predictors of Running-Related Injuries: A One-Year Prospective 4HAIE Cohort Study.",
+      "authors": "Cipryan L, Skypala J, Litschmannova M, Jandacka D, Dostal T, Sindler D, Zahradnik D, Hofmann P.",
+      "year": "2026",
+      "journal": "Scand J Med Sci Sports",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1111/sms.70225",
+      "pmid": "41674320",
+      "pmcid": "PMC12895214",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41674320/",
+      "publisher_url": "https://doi.org/10.1111/sms.70225",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41672607",
+      "title": "Biomechanical insights into Achilles tendinopathy risk and protection in runners: a large prospective study 4HAIE.",
+      "authors": "Jandacka D, Skypala J, Plesek J, Urbaczka J, Golian M, Burda M, Šustek J, Zahradnik D, Elavsky S, Jandackova VK, Selbie S, Silvernail JF, Hamill J.",
+      "year": "2026",
+      "journal": "Br J Sports Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1136/bjsports-2025-110260",
+      "pmid": "41672607",
+      "pmcid": "PMC13018850",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41672607/",
+      "publisher_url": "https://doi.org/10.1136/bjsports-2025-110260",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42924702",
+      "title": "Blood Flow Restriction in Athletic Populations-Part 3: Applications for Cardiovascular Conditioning, Performance Priming, and Clinical Management.",
+      "authors": "Gaviglio C, Cook CJ, Bird SP.",
+      "year": "2026",
+      "journal": "J Funct Morphol Kinesiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/jfmk11040423",
+      "pmid": "42924702",
+      "pmcid": "PMC13692499",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42924702/",
+      "publisher_url": "https://doi.org/10.3390/jfmk11040423",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42942424",
+      "title": "Bone Health in Triathletes: Skeletal Loading, Low Energy Availability, and Bone Stress Injury-A Critical Narrative Review.",
+      "authors": "Lin PY, Su OY, Wu WT, Lee RP, Yao TK, Yeh KT.",
+      "year": "2026",
+      "journal": "Medicina (Kaunas)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/medicina62101894",
+      "pmid": "42942424",
+      "pmcid": "PMC13706682",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42942424/",
+      "publisher_url": "https://doi.org/10.3390/medicina62101894",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42573762",
+      "title": "Cardiorespiratory and autonomic trajectories in cadets training for general versus strength endurance, with differential ventilatory economization: a 4-month observational study.",
+      "authors": "Romanchuk O, Svyshch Y, Guzii O.",
+      "year": "2026",
+      "journal": "Eur J Appl Physiol",
+      "publication_type": "journal article",
+      "doi": "10.1007/s00421-026-06385-5",
+      "pmid": "42573762",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42573762/",
+      "publisher_url": "https://doi.org/10.1007/s00421-026-06385-5",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:36979312",
+      "title": "Cardiorespiratory Assessments in Panic Disorder Facilitated by Wearable Devices: A Systematic Review and Brief Comparison of the Wearable Zephyr BioPatch with the Quark-b2 Stationary Testing System.",
+      "authors": "Caldirola D, Daccò S, Grassi M, Alciati A, Sbabo WM, De Donatis D, Martinotti G, De Berardis D, Perna G.",
+      "year": "2023",
+      "journal": "Brain Sci",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/brainsci13030502",
+      "pmid": "36979312",
+      "pmcid": "PMC10046237",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/36979312/",
+      "publisher_url": "https://doi.org/10.3390/brainsci13030502",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42926256",
+      "title": "Characterising the Internal and External Load During Warm-Up, Match Play and Training in Soccer Substitutes: A Systematic Scoping Review.",
+      "authors": "Curtis C, Russell M, Hills SP, Filter A, Requena B, Lopez Bascon S, Ortega H, Asián J, Bogdanis GC.",
+      "year": "2026",
+      "journal": "Sports Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s40279-026-02520-6",
+      "pmid": "42926256",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42926256/",
+      "publisher_url": "https://doi.org/10.1007/s40279-026-02520-6",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42768963",
+      "title": "Coaches' verbal encouragement in soccer: A systematic review of its effects on internal training load, physical and time-motion performance, and technical skills.",
+      "authors": "Selmi O, Marzouki H, Bouassida A, Ammar A, Soylu Y, Boukhris O, Husain W, Jahrami H, Trabelsi K.",
+      "year": "2026",
+      "journal": "J Sports Sci",
+      "publication_type": "systematic review; review; journal article",
+      "doi": "10.1080/02640414.2026.2735708",
+      "pmid": "42768963",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42768963/",
+      "publisher_url": "https://doi.org/10.1080/02640414.2026.2735708",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42654270",
+      "title": "Coffee and Physical Performance: What Is Driven by Caffeine and What Is Not.",
+      "authors": "Grzelczyk J, Ziętala J, Budryn G, Konieczny M, Domaszewski P.",
+      "year": "2026",
+      "journal": "Nutrients",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/nu18162690",
+      "pmid": "42654270",
+      "pmcid": "PMC13516273",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42654270/",
+      "publisher_url": "https://doi.org/10.3390/nu18162690",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42221209",
+      "title": "Common Risk Factors for Knee Injuries in Runners: A Systematic Review.",
+      "authors": "Senthil K, Whitaker S, Nazarov M, Cassidy B, Edge C, Cyrus J, O'Neill C, Goodloe J.",
+      "year": "2026",
+      "journal": "Orthop J Sports Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1177/23259671261444314",
+      "pmid": "42221209",
+      "pmcid": "PMC13219871",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42221209/",
+      "publisher_url": "https://doi.org/10.1177/23259671261444314",
+      "full_text_status": "downloaded",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ],
+      "license": "CC BY-NC-ND",
+      "local_full_text": "research/papers/PMC13219871.xml"
+    },
+    {
+      "id": "pmid:42926133",
+      "title": "Conceptual Frameworks and Assessment of Readiness to Train in Endurance Exercise: A Systematic Review.",
+      "authors": "Micheli L, Greco F, Grossi T, Marini CF, Brink M, Lazzer S, Beato M, Lucertini F, D'Alleva M.",
+      "year": "2026",
+      "journal": "Int J Sports Physiol Perform",
+      "publication_type": "journal article",
+      "doi": "10.1123/ijspp.2025-0699",
+      "pmid": "42926133",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42926133/",
+      "publisher_url": "https://doi.org/10.1123/ijspp.2025-0699",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42739588",
+      "title": "Coping with Stress in Athletes: Psychological Strategies and Psychometric Tools for Stress and Anxiety Assessment.",
+      "authors": "Kaczmarek F, Matecka M, Bartkowiak-Wieczorek J, Kmiecik M, Kaczmarek K, Gajniak P, Fiutak M, Stężycka J, Krupa KK, Marchwiak S, Nowak M, Cuper M, Cuper P, Jenczylik K, Paterek P, Mądry E.",
+      "year": "2026",
+      "journal": "J Clin Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/jcm15176582",
+      "pmid": "42739588",
+      "pmcid": "PMC13566649",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42739588/",
+      "publisher_url": "https://doi.org/10.3390/jcm15176582",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:35800136",
+      "title": "Could middle- and long-distance running performance of well-trained athletes be best predicted by the same aerobic parameters?",
+      "authors": "Denadai BS, Greco CC.",
+      "year": "2022",
+      "journal": "Curr Res Physiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1016/j.crphys.2022.06.006",
+      "pmid": "35800136",
+      "pmcid": "PMC9253837",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35800136/",
+      "publisher_url": "https://doi.org/10.1016/j.crphys.2022.06.006",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42280321",
+      "title": "Creatine Supplementation in Endurance and Mixed-Sport Contexts: A Scoping Review of Performance, Recovery, and Body Composition.",
+      "authors": "Wesołowski I, Dzienisiewicz J, Langa D, Ziółkowski W, Karbowska J, Kochan Z.",
+      "year": "2026",
+      "journal": "Nutrients",
+      "publication_type": "scoping review; review-article; journal article",
+      "doi": "10.3390/nu18111677",
+      "pmid": "42280321",
+      "pmcid": "PMC13258674",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42280321/",
+      "publisher_url": "https://doi.org/10.3390/nu18111677",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42267259",
+      "title": "Cross-training between running and cycling: effects on VO&lt;sub&gt;2&lt;/sub&gt;max and running performance-a systematic review and meta-analysis.",
+      "authors": "Menges T, Dindorf C, Dully J, Fröhlich M.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fspor.2026.1843803",
+      "pmid": "42267259",
+      "pmcid": "PMC13243379",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42267259/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1843803",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:39405022",
+      "title": "Decoding Ultramarathon: Muscle Damage as the Main Impediment to Performance.",
+      "authors": "Tiller NB, Millet GY.",
+      "year": "2025",
+      "journal": "Sports Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s40279-024-02127-9",
+      "pmid": "39405022",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/39405022/",
+      "publisher_url": "https://doi.org/10.1007/s40279-024-02127-9",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41522518",
+      "title": "Delayed heart rate recovery and its variability in fitness functional training compared to endurance athletes: a cross-sectional analysis.",
+      "authors": "Guimarães FER, Morlin MT, Barreto KA, Porto LGG, Molina GE.",
+      "year": "2026",
+      "journal": "PeerJ",
+      "publication_type": "comparative study; research-article; journal article",
+      "doi": "10.7717/peerj.20335",
+      "pmid": "41522518",
+      "pmcid": "PMC12782030",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41522518/",
+      "publisher_url": "https://doi.org/10.7717/peerj.20335",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42809372",
+      "title": "Detection of previous knee injuries using lower limb-worn inertial measurement units: A cross-sectional machine-learning study.",
+      "authors": "Valle C, Cotic M, Bartelt M, Seeberger L, Waschulzik B, Siebenlist S, Hirschmann MT, Matziolis G, von Eisenhart-Rothe R, Rueckert D, Hinterwimmer F, Serena RS.",
+      "year": "2026",
+      "journal": "Knee Surg Sports Traumatol Arthrosc",
+      "publication_type": "journal article",
+      "doi": "10.1002/ksa.70631",
+      "pmid": "42809372",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42809372/",
+      "publisher_url": "https://doi.org/10.1002/ksa.70631",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41602121",
+      "title": "Developing negative split pacing in endurance athletes: practical guidelines and training models.",
+      "authors": "Grivas GV, Safari K, Hemmatinafar M.",
+      "year": "2026",
+      "journal": "Front Physiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fphys.2026.1741125",
+      "pmid": "41602121",
+      "pmcid": "PMC12832444",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41602121/",
+      "publisher_url": "https://doi.org/10.3389/fphys.2026.1741125",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42660539",
+      "title": "Digital Phenotyping in Health Research: Scoping Review of Methods, Gaps, and Opportunities.",
+      "authors": "Badier N, Lafitte A, Difernand A, Aguayo GA, Fagherazzi G, Onnela JP, Vittrant B, Lechat B, De Larochelambert Q, Toussaint JF, Delrieu L.",
+      "year": "2026",
+      "journal": "J Med Internet Res",
+      "publication_type": "scoping review; review-article; journal article",
+      "doi": "10.2196/91747",
+      "pmid": "42660539",
+      "pmcid": "PMC13563036",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42660539/",
+      "publisher_url": "https://doi.org/10.2196/91747",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42704992",
+      "title": "Digital surveillance or objective evidence? Wearable-derived data in insurance and legal medicine: A narrative review and medico-legal perspective.",
+      "authors": "Visci P, Sebastiani N, Castellani GL, Ausania F, Solarino B, Dell'Erba A, Ferorelli D.",
+      "year": "2026",
+      "journal": "J Forensic Leg Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1016/j.jflm.2026.103246",
+      "pmid": "42704992",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42704992/",
+      "publisher_url": "https://doi.org/10.1016/j.jflm.2026.103246",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42302183",
+      "title": "Does Hypoxic Training Improve Running Economy and Performance of Elite and Competitive Middle- and Long-Distance Runners? A Systematic Review With Meta-Analysis of Randomized Controlled Trials.",
+      "authors": "Schwalm LC, Pilat C, Nolte S, Gatterer H, Krüger K, Hollander K.",
+      "year": "2026",
+      "journal": "J Strength Cond Res",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1519/jsc.0000000000005554",
+      "pmid": "42302183",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42302183/",
+      "publisher_url": "https://doi.org/10.1519/jsc.0000000000005554",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42090127",
+      "title": "Early women's health research on endurance exercise training and cardiovascular aging at the University of Colorado Boulder using the masters athlete model.",
+      "authors": "Seals DR, DeSouza CA, Tanaka H, Moreau KL, Darvish S, Ambrose C, Davy KP.",
+      "year": "2026",
+      "journal": "J Appl Physiol (1985)",
+      "publication_type": "research support, non-u.s. gov't; review; journal article",
+      "doi": "10.1152/japplphysiol.00142.2026",
+      "pmid": "42090127",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42090127/",
+      "publisher_url": "https://doi.org/10.1152/japplphysiol.00142.2026",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42891559",
+      "title": "Effects of Altitude or Hypoxic Exposure on Endurance Running Performance: A Systematic Review and Meta-analysis.",
+      "authors": "Grivas GV, Berryman N, Vachon A, Bosquet L, Mujika I.",
+      "year": "2026",
+      "journal": "Sports Health",
+      "publication_type": "review; journal article",
+      "doi": "10.1177/19417381261493394",
+      "pmid": "42891559",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42891559/",
+      "publisher_url": "https://doi.org/10.1177/19417381261493394",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42387592",
+      "title": "Effects of plyometric training on performance-related metrics in track and field athletes: a systematic review and meta-analysis of randomized controlled trials, with preliminary evidence on injury prevention.",
+      "authors": "Weerasinghe K, Jayawardena R, Williams A, Hills AP.",
+      "year": "2026",
+      "journal": "BMC Sports Sci Med Rehabil",
+      "publication_type": "systematic review; review-article; journal article",
+      "doi": "10.1186/s13102-026-01840-4",
+      "pmid": "42387592",
+      "pmcid": "PMC13599290",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42387592/",
+      "publisher_url": "https://doi.org/10.1186/s13102-026-01840-4",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41240722",
+      "title": "Effects of running technique characteristics on the patellofemoral joint load: A systematic review and meta-analysis.",
+      "authors": "Yu S, Yuan P, Xu Y, Shangguan Y, Wang X, Wang Z, Zhuang M, Song Y.",
+      "year": "2026",
+      "journal": "Gait Posture",
+      "publication_type": "meta-analysis; research support, non-u.s. gov't; systematic review; journal article",
+      "doi": "10.1016/j.gaitpost.2025.110025",
+      "pmid": "41240722",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41240722/",
+      "publisher_url": "https://doi.org/10.1016/j.gaitpost.2025.110025",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42783648",
+      "title": "Effects of Task Constraint Manipulation on Physical, Physiological and Technical-Tactical Demands of Small-Sided Games in Soccer: A Systematic Review.",
+      "authors": "Chootsungnoen P, Sonchan W, Chainok P, Leenoi P.",
+      "year": "2026",
+      "journal": "J Funct Morphol Kinesiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/jfmk11030354",
+      "pmid": "42783648",
+      "pmcid": "PMC13608831",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42783648/",
+      "publisher_url": "https://doi.org/10.3390/jfmk11030354",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42536523",
+      "title": "Effects of uphill running on muscle strength, jumping performance, running time, and aerobic capacity outcomes in athletes and recreational adults: A systematic review and meta-analysis.",
+      "authors": "Tham SK, Shager K, Murugiah M, Nguyen M, Wibawa JC, Ahmad MA.",
+      "year": "2026",
+      "journal": "Medicine (Baltimore)",
+      "publication_type": "meta-analysis; research-article; systematic review; journal article",
+      "doi": "10.1097/md.0000000000049977",
+      "pmid": "42536523",
+      "pmcid": "PMC13433027",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42536523/",
+      "publisher_url": "https://doi.org/10.1097/md.0000000000049977",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41673933",
+      "title": "Endurance Training in Olympic Winter Sports: A Narrative Review of the Current Literature and Future Research Priorities.",
+      "authors": "Sperlich B, Holmberg HC.",
+      "year": "2026",
+      "journal": "Scand J Med Sci Sports",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1111/sms.70220",
+      "pmid": "41673933",
+      "pmcid": "PMC12894518",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41673933/",
+      "publisher_url": "https://doi.org/10.1111/sms.70220",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:41922043",
+      "title": "Exercise biomarkers.",
+      "authors": "Siebers M, Bizjak DA, Grau M.",
+      "year": "2026",
+      "journal": "Adv Clin Chem",
+      "publication_type": "review; journal article",
+      "doi": "10.1016/bs.acc.2025.11.003",
+      "pmid": "41922043",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41922043/",
+      "publisher_url": "https://doi.org/10.1016/bs.acc.2025.11.003",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42400742",
+      "title": "Exercise Training in the Fasted State During the Month of Ramadan: Acutely Ergolytic but Possibly Chronically Ergogenic? A Narrative Review with Systematic Search and Methodological Quality Assessment.",
+      "authors": "Ong JHA, Trabelsi K, Ammar A, Washif JA, Lee MJC, Ooi CH, Chamari K, Che Muhamed AM, Ihsan M, Aziz AR.",
+      "year": "2026",
+      "journal": "Sports Med Open",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1186/s40798-026-01044-7",
+      "pmid": "42400742",
+      "pmcid": "PMC13332931",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42400742/",
+      "publisher_url": "https://doi.org/10.1186/s40798-026-01044-7",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42939527",
+      "title": "Exercise-Driven Remodeling of the Gut Microbiome: Reciprocal Regulation of Structural and Functional Adaptations in Elite Athletes.",
+      "authors": "Yang G, Yang W, Liu Y, Wang H.",
+      "year": "2026",
+      "journal": "Curr Issues Mol Biol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/cimb48100989",
+      "pmid": "42939527",
+      "pmcid": "PMC13703312",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42939527/",
+      "publisher_url": "https://doi.org/10.3390/cimb48100989",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42968923",
+      "title": "Factors associated with midportion and insertional Achilles tendinopathy: a systematic review with meta-analysis and meta-regression.",
+      "authors": "Weerkamp SA, Paantjens MA, van Etten-Jamaludin FS, Bakker EW.",
+      "year": "2026",
+      "journal": "BMJ Open Sport Exerc Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1136/bmjsem-2026-003387",
+      "pmid": "42968923",
+      "pmcid": "PMC13723899",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42968923/",
+      "publisher_url": "https://doi.org/10.1136/bmjsem-2026-003387",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:40606277",
+      "title": "Factors related to the success in women's football-a systematic review.",
+      "authors": "Wang S, Shen M, Li P, Liu H.",
+      "year": "2025",
+      "journal": "Front Sports Act Living",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fspor.2025.1602457",
+      "pmid": "40606277",
+      "pmcid": "PMC12213623",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40606277/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2025.1602457",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41934957",
+      "title": "Foot and Ankle Characteristics in 225 Runners With and Without a History of Running-Related Injury: A Case-Control Study.",
+      "authors": "Abran G, Aguilaniu A, Dardenne N, Bornheim S, Delvaux F, Croisier JL, Schwartz C.",
+      "year": "2026",
+      "journal": "J Sport Rehabil",
+      "publication_type": "journal article",
+      "doi": "10.1123/jsr.2025-0384",
+      "pmid": "41934957",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41934957/",
+      "publisher_url": "https://doi.org/10.1123/jsr.2025-0384",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42735359",
+      "title": "Fractal Correlation Properties of Heart Rate Variability Differentiates Training Intensity During and After Energy-Matched Cycling Sessions.",
+      "authors": "Olieslagers A, Müller-Jabusch Y, De Maeseneer J, Seynaeve M, de Beukelaar TT.",
+      "year": "2026",
+      "journal": "Med Sci Sports Exerc",
+      "publication_type": "journal article",
+      "doi": "10.1249/mss.0000000000004146",
+      "pmid": "42735359",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42735359/",
+      "publisher_url": "https://doi.org/10.1249/mss.0000000000004146",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42514472",
+      "title": "From Mechanisms to Practice: Gut Microbiome-Based Strategies for Supporting Recovery in Elite Athletes.",
+      "authors": "Carlone J, Sgrò P, Parisi A, Fasano A.",
+      "year": "2026",
+      "journal": "Nutrients",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/nu18142403",
+      "pmid": "42514472",
+      "pmcid": "PMC13415018",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42514472/",
+      "publisher_url": "https://doi.org/10.3390/nu18142403",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:41759826",
+      "title": "From Metabolism to Medals: Contemporary Perspectives and Revisiting Carbohydrate Guidelines for Fueling Endurance Athletes during Exercise.",
+      "authors": "Morton JP, Fell JM, Gonzalez JT, Hearris MA, Podlogar T, Pugh JN, Wallis GA.",
+      "year": "2026",
+      "journal": "J Nutr",
+      "publication_type": "research-article; review; journal article",
+      "doi": "10.1016/j.tjnut.2026.101442",
+      "pmid": "41759826",
+      "pmcid": "PMC13197957",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41759826/",
+      "publisher_url": "https://doi.org/10.1016/j.tjnut.2026.101442",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42968311",
+      "title": "Fueling the Modern Endurance Athlete: The High-Carbohydrate Revolution, Exogenous Ketones, and an Evidence-Based Approach for the Sports Medicine Clinician.",
+      "authors": "Meininger AK.",
+      "year": "2026",
+      "journal": "Sports Health",
+      "publication_type": "review; journal article",
+      "doi": "10.1177/19417381261499157",
+      "pmid": "42968311",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42968311/",
+      "publisher_url": "https://doi.org/10.1177/19417381261499157",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42194853",
+      "title": "Functional Biomechanical Tests of the Foot and Ankle in Physiotherapy and Sports-Outcome Measures, Wearable Sensor Integration, and Psychometric Properties: A Systematic Review.",
+      "authors": "Semjonova G, Vallejo-Martínez R, Ceballos-Laita L, Jiménez-Del-Barrio S, Davidovics S, Davidovica A.",
+      "year": "2026",
+      "journal": "J Clin Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/jcm15103892",
+      "pmid": "42194853",
+      "pmcid": "PMC13206894",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42194853/",
+      "publisher_url": "https://doi.org/10.3390/jcm15103892",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:40277515",
+      "title": "Fusing Wearable Biosensors with Artificial Intelligence for Mental Health Monitoring: A Systematic Review.",
+      "authors": "Kargarandehkordi A, Li S, Lin K, Phillips KT, Benzo RM, Washington P.",
+      "year": "2025",
+      "journal": "Biosensors (Basel)",
+      "publication_type": "systematic review; review-article; journal article",
+      "doi": "10.3390/bios15040202",
+      "pmid": "40277515",
+      "pmcid": "PMC12025234",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40277515/",
+      "publisher_url": "https://doi.org/10.3390/bios15040202",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:41262323",
+      "title": "Heart Rate Variability and Blood Pressure Response to Low-Intensity Endurance Exercise Training Plus Blood Flow Restriction in Individuals with Mild Hypertension: A Randomized Controlled Clinical Trial.",
+      "authors": "Doustaki Zaboli M, Joukar S, Nouzari M, Aminizadeh S, Kahnooji M, Mohammadi K.",
+      "year": "2025",
+      "journal": "Iran J Med Sci",
+      "publication_type": "research-article; randomized controlled trial; journal article",
+      "doi": "10.30476/ijms.2025.105405.3916",
+      "pmid": "41262323",
+      "pmcid": "PMC12624347",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41262323/",
+      "publisher_url": "https://doi.org/10.30476/ijms.2025.105405.3916",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42847804",
+      "title": "Heart Rate Variability DFA a1: From Lab to Consumer Exercise Prescription and Monitoring.",
+      "authors": "Rogers B, Fleitas-Paniagua PR, Murias JM.",
+      "year": "2026",
+      "journal": "Exerc Sport Sci Rev",
+      "publication_type": "journal article",
+      "doi": "10.1249/jes.0000000000000401",
+      "pmid": "42847804",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42847804/",
+      "publisher_url": "https://doi.org/10.1249/jes.0000000000000401",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42724227",
+      "title": "Heart rate variability-guided endurance training: evaluating strengths, weaknesses, opportunities, and threats for load prescription and adjustment.",
+      "authors": "Schaffarczyk M, Sperlich B.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "brief-report; journal article",
+      "doi": "10.3389/fspor.2026.1858271",
+      "pmid": "42724227",
+      "pmcid": "PMC13558445",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42724227/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1858271",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:36370207",
+      "title": "Heavy Resistance Training Versus Plyometric Training for Improving Running Economy and Running Time Trial Performance: A Systematic Review and Meta-analysis.",
+      "authors": "Eihara Y, Takao K, Sugiyama T, Maeo S, Terada M, Kanehisa H, Isaka T.",
+      "year": "2022",
+      "journal": "Sports Med Open",
+      "publication_type": "systematic review; review-article; journal article",
+      "doi": "10.1186/s40798-022-00511-1",
+      "pmid": "36370207",
+      "pmcid": "PMC9653533",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/36370207/",
+      "publisher_url": "https://doi.org/10.1186/s40798-022-00511-1",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41766811",
+      "title": "High-Intensity Interval Training and Moderate-Intensity Continuous Training Affect Running Economy in Endurance Runners: A Systematic Review and Meta-Analysis of Randomized Controlled Trials.",
+      "authors": "Feng Y, Li D, Liu Y, Tang D.",
+      "year": "2026",
+      "journal": "J Hum Kinet",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.5114/jhk/205427",
+      "pmid": "41766811",
+      "pmcid": "PMC12946864",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41766811/",
+      "publisher_url": "https://doi.org/10.5114/jhk/205427",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41869606",
+      "title": "High-speed running and injury risk in soccer: a systematic review.",
+      "authors": "Xie Y, Cai X.",
+      "year": "2026",
+      "journal": "Front Public Health",
+      "publication_type": "systematic review; systematic-review; journal article",
+      "doi": "10.3389/fpubh.2026.1798241",
+      "pmid": "41869606",
+      "pmcid": "PMC13002794",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41869606/",
+      "publisher_url": "https://doi.org/10.3389/fpubh.2026.1798241",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42506806",
+      "title": "How Valid Are Wearable Devices in Team Sports? A Systematic Review.",
+      "authors": "Čokorilo N, Manolopoulos N, Matijević T, Rajović R.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports14070264",
+      "pmid": "42506806",
+      "pmcid": "PMC13416585",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42506806/",
+      "publisher_url": "https://doi.org/10.3390/sports14070264",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42572667",
+      "title": "Impact of Running on the Risk and Progression of Knee Osteoarthritis: A Review of Current Evidence.",
+      "authors": "Glinski M, Kacprzak U, Dolega-Mostowska D, Adamaszek N, Stochaj L, Sochowska J, Buczkowska A, Danieluk J, Flejszman M, Wójcik J.",
+      "year": "2026",
+      "journal": "Cureus",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.7759/cureus.112416",
+      "pmid": "42572667",
+      "pmcid": "PMC13453297",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42572667/",
+      "publisher_url": "https://doi.org/10.7759/cureus.112416",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42779541",
+      "title": "Implications of Wearable Sleep Health Technology for Cardiovascular Health Assessment and Interventions: A Narrative Review.",
+      "authors": "Amadei MA, Reichenberger DA, Tung D, Gannon H, Gorovoy S, Diaz-Pacheco A, Grandner MA.",
+      "year": "2026",
+      "journal": "Arterioscler Thromb Vasc Biol",
+      "publication_type": "research-article; review; journal article",
+      "doi": "10.1161/atvbaha.126.322875",
+      "pmid": "42779541",
+      "pmcid": "PMC13652549",
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42779541/",
+      "publisher_url": "https://doi.org/10.1161/atvbaha.126.322875",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42544508",
+      "title": "Indirect calculation of metabolic power in soccer: a critical analysis of a popular model.",
+      "authors": "Barba F, Padulo J, Maffulli N.",
+      "year": "2026",
+      "journal": "Br Med Bull",
+      "publication_type": "review; journal article",
+      "doi": "10.1093/bmb/ldag022",
+      "pmid": "42544508",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42544508/",
+      "publisher_url": "https://doi.org/10.1093/bmb/ldag022",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42612386",
+      "title": "Injury risk associated with the transition to minimalist footwear in runners: A systematic review and meta-analysis.",
+      "authors": "Río ES, Galán-Arriero I, Palomo-Fernández I, Marcos-Tejedor F, Martín-Casado L.",
+      "year": "2027",
+      "journal": "Gait Posture",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1016/j.gaitpost.2026.110614",
+      "pmid": "42612386",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42612386/",
+      "publisher_url": "https://doi.org/10.1016/j.gaitpost.2026.110614",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42506842",
+      "title": "Investigating the Acute Effect of Different Training Protocols on Heart Rate Variability.",
+      "authors": "Demirkıran B, Melekoğlu T, Żurek G.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3390/sports14070299",
+      "pmid": "42506842",
+      "pmcid": "PMC13416595",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42506842/",
+      "publisher_url": "https://doi.org/10.3390/sports14070299",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42789782",
+      "title": "Is a Runner's Footfall Pattern a Risk Factor for a Running-Related Injury? Using Data from the 4HAIE Cohort Study.",
+      "authors": "Hamill J, Skypala J, Plesek J, Urbaczka J, Sustkova L, Jandacka D.",
+      "year": "2026",
+      "journal": "Med Sci Sports Exerc",
+      "publication_type": "journal article",
+      "doi": "10.1249/mss.0000000000004155",
+      "pmid": "42789782",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42789782/",
+      "publisher_url": "https://doi.org/10.1249/mss.0000000000004155",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41819643",
+      "title": "Is my smartwatch a valid witness? A systematic review and meta-analysis.",
+      "authors": "Sicbaldi M, Bartoli L, Albites-Sanabria J, D'Ascanio I, Silvani A, Chiari L, Camon A, Palmerini L.",
+      "year": "2026",
+      "journal": "Forensic Sci Int",
+      "publication_type": "meta-analysis; systematic review; review; journal article",
+      "doi": "10.1016/j.forsciint.2026.112901",
+      "pmid": "41819643",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41819643/",
+      "publisher_url": "https://doi.org/10.1016/j.forsciint.2026.112901",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:40712248",
+      "title": "Isometric hip strength does not directly influence injury in collegiate cross-country runners: a prospective cohort study.",
+      "authors": "Vannatta CN, Kernozek TW.",
+      "year": "2025",
+      "journal": "Phys Ther Sport",
+      "publication_type": "journal article",
+      "doi": "10.1016/j.ptsp.2025.07.006",
+      "pmid": "40712248",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40712248/",
+      "publisher_url": "https://doi.org/10.1016/j.ptsp.2025.07.006",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41835327",
+      "title": "Knee health and associations with female-specific health, physical, psychological and social-gendered factors in women runners: the TRAIL-W cohort study protocol.",
+      "authors": "Haberfield MJ, Mentiplay BF, De Oliveira Silva D, Hayman M, Dakic J, McGhee DE, Ryan-Atwood TE, Thornton JS, Clarke A, Govus AD, Hill JP, Cooper I, Serighelli F, Patterson B, Bruder A, Girdwood MA, Carey D, Tamer S, Briggs C, Schulz J, Trease L, Johnston RTR, West TJ, Warden S, Souza R, Belski R, Cooke MB, Smith AJ, Binnie T, Crossley KM.",
+      "year": "2026",
+      "journal": "BMJ Open Sport Exerc Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1136/bmjsem-2025-003132",
+      "pmid": "41835327",
+      "pmcid": "PMC12983689",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41835327/",
+      "publisher_url": "https://doi.org/10.1136/bmjsem-2025-003132",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:37751076",
+      "title": "Limits of Ultra: Towards an Interdisciplinary Understanding of Ultra-Endurance Running Performance.",
+      "authors": "Berger NJA, Best R, Best AW, Lane AM, Millet GY, Barwood M, Marcora S, Wilson P, Bearden S.",
+      "year": "2024",
+      "journal": "Sports Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s40279-023-01936-8",
+      "pmid": "37751076",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/37751076/",
+      "publisher_url": "https://doi.org/10.1007/s40279-023-01936-8",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41295665",
+      "title": "Locomotory Profile, Heart Rate Variability, and Blood Parameters Reveal Adaptive Responses in Endurance Horses Trained on Deep Sand.",
+      "authors": "Porzio E, Mecocci S, Chillemi G, Puccetti M, Pepe M, Cappelli K, Beccati F.",
+      "year": "2025",
+      "journal": "Vet Sci",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3390/vetsci12111028",
+      "pmid": "41295665",
+      "pmcid": "PMC12656824",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41295665/",
+      "publisher_url": "https://doi.org/10.3390/vetsci12111028",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:41752909",
+      "title": "Lower-Limb Biomechanical Adaptations to Exercise-Induced Fatigue During Running: A Systematic Review of Injury-Relevant Mechanical Changes.",
+      "authors": "Choudhary PK, Choudhary S, Saha S, Rajpoot YS, Ciocan VC, Nicolae-Lucian V, Pavel SI, Șufaru C.",
+      "year": "2026",
+      "journal": "Life (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/life16020272",
+      "pmid": "41752909",
+      "pmcid": "PMC12942261",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41752909/",
+      "publisher_url": "https://doi.org/10.3390/life16020272",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42862511",
+      "title": "Measuring adult breathing pattern: devices, outcomes, and evidence-a scoping review.",
+      "authors": "Martins R, Rodrigues F, Martins A, Neves B, Silva H, Guerra J, Costa S, Costa N.",
+      "year": "2026",
+      "journal": "Sleep Breath",
+      "publication_type": "scoping review; research support, non-u.s. gov't; review; journal article",
+      "doi": "10.1007/s11325-026-03834-5",
+      "pmid": "42862511",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42862511/",
+      "publisher_url": "https://doi.org/10.1007/s11325-026-03834-5",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42093881",
+      "title": "Mechanisms of exercise-based rehabilitation following intracerebral hemorrhage: insights from preclinical evidence.",
+      "authors": "Zhang Q, Dong X, Huo H, Zhang Y, Zhang M, Wang D.",
+      "year": "2026",
+      "journal": "Front Pharmacol",
+      "publication_type": "systematic review; systematic-review; journal article",
+      "doi": "10.3389/fphar.2026.1783944",
+      "pmid": "42093881",
+      "pmcid": "PMC13139155",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42093881/",
+      "publisher_url": "https://doi.org/10.3389/fphar.2026.1783944",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:41562854",
+      "title": "Mechanisms, Economy, and Performance of Advanced Footwear Technology in Endurance Running-A Review.",
+      "authors": "Bruvere DD, Bernans E.",
+      "year": "2025",
+      "journal": "Muscles",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/muscles5010002",
+      "pmid": "41562854",
+      "pmcid": "PMC12821614",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41562854/",
+      "publisher_url": "https://doi.org/10.3390/muscles5010002",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42254608",
+      "title": "Mechanisms, injury patterns, and kinematic features of hamstring strain injuries in football (soccer): a systematic review and meta-analysis of video-analysis studies.",
+      "authors": "Xia J, He J, Yao J, Zhu Y, Mao L, Zhu X.",
+      "year": "2026",
+      "journal": "Front Public Health",
+      "publication_type": "meta-analysis; systematic review; systematic-review; journal article",
+      "doi": "10.3389/fpubh.2026.1846524",
+      "pmid": "42254608",
+      "pmcid": "PMC13233188",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42254608/",
+      "publisher_url": "https://doi.org/10.3389/fpubh.2026.1846524",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42941180",
+      "title": "Metabolomics for Athlete Monitoring: An Evidence-Readiness Framework for Contextual Validation.",
+      "authors": "Lin D, Chen Y, Huang C, Zou Z.",
+      "year": "2026",
+      "journal": "Metabolites",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/metabo16100704",
+      "pmid": "42941180",
+      "pmcid": "PMC13706814",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42941180/",
+      "publisher_url": "https://doi.org/10.3390/metabo16100704",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42118442",
+      "title": "Mind to Move: A Narrative Review of Individualized Running Biomechanics Beyond the Spring-Mass Model.",
+      "authors": "Gindre C, Lussiana T, Breine B, Patoz A.",
+      "year": "2026",
+      "journal": "Sports Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1007/s40279-026-02449-w",
+      "pmid": "42118442",
+      "pmcid": "PMC13687112",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42118442/",
+      "publisher_url": "https://doi.org/10.1007/s40279-026-02449-w",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:41718076",
+      "title": "Muscle, Neuromuscular, and Cardiac Damage in Trail Running: A Systematic Review.",
+      "authors": "García-Valiente I, Pradas F, Ortega-Zayas MÁ, Castellar-Otín C, García-Giménez A, Lecina M.",
+      "year": "2026",
+      "journal": "Muscles",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/muscles5010009",
+      "pmid": "41718076",
+      "pmcid": "PMC12921809",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41718076/",
+      "publisher_url": "https://doi.org/10.3390/muscles5010009",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42203068",
+      "title": "New insights in heart rate variability through non-linear methods for conditioning assessment in horses.",
+      "authors": "Vieira Ramos G, Camargo Ferraz G, Fazan R, Virgilio Silva LE, de Lacerda-Neto JC.",
+      "year": "2026",
+      "journal": "Vet J",
+      "publication_type": "journal article",
+      "doi": "10.1016/j.tvjl.2026.106722",
+      "pmid": "42203068",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42203068/",
+      "publisher_url": "https://doi.org/10.1016/j.tvjl.2026.106722",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42872971",
+      "title": "Noninvasive assessment of the anaerobic threshold in endurance athletes: an evidence-based narrative review of methods, validity, and field feasibility.",
+      "authors": "Maffulli N, Padulo J, Oliva F.",
+      "year": "2026",
+      "journal": "Br Med Bull",
+      "publication_type": "review; journal article",
+      "doi": "10.1093/bmb/ldag037",
+      "pmid": "42872971",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42872971/",
+      "publisher_url": "https://doi.org/10.1093/bmb/ldag037",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42942910",
+      "title": "Nutraceutical Periodization for eXercise (NPX): Matching Bioactives to Training Load, Recovery Demand, and Adaptation Windows.",
+      "authors": "Mănescu DC, Casals C, Kurkiewicz-Piotrowska A, de Carvalho TS, Petcu C, Băltărețu C, Bidiugan R, Dragomir A, Amzulescu O, Bidiugan S, Salloum O, Alexandrescu R.",
+      "year": "2026",
+      "journal": "Nutrients",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/nu18203337",
+      "pmid": "42942910",
+      "pmcid": "PMC13708102",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42942910/",
+      "publisher_url": "https://doi.org/10.3390/nu18203337",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42713797",
+      "title": "Nutritional Strategies for Injury Prevention and Recovery: A Review of Evidence-Based Nutritional Interventions to Prevent Sports-Related Injuries and Enhance Recovery in Athletes.",
+      "authors": "Conlon EG, Nelson BM, Balogun R, Scott JM, Yurgil JL.",
+      "year": "2026",
+      "journal": "Curr Sports Med Rep",
+      "publication_type": "review; journal article",
+      "doi": "10.1249/jsr.0000000000001370",
+      "pmid": "42713797",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42713797/",
+      "publisher_url": "https://doi.org/10.1249/jsr.0000000000001370",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42189495",
+      "title": "Optimizing Athlete Travel for Performance: A Scientific Blueprint for Athletes, Coaches, and Sports Medicine Staff.",
+      "authors": "Hatamiya N, Holmes KE, Grosicki GJ, Swisher J, Duffaut C, Vail J, Logan-Sprenger H, Donohoe B, Fielding F, Chapman CJ, Leota J, Facer-Childs ER, Goldman JT.",
+      "year": "2026",
+      "journal": "Sports Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1007/s40279-026-02455-y",
+      "pmid": "42189495",
+      "pmcid": "PMC13260286",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42189495/",
+      "publisher_url": "https://doi.org/10.1007/s40279-026-02455-y",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:36326961",
+      "title": "Participation and performance characteristics in half-marathon run: a brief narrative review.",
+      "authors": "Nikolaidis PT, Knechtle B.",
+      "year": "2023",
+      "journal": "J Muscle Res Cell Motil",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1007/s10974-022-09633-1",
+      "pmid": "36326961",
+      "pmcid": "PMC10329575",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/36326961/",
+      "publisher_url": "https://doi.org/10.1007/s10974-022-09633-1",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:40811794",
+      "title": "Passive Sensing for Mental Health Monitoring Using Machine Learning With Wearables and Smartphones: Scoping Review.",
+      "authors": "Shen S, Qi W, Zeng J, Li S, Liu X, Zhu X, Dong C, Wang B, Shi Y, Yao J, Wang B, Lou X, Gu S, Li P, Wang J, Jiang G, Cao S.",
+      "year": "2025",
+      "journal": "J Med Internet Res",
+      "publication_type": "scoping review; review-article; journal article",
+      "doi": "10.2196/77066",
+      "pmid": "40811794",
+      "pmcid": "PMC12395114",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40811794/",
+      "publisher_url": "https://doi.org/10.2196/77066",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42137179",
+      "title": "Physiological associations with heart rate-speed decoupling during a half-marathon in adolescent endurance runners.",
+      "authors": "Wang W, Zhou R, He G, Si Y, Cao Y, Zheng P, Zi W.",
+      "year": "2026",
+      "journal": "Front Physiol",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3389/fphys.2026.1807399",
+      "pmid": "42137179",
+      "pmcid": "PMC13167590",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42137179/",
+      "publisher_url": "https://doi.org/10.3389/fphys.2026.1807399",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42039889",
+      "title": "Plant-derived alginate polysaccharide hydrogels in sport and exercise nutrition: implications for carbohydrate metabolism, gastrointestinal integrity, exercise recovery, and athletic performance.",
+      "authors": "Li P, Song Q, Xu N.",
+      "year": "2026",
+      "journal": "Front Nutr",
+      "publication_type": "systematic review; systematic-review; journal article",
+      "doi": "10.3389/fnut.2026.1774380",
+      "pmid": "42039889",
+      "pmcid": "PMC13106452",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42039889/",
+      "publisher_url": "https://doi.org/10.3389/fnut.2026.1774380",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42895709",
+      "title": "Prebiotics in sport and exercise: current evidence, practical applications, and methodological considerations.",
+      "authors": "Sage SA, Abbott SJ, Korczak R, Williams NC.",
+      "year": "2026",
+      "journal": "J Int Soc Sports Nutr",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1080/15502783.2026.2748763",
+      "pmid": "42895709",
+      "pmcid": "PMC13686213",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42895709/",
+      "publisher_url": "https://doi.org/10.1080/15502783.2026.2748763",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42506814",
+      "title": "Predicting Next Day Heart Rate Variability Based on Training Load in Cyclists Using Machine Learning.",
+      "authors": "Barsumyan A, Saukkonen A, Soost C, Graw JA, Burchard R.",
+      "year": "2026",
+      "journal": "Sports (Basel)",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3390/sports14070271",
+      "pmid": "42506814",
+      "pmcid": "PMC13418909",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42506814/",
+      "publisher_url": "https://doi.org/10.3390/sports14070271",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    },
+    {
+      "id": "pmid:42780891",
+      "title": "Prevalence, burden and risk markers of health problems in HYROX athletes: a 12-week prospective cohort study.",
+      "authors": "Chittenden E, Bell A, Forbes G, Tooth P, Porter R, Van Der Vliet R, Shouman K, Williams S.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3389/fspor.2026.1937574",
+      "pmid": "42780891",
+      "pmcid": "PMC13597903",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42780891/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1937574",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42209141",
+      "title": "Prior Injuries, Physical Activity, and Fitness Components as Predictors of Musculoskeletal Injury in Military Recruits: A Cohort Study.",
+      "authors": "Garcia RCF, Muniz AMS, Bunn PDS.",
+      "year": "2026",
+      "journal": "Mil Med",
+      "publication_type": "journal article",
+      "doi": "10.1093/milmed/usag234",
+      "pmid": "42209141",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42209141/",
+      "publisher_url": "https://doi.org/10.1093/milmed/usag234",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41884698",
+      "title": "Proposed Modified Bone Stress Injury Classification Score.",
+      "authors": "Kuwabara A, Nattiv A, Roche MD, Fredericson M.",
+      "year": "2026",
+      "journal": "Orthop J Sports Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1177/23259671251399815",
+      "pmid": "41884698",
+      "pmcid": "PMC13009898",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41884698/",
+      "publisher_url": "https://doi.org/10.1177/23259671251399815",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42544120",
+      "title": "Relative Energy Deficiency in Sport (REDs) in Ultra-Trail Running: Implications for Performance, Injury, and Long-Term Health.",
+      "authors": "Cullinan R.",
+      "year": "2026",
+      "journal": "Cureus",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.7759/cureus.111971",
+      "pmid": "42544120",
+      "pmcid": "PMC13428976",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42544120/",
+      "publisher_url": "https://doi.org/10.7759/cureus.111971",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts",
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:35878109",
+      "title": "Resistance Exercise for Improving Running Economy and Running Biomechanics and Decreasing Running-Related Injury Risk: A Narrative Review.",
+      "authors": "Šuc A, Šarko P, Pleša J, Kozinc Ž.",
+      "year": "2022",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports10070098",
+      "pmid": "35878109",
+      "pmcid": "PMC9319953",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35878109/",
+      "publisher_url": "https://doi.org/10.3390/sports10070098",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42824430",
+      "title": "Rethinking neurophysiology of delayed onset muscle soreness: updated concepts and mechanisms for mitigation across endurance, resistance, and plyometric exercise.",
+      "authors": "Jemni M, Quodling N, Hammami N, Groves S, Ijaz A, Pulyanova D, Hoffman NH, Bottoms L, Carrick FR, Gu Y.",
+      "year": "2026",
+      "journal": "Front Sports Act Living",
+      "publication_type": "systematic review; systematic-review; journal article",
+      "doi": "10.3389/fspor.2026.1709704",
+      "pmid": "42824430",
+      "pmcid": "PMC13627368",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42824430/",
+      "publisher_url": "https://doi.org/10.3389/fspor.2026.1709704",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42419036",
+      "title": "Return to preinjury sport after ACL injury treated with rehabilitation alone or ACL reconstruction: Results from the NACOX prospective cohort study.",
+      "authors": "Svensson M, Harringe M, Hedevik H, Kvist J.",
+      "year": "2026",
+      "journal": "Phys Ther Sport",
+      "publication_type": "multicenter study; journal article; observational study",
+      "doi": "10.1016/j.ptsp.2026.101952",
+      "pmid": "42419036",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42419036/",
+      "publisher_url": "https://doi.org/10.1016/j.ptsp.2026.101952",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:40757809",
+      "title": "Risk factors and injury prevention strategies for hamstring injuries: a narrative review.",
+      "authors": "Hagos A, Merchant AA, Kayani B, Yasen AT, Haddad FS.",
+      "year": "2025",
+      "journal": "EFORT Open Rev",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1530/eor-2024-0135",
+      "pmid": "40757809",
+      "pmcid": "PMC12326974",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40757809/",
+      "publisher_url": "https://doi.org/10.1530/eor-2024-0135",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42736933",
+      "title": "Running-Related Musculoskeletal Injuries in Saudi Arabia: Epidemiology, Biomechanical Determinants, and Global Comparative Insights.",
+      "authors": "Aljohani MMA.",
+      "year": "2026",
+      "journal": "Healthcare (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/healthcare14172776",
+      "pmid": "42736933",
+      "pmcid": "PMC13565481",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42736933/",
+      "publisher_url": "https://doi.org/10.3390/healthcare14172776",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury",
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42047663",
+      "title": "Sky's the limit: A comprehensive narrative review on the epidemiology of injuries and illnesses in ultra trail running.",
+      "authors": "Basile GC, Alito A, de Sire A, Cova A, Filardi V, Ferioli D, Maccarone MC, Capodaglio P, Fontana JM.",
+      "year": "2026",
+      "journal": "J Back Musculoskelet Rehabil",
+      "publication_type": "review; journal article",
+      "doi": "10.1177/10538127261446412",
+      "pmid": "42047663",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42047663/",
+      "publisher_url": "https://doi.org/10.1177/10538127261446412",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42379665",
+      "title": "Sleep Optimization in the Athlete.",
+      "authors": "Matarese CA, Murray AM.",
+      "year": "2026",
+      "journal": "Neurol Clin",
+      "publication_type": "review; journal article",
+      "doi": "10.1016/j.ncl.2026.03.002",
+      "pmid": "42379665",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42379665/",
+      "publisher_url": "https://doi.org/10.1016/j.ncl.2026.03.002",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:41749705",
+      "title": "Smart Devices and Multimodal Systems for Mental Health Monitoring: From Theory to Application.",
+      "authors": "Caragață AV, Hnatiuc M, Geman O, Halunga S, Tulbure A, Iov CJ.",
+      "year": "2026",
+      "journal": "Bioengineering (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/bioengineering13020165",
+      "pmid": "41749705",
+      "pmcid": "PMC12938191",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41749705/",
+      "publisher_url": "https://doi.org/10.3390/bioengineering13020165",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:40122585",
+      "title": "Sprint running mechanics are associated with hamstring strain injury: a 6-month prospective cohort study of 126 elite male footballers.",
+      "authors": "Bramah C, Rhodes S, Clarke-Cornwell A, Dos'Santos T.",
+      "year": "2026",
+      "journal": "Br J Sports Med",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1136/bjsports-2024-108600",
+      "pmid": "40122585",
+      "pmcid": "PMC13018775",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40122585/",
+      "publisher_url": "https://doi.org/10.1136/bjsports-2024-108600",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41863688",
+      "title": "Stiffness and Running Performance: From the Tissue to the Body: A Narrative Review.",
+      "authors": "Masson L, Millet GY, Kerhervé HA.",
+      "year": "2026",
+      "journal": "Sports Med",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s40279-026-02406-7",
+      "pmid": "41863688",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41863688/",
+      "publisher_url": "https://doi.org/10.1007/s40279-026-02406-7",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42430352",
+      "title": "Structure-aware fatigue modeling in foot deformities: A digital health framework for tissue-specific running injury risk prediction using multi-modal data.",
+      "authors": "Zhou Z, Zhou H, Xu D, Van Hooren B, Yuan Y, Jie T, Gao X, Qu X, Zhang Z, Gao Z, Xiang L, Gu Y.",
+      "year": "2026",
+      "journal": "PLOS Digit Health",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1371/journal.pdig.0001537",
+      "pmid": "42430352",
+      "pmcid": "PMC13354006",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42430352/",
+      "publisher_url": "https://doi.org/10.1371/journal.pdig.0001537",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:33605843",
+      "title": "The dose-response relationship between interval-training and VO<sub>2max</sub> in well-trained endurance runners: A systematic review.",
+      "authors": "Parmar A, Jones TW, Hayes PR.",
+      "year": "2021",
+      "journal": "J Sports Sci",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.1080/02640414.2021.1876313",
+      "pmid": "33605843",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/33605843/",
+      "publisher_url": "https://doi.org/10.1080/02640414.2021.1876313",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:38627351",
+      "title": "The Effect of Strength Training Methods on Middle-Distance and Long-Distance Runners' Athletic Performance: A Systematic Review with Meta-analysis.",
+      "authors": "Llanos-Lagos C, Ramirez-Campillo R, Moran J, Sáez de Villarreal E.",
+      "year": "2024",
+      "journal": "Sports Med",
+      "publication_type": "meta-analysis; systematic review; review-article; journal article",
+      "doi": "10.1007/s40279-024-02018-z",
+      "pmid": "38627351",
+      "pmcid": "PMC11258194",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38627351/",
+      "publisher_url": "https://doi.org/10.1007/s40279-024-02018-z",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:40153564",
+      "title": "The Effect of Strength Training on Endurance Performance Determinants in Middle- and Long-Distance Endurance Athletes: An Umbrella Review of Systematic Reviews and Meta-Analysis.",
+      "authors": "Ramos-Campo DJ, Andreu-Caravaca L, Clemente-Suárez VJ, Rubio-Arias JÁ.",
+      "year": "2025",
+      "journal": "J Strength Cond Res",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1519/jsc.0000000000005056",
+      "pmid": "40153564",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40153564/",
+      "publisher_url": "https://doi.org/10.1519/jsc.0000000000005056",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42346856",
+      "title": "The Effectiveness of NIRS-Based Wearable Devices in Estimating Physical Activity Intensity in Patients with Chronic Non-Communicable Diseases: A Structured Narrative Review.",
+      "authors": "Caulier-Cisterna R, Vega-Moraga A, Ramos-López D, Contreras-Briceño F.",
+      "year": "2026",
+      "journal": "Med Sci (Basel)",
+      "publication_type": "research support, non-u.s. gov't; review-article; review; journal article",
+      "doi": "10.3390/medsci14020317",
+      "pmid": "42346856",
+      "pmcid": "PMC13304124",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42346856/",
+      "publisher_url": "https://doi.org/10.3390/medsci14020317",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:38904772",
+      "title": "The effects of high-intensity interval training versus moderate-intensity continuous training on athletes' aerobic endurance performance parameters.",
+      "authors": "Wang Z, Wang J.",
+      "year": "2024",
+      "journal": "Eur J Appl Physiol",
+      "publication_type": "meta-analysis; systematic review; journal article",
+      "doi": "10.1007/s00421-024-05532-0",
+      "pmid": "38904772",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38904772/",
+      "publisher_url": "https://doi.org/10.1007/s00421-024-05532-0",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:40550392",
+      "title": "The effects of running shoe longitudinal bending stiffness and midsole energy return on oxygen consumption and ankle mechanics and energetics: A systematic review and meta-analysis.",
+      "authors": "Stephen CHN, Kelly LA, Schuster RW, Diamond LE.",
+      "year": "2025",
+      "journal": "J Sport Health Sci",
+      "publication_type": "meta-analysis; research support, non-u.s. gov't; systematic review; review-article; journal article",
+      "doi": "10.1016/j.jshs.2025.101069",
+      "pmid": "40550392",
+      "pmcid": "PMC12305619",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40550392/",
+      "publisher_url": "https://doi.org/10.1016/j.jshs.2025.101069",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:41664969",
+      "title": "The impact of Advanced Footwear Technology on physical, physiological, biomechanical, and perception outcomes: a systematic review.",
+      "authors": "Marmondi F, Ferrando V, Panascì M, Bonato M.",
+      "year": "2026",
+      "journal": "J Sports Med Phys Fitness",
+      "publication_type": "systematic review; journal article",
+      "doi": "10.23736/s0022-4707.25.16838-2",
+      "pmid": "41664969",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41664969/",
+      "publisher_url": "https://doi.org/10.23736/s0022-4707.25.16838-2",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:40964543",
+      "title": "The Influence of Running Cadence on Biomechanics and Injury Prevention: A Systematic Review.",
+      "authors": "Figueiredo I, Reis E Silva M, Sousa JE.",
+      "year": "2025",
+      "journal": "Cureus",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.7759/cureus.90322",
+      "pmid": "40964543",
+      "pmcid": "PMC12440572",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40964543/",
+      "publisher_url": "https://doi.org/10.7759/cureus.90322",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42405338",
+      "title": "The interplay between sexual activity, athletic performance, and recovery in athletes: a narrative review.",
+      "authors": "Akyüz O, Alimoradi M, Alghosi M, Özaltaş HN, Cengiz C, Ceylan L, Barut Y, Konrad A.",
+      "year": "2026",
+      "journal": "Front Physiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3389/fphys.2026.1797234",
+      "pmid": "42405338",
+      "pmcid": "PMC13330485",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42405338/",
+      "publisher_url": "https://doi.org/10.3389/fphys.2026.1797234",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:39943293",
+      "title": "The Potential of Wearable Sensors for Detecting Cognitive Rumination: A Scoping Review.",
+      "authors": "Arnold VX, Young SD.",
+      "year": "2025",
+      "journal": "Sensors (Basel)",
+      "publication_type": "scoping review; review-article; journal article",
+      "doi": "10.3390/s25030654",
+      "pmid": "39943293",
+      "pmcid": "PMC11820721",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/39943293/",
+      "publisher_url": "https://doi.org/10.3390/s25030654",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:41284168",
+      "title": "The Relationship Between Running Load, Strength, Muscle Architecture and Hamstring Strain Injury Across Two Seasons of Elite Male Australian Football: A Prospective Cohort Study.",
+      "authors": "Breed R, Opar DA, Johnston RD, Hickey JT, Williams MD, Maniar N, Timmins RG.",
+      "year": "2025",
+      "journal": "Sports Med Open",
+      "publication_type": "research-article; journal article",
+      "doi": "10.1186/s40798-025-00944-4",
+      "pmid": "41284168",
+      "pmcid": "PMC12644382",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41284168/",
+      "publisher_url": "https://doi.org/10.1186/s40798-025-00944-4",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:42684207",
+      "title": "The Representation of Different Populations in Studies Assessing the Validity of Consumer Wearable Photoplethysmography-Based Measurements: Scoping Review.",
+      "authors": "Schipper RM, Oumar Djibrillah F, Roosink M, Winkens L, John A, Hazebroek E, Witteveen A, Berendsen AAM.",
+      "year": "2026",
+      "journal": "JMIR Mhealth Uhealth",
+      "publication_type": "scoping review; research support, non-u.s. gov't; review-article; journal article",
+      "doi": "10.2196/87324",
+      "pmid": "42684207",
+      "pmcid": "PMC13524368",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42684207/",
+      "publisher_url": "https://doi.org/10.2196/87324",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:41753086",
+      "title": "The Role of Sleep on Physical and Cognitive Performance of Ultra-Endurance Athletes: A Systematic Review.",
+      "authors": "Guilherme LQ, Rodrigues BO, Rosa COB, Leite LB, Scheer V, Forte P, Hermsdorff HHM, Kravchychyn ACP, de Sá Souza H.",
+      "year": "2026",
+      "journal": "J Clin Med",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/jcm15041398",
+      "pmid": "41753086",
+      "pmcid": "PMC12941826",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41753086/",
+      "publisher_url": "https://doi.org/10.3390/jcm15041398",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42676084",
+      "title": "Timing and Dose Matter: Late High-Speed Exposure and Higher High-Intensity Acceleration Volumes Reduce Hamstring Reinjury Risk in Elite Male Football (Soccer).",
+      "authors": "Pecci J, Castilla-López C, di Michele R, Benedetti L, Aiello P, Prandelli N, Nanni G, Bini L, Muñoz-Macho A, Alcantarilla-Pedrosa M, Llabrés-Bennasar B, Stathas I, Koundourakis N, Asian-Clemente J, Bibrowicz B, Carnero-Díaz A, Beato M, Sañudo B, Perna P.",
+      "year": "2026",
+      "journal": "J Orthop Sports Phys Ther",
+      "publication_type": "journal article",
+      "doi": "10.2519/jospt.2026.14077",
+      "pmid": "42676084",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42676084/",
+      "publisher_url": "https://doi.org/10.2519/jospt.2026.14077",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:41351755",
+      "title": "Toward a record-eligible sub-2-hour marathon: an updated integrative framework of Physiological, technological, and cognitive determinants.",
+      "authors": "Grivas GV.",
+      "year": "2026",
+      "journal": "Eur J Appl Physiol",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s00421-025-06085-6",
+      "pmid": "41351755",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41351755/",
+      "publisher_url": "https://doi.org/10.1007/s00421-025-06085-6",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42614341",
+      "title": "Trending Pediatric Injuries in the Overhead Athlete: A Narrative Review.",
+      "authors": "Molony J, Merkel D, McElheny K, Matsuzaki Y, Yang M.",
+      "year": "2026",
+      "journal": "HSS J",
+      "publication_type": "review; journal article",
+      "doi": "10.1177/15563316261474789",
+      "pmid": "42614341",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42614341/",
+      "publisher_url": "https://doi.org/10.1177/15563316261474789",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "sleep_recovery"
+      ]
+    },
+    {
+      "id": "pmid:42476539",
+      "title": "Triceps surae muscle injuries-a clinical challenge more complex than you think.",
+      "authors": "Balius R, Pedret C, Pujol-Marzo M, Valle X, de la Fuente J.",
+      "year": "2026",
+      "journal": "Br Med Bull",
+      "publication_type": "review; journal article",
+      "doi": "10.1093/bmb/ldag021",
+      "pmid": "42476539",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42476539/",
+      "publisher_url": "https://doi.org/10.1093/bmb/ldag021",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_injury"
+      ]
+    },
+    {
+      "id": "pmid:42586535",
+      "title": "Using Machine Learning to Explain Recreational Running Injury: An Exploratory Classification Analysis.",
+      "authors": "Neal BS, Hadjiantoni S, Gruber AH, Willy RW, Liew BXW.",
+      "year": "2026",
+      "journal": "J Sport Rehabil",
+      "publication_type": "journal article",
+      "doi": "10.1123/jsr.2026-0073",
+      "pmid": "42586535",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42586535/",
+      "publisher_url": "https://doi.org/10.1123/jsr.2026-0073",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_cohorts"
+      ]
+    },
+    {
+      "id": "pmid:35445837",
+      "title": "Wearable activity trackers-advanced technology or advanced marketing?",
+      "authors": "Shei RJ, Holder IG, Oumsang AS, Paris BA, Paris HL.",
+      "year": "2022",
+      "journal": "Eur J Appl Physiol",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.1007/s00421-022-04951-1",
+      "pmid": "35445837",
+      "pmcid": "PMC9022022",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35445837/",
+      "publisher_url": "https://doi.org/10.1007/s00421-022-04951-1",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:41744715",
+      "title": "Wearable Biosensing and Machine Learning for Data-Driven Training and Coaching Support.",
+      "authors": "Madrigal-Cerezo R, Domínguez-Sanz N, Martín-Rodríguez A.",
+      "year": "2026",
+      "journal": "Biosensors (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/bios16020097",
+      "pmid": "41744715",
+      "pmcid": "PMC12938206",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41744715/",
+      "publisher_url": "https://doi.org/10.3390/bios16020097",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:39511444",
+      "title": "Wearable biosensors for pediatric hospitals: a scoping review.",
+      "authors": "Hyun A, Takashima M, Hall S, Lee L, Dufficy M, Ruppel H, Ullman A.",
+      "year": "2025",
+      "journal": "Pediatr Res",
+      "publication_type": "scoping review; journal article",
+      "doi": "10.1038/s41390-024-03693-4",
+      "pmid": "39511444",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/39511444/",
+      "publisher_url": "https://doi.org/10.1038/s41390-024-03693-4",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:36535270",
+      "title": "Wearable Device Validity in Measuring Steps, Energy Expenditure, and Heart Rate Across Age, Gender, and Body Mass Index: Data Analysis From a Systematic Review.",
+      "authors": "Musa SB, Ellis R, Chafe B, Sturrock SL, Maher RA, Cullen K, Fuller D.",
+      "year": "2023",
+      "journal": "J Phys Act Health",
+      "publication_type": "research support, non-u.s. gov't; systematic review; journal article",
+      "doi": "10.1123/jpah.2022-0160",
+      "pmid": "36535270",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/36535270/",
+      "publisher_url": "https://doi.org/10.1123/jpah.2022-0160",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:38786993",
+      "title": "Wearable Sensors and the Evaluation of Physiological Performance in Elite Field Hockey Players.",
+      "authors": "Latino F, Tafuri F.",
+      "year": "2024",
+      "journal": "Sports (Basel)",
+      "publication_type": "review-article; review; journal article",
+      "doi": "10.3390/sports12050124",
+      "pmid": "38786993",
+      "pmcid": "PMC11126008",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/38786993/",
+      "publisher_url": "https://doi.org/10.3390/sports12050124",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42688275",
+      "title": "When is rPPG physiologically valid for stress and workload monitoring? A PRISMA-ScR scoping review.",
+      "authors": "Nasser A, Baslyman M, Elferik S.",
+      "year": "2026",
+      "journal": "Front Digit Health",
+      "publication_type": "systematic review; systematic-review; journal article",
+      "doi": "10.3389/fdgth.2026.1855425",
+      "pmid": "42688275",
+      "pmcid": "PMC13533986",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42688275/",
+      "publisher_url": "https://doi.org/10.3389/fdgth.2026.1855425",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "wearable_validity"
+      ]
+    },
+    {
+      "id": "pmid:42228160",
+      "title": "Why now? A physiological perspective on the first official sub-2-hour marathon.",
+      "authors": "Grivas GV.",
+      "year": "2026",
+      "journal": "Eur J Appl Physiol",
+      "publication_type": "review; journal article",
+      "doi": "10.1007/s00421-026-06285-8",
+      "pmid": "42228160",
+      "pmcid": null,
+      "open_access_reported": false,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42228160/",
+      "publisher_url": "https://doi.org/10.1007/s00421-026-06285-8",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "running_training"
+      ]
+    },
+    {
+      "id": "pmid:42798791",
+      "title": "Yo-Yo IR1-derived aerobic endurance machine-learning prediction in youth male soccer players using demographics information and resting heart rate variability parameters.",
+      "authors": "Korzeniewski K, Makuch R, Mikielewicz M, Rosoł M, Gąsior JS, Młyńczak M.",
+      "year": "2026",
+      "journal": "Front Physiol",
+      "publication_type": "research-article; journal article",
+      "doi": "10.3389/fphys.2026.1904809",
+      "pmid": "42798791",
+      "pmcid": "PMC13613047",
+      "open_access_reported": true,
+      "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42798791/",
+      "publisher_url": "https://doi.org/10.3389/fphys.2026.1904809",
+      "full_text_status": "not_checked",
+      "review_status": "candidate",
+      "topics": [
+        "hrv"
+      ]
+    }
+  ]
+}
