@@ -3,16 +3,28 @@ from __future__ import annotations
 import os
 import secrets
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from cryptography.fernet import Fernet
-from sqlalchemy import JSON, Boolean, Float, ForeignKey, ForeignKeyConstraint, Integer, String, Text, create_engine, event, select
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Float,
+    ForeignKey,
+    ForeignKeyConstraint,
+    Integer,
+    String,
+    Text,
+    create_engine,
+    event,
+    select,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 
 def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 class Base(DeclarativeBase):
@@ -69,7 +81,11 @@ class Daily(Base):
 
 class ActivitySamples(Base):
     __tablename__ = "activity_samples"
-    __table_args__ = (ForeignKeyConstraint(["user_id", "activity_id"], ["activities.user_id", "activities.id"], ondelete="CASCADE"),)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["user_id", "activity_id"], ["activities.user_id", "activities.id"], ondelete="CASCADE"
+        ),
+    )
     user_id: Mapped[str] = mapped_column(String(64), primary_key=True)
     activity_id: Mapped[str] = mapped_column(String(80), primary_key=True)
     samples: Mapped[list] = mapped_column(JSON, default=list)
@@ -114,13 +130,23 @@ class Store:
         keyfile.chmod(0o600)
         self.fernet = Fernet(keyfile.read_bytes())
         self.archive_lock = threading.RLock()
-        url = database_url or os.environ.get("OPEN_GARMIN_DATABASE_URL") or f"sqlite:///{self.directory / 'app.db'}"
-        self.engine = create_engine(url, connect_args={"check_same_thread": False, "timeout": 30} if url.startswith("sqlite") else {}, pool_pre_ping=True)
+        url = (
+            database_url
+            or os.environ.get("OPEN_GARMIN_DATABASE_URL")
+            or f"sqlite:///{self.directory / 'app.db'}"
+        )
+        self.engine = create_engine(
+            url,
+            connect_args={"check_same_thread": False, "timeout": 30} if url.startswith("sqlite") else {},
+            pool_pre_ping=True,
+        )
         if url.startswith("sqlite"):
+
             @event.listens_for(self.engine, "connect")
             def configure_sqlite(connection, _):
                 connection.execute("PRAGMA foreign_keys=ON")
                 connection.execute("PRAGMA journal_mode=WAL")
+
         self.sessions = sessionmaker(self.engine, expire_on_commit=False)
         Base.metadata.create_all(self.engine)
         # Upgrade the initial pilot's inline samples once, without a network call.
@@ -142,6 +168,7 @@ class Store:
     def archive_path(self, user_id: str, activity_id: str) -> Path:
         # Only app-generated user IDs and numeric Garmin IDs reach this path.
         import hashlib
+
         folder = self.directory / "originals" / hashlib.sha256(user_id.encode()).hexdigest()
         folder.mkdir(parents=True, exist_ok=True, mode=0o700)
         return folder / f"{hashlib.sha256(activity_id.encode()).hexdigest()}.zip"

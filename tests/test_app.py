@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -15,7 +13,10 @@ def app(tmp_path, monkeypatch):
 
 
 def register(client, email="athlete@example.test"):
-    response = client.post("/api/auth/register", json={"email": email, "password": "a-long-test-password", "name": "Test Athlete"})
+    response = client.post(
+        "/api/auth/register",
+        json={"email": email, "password": "a-long-test-password", "name": "Test Athlete"},
+    )
     assert response.status_code == 200
     csrf = response.json()["csrf_token"]
     client.headers["X-CSRF-Token"] = csrf
@@ -25,16 +26,36 @@ def register(client, email="athlete@example.test"):
 def seed(app, email, aid="42"):
     with app.state.store.sessions.begin() as db:
         user = db.scalar(select(User).where(User.email == email))
-        db.add(Activity(user_id=user.id, id=aid, date="2026-10-20", data={"id": aid, "name": "=SUM(A1)", "date": "2026-10-20", "samples": [], "source": "garmin"}, raw={"private": "source"}))
+        db.add(
+            Activity(
+                user_id=user.id,
+                id=aid,
+                date="2026-10-20",
+                data={"id": aid, "name": "=SUM(A1)", "date": "2026-10-20", "samples": [], "source": "garmin"},
+                raw={"private": "source"},
+            )
+        )
         return user.id
 
 
 def test_fit_import_is_private_and_deduplicated(app, monkeypatch):
     import server.app as app_module
-    monkeypatch.setattr(app_module, "parse_original", lambda _: {
-        "recorded_start": "2026-10-20T10:00:00+00:00", "recorded_sport": "running", "recorded_device": "Garmin Forerunner",
-        "samples": [{"time": 0, "distance": 0, "hr": 120}, {"time": 60, "distance": 180, "hr": 140}],
-        "laps": [], "sets": [], "events": [], "session_metrics": [], "detail_state": "ready"})
+
+    monkeypatch.setattr(
+        app_module,
+        "parse_original",
+        lambda _: {
+            "recorded_start": "2026-10-20T10:00:00+00:00",
+            "recorded_sport": "running",
+            "recorded_device": "Garmin Forerunner",
+            "samples": [{"time": 0, "distance": 0, "hr": 120}, {"time": 60, "distance": 180, "hr": 140}],
+            "laps": [],
+            "sets": [],
+            "events": [],
+            "session_metrics": [],
+            "detail_state": "ready",
+        },
+    )
     with TestClient(app) as client:
         assert client.post("/api/import/fit", files={"file": ("run.fit", b"fixture")}).status_code == 401
         register(client)
@@ -57,7 +78,14 @@ def test_sessions_and_csrf_are_required_for_mutations(app):
     with TestClient(app) as client:
         csrf = register(client)
         assert client.cookies.get("og_session")
-        assert "httponly" in client.post("/api/auth/login", json={"email": "athlete@example.test", "password": "a-long-test-password"}).headers["set-cookie"].lower()
+        assert (
+            "httponly"
+            in client.post(
+                "/api/auth/login", json={"email": "athlete@example.test", "password": "a-long-test-password"}
+            )
+            .headers["set-cookie"]
+            .lower()
+        )
         # Login rotates the session; use its new CSRF token.
         csrf = client.get("/api/session").json()["csrf_token"]
         client.headers.pop("X-CSRF-Token", None)
@@ -89,7 +117,12 @@ def test_notes_export_and_rpe_validation(app):
     with TestClient(app) as client:
         register(client)
         seed(app, "athlete@example.test")
-        assert client.put("/api/activities/42/note", json={"text": "Felt steady", "rpe": 4, "tags": ["easy"]}).status_code == 200
+        assert (
+            client.put(
+                "/api/activities/42/note", json={"text": "Felt steady", "rpe": 4, "tags": ["easy"]}
+            ).status_code
+            == 200
+        )
         a = client.get("/api/activities/42").json()
         assert a["note"] == {"text": "Felt steady", "rpe": 4, "tags": ["easy"]}
         assert client.put("/api/activities/42/note", json={"rpe": 11}).status_code == 422
@@ -110,15 +143,19 @@ def test_key_validation_errors_do_not_echo_submitted_credentials(app):
 
 def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch):
     monkeypatch.setenv("OPEN_GARMIN_LOCAL_MODE", "1")
+
     class GarminStub:
         def __init__(self, key, region):
             assert key == "private-personal-key-12345"
             assert region == "com"
+
         def get(self, path):
             assert path == "/userprofile-service/userprofile/settings"
             return {"displayName": "runner"}
+
         def close(self):
             pass
+
     local_app = create_app(Store(tmp_path), start_worker=False, client_factory=GarminStub)
     with TestClient(local_app, base_url="http://127.0.0.1:8000") as client:
         opened = client.get("/api/session")
@@ -127,7 +164,9 @@ def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch)
         assert opened.json()["user"] is not None
         assert client.cookies.get("og_session")
         client.headers["X-CSRF-Token"] = opened.json()["csrf_token"]
-        response = client.post("/api/connection", json={"api_key": "private-personal-key-12345", "region": "com"})
+        response = client.post(
+            "/api/connection", json={"api_key": "private-personal-key-12345", "region": "com"}
+        )
         assert response.status_code == 200 and response.json()["job_id"]
         assert client.get("/api/data").json()["status"]["connected"] is True
         with local_app.state.store.sessions() as db:
@@ -160,7 +199,13 @@ def test_preferences_validate_timezone_and_keep_goals(app):
     with TestClient(app) as client:
         register(client)
         assert client.put("/api/preferences", json={"timezone": "Not/AZone"}).status_code == 422
-        assert client.put("/api/preferences", json={"timezone": "Europe/Paris", "units": "imperial", "weekly_distance": 50000}).status_code == 200
+        assert (
+            client.put(
+                "/api/preferences",
+                json={"timezone": "Europe/Paris", "units": "imperial", "weekly_distance": 50000},
+            ).status_code
+            == 200
+        )
         assert client.get("/api/data").json()["preferences"]["weekly_distance"] == 50000
 
 
@@ -170,7 +215,14 @@ def test_encrypted_key_storage_and_disconnect_keep_data(app):
         register(client)
         uid = seed(app, "athlete@example.test")
         with store.sessions.begin() as db:
-            db.add(Connection(user_id=uid, encrypted_key=store.encrypt("private-key-that-must-not-leak"), region="com", profile={}))
+            db.add(
+                Connection(
+                    user_id=uid,
+                    encrypted_key=store.encrypt("private-key-that-must-not-leak"),
+                    region="com",
+                    profile={},
+                )
+            )
         assert "private-key" not in (store.directory / "app.db").read_bytes().decode(errors="ignore")
         assert "private-key" not in client.get("/api/data").text
         assert client.delete("/api/connection").status_code == 200

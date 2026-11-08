@@ -1,6 +1,3 @@
-from datetime import date
-
-import pytest
 from sqlalchemy import select
 
 from server.garmin import GarminError
@@ -17,7 +14,16 @@ class FakeGarmin:
 
     def get(self, path, params=None, binary=False):
         if "activities/search" in path:
-            return [{"activityId": 42, "activityName": "Test run", "startTimeLocal": "2026-10-20T10:00:00", "activityType": {"typeKey": "running"}, "duration": 1800, "distance": 5000}]
+            return [
+                {
+                    "activityId": 42,
+                    "activityName": "Test run",
+                    "startTimeLocal": "2026-10-20T10:00:00",
+                    "activityType": {"typeKey": "running"},
+                    "duration": 1800,
+                    "distance": 5000,
+                }
+            ]
         if "v2/dailysummaries" in path:
             return {"data": [{"calendarDate": "2026-10-20", "movement": {"steps": {"value": 8000}}}]}
         if "dailySleepSummaries" in path:
@@ -33,7 +39,9 @@ class FakeGarmin:
 def setup_store(tmp_path):
     store = Store(tmp_path)
     with store.sessions.begin() as db:
-        user = User(email="athlete@example.test", name="Test", password_hash="unused", preferences={"timezone": "UTC"})
+        user = User(
+            email="athlete@example.test", name="Test", password_hash="unused", preferences={"timezone": "UTC"}
+        )
         db.add(user)
         db.flush()
         uid = user.id
@@ -67,6 +75,7 @@ def test_authentication_failure_pauses_the_connection(tmp_path):
     class Refused(FakeGarmin):
         def get(self, *args, **kwargs):
             raise GarminError("Key rejected", 401)
+
     store, uid = setup_store(tmp_path)
     worker = Worker(store, Refused)
     job = worker.enqueue(uid)
@@ -90,6 +99,7 @@ def test_rate_limit_sets_a_persistent_cooldown(tmp_path):
     class Limited(FakeGarmin):
         def get(self, *args, **kwargs):
             raise GarminError("Wait", 429, 90)
+
     store, uid = setup_store(tmp_path)
     worker = Worker(store, Limited)
     worker.run(worker.enqueue(uid))
