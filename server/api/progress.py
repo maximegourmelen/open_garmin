@@ -16,6 +16,7 @@ from ..analytics.load import effort_trend, ramp_check
 from ..analytics.zones import intensity_mix
 from ..db.models import Activity, ActivityDerived, BestEffort, Daily, User
 from ..workspace import workspace
+from .schemas import DeeperResponse, ProgressResponse
 
 Range = Literal["7D", "4W", "3M", "1Y"]
 DAYS = {"7D": 7, "4W": 28, "3M": 90, "1Y": 365}
@@ -163,5 +164,9 @@ def deeper_view(request: Request, range: Range = "3M"):
 
 def register(app):
     for prefix in ("/api", "/api/demo"):
-        app.add_api_route(f"{prefix}/progress", progress_view, methods=["GET"])
-        app.add_api_route(f"{prefix}/progress/deeper", deeper_view, methods=["GET"])
+        app.add_api_route(
+            f"{prefix}/progress", progress_view, methods=["GET"], response_model=ProgressResponse
+        )
+        app.add_api_route(
+            f"{prefix}/progress/deeper", deeper_view, methods=["GET"], response_model=DeeperResponse
+        )

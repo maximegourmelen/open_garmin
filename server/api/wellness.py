@@ -14,6 +14,7 @@ from ..analytics.energy import body_battery_day, stress_day
 from ..analytics.sleep import bedtime_rhythm, sleep_debt, sleep_minutes, sleep_sentence, stage_ranges
 from ..db.models import Activity, Daily, User
 from ..workspace import workspace
+from .schemas import HealthSeries
 
 Range = Literal["7D", "4W", "3M", "1Y"]
 DAYS = {"7D": 7, "4W": 28, "3M": 90, "1Y": 365}
@@ -141,9 +142,19 @@ def register(app):
     for kind in ("sleep", "heart", "energy", "stress", "steps"):
         endpoint = make_endpoint(kind)
 
-        app.add_api_route(f"/api/wellness/{kind}", endpoint, methods=["GET"], name=f"wellness_{kind}")
         app.add_api_route(
-            f"/api/demo/wellness/{kind}", endpoint, methods=["GET"], name=f"demo_wellness_{kind}"
+            f"/api/wellness/{kind}",
+            endpoint,
+            methods=["GET"],
+            name=f"wellness_{kind}",
+            response_model=HealthSeries,
+        )
+        app.add_api_route(
+            f"/api/demo/wellness/{kind}",
+            endpoint,
+            methods=["GET"],
+            name=f"demo_wellness_{kind}",
+            response_model=HealthSeries,
         )
 
     @app.get("/api/wellness/overview")

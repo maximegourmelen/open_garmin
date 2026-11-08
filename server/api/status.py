@@ -9,13 +9,14 @@ from sqlalchemy import func, select
 
 from ..db.models import Activity, Connection, Daily, Job, MilestoneAward, User, WeeklyRecap
 from ..workspace import workspace
+from .schemas import StatusResponse
 
 DEMO_DENIED = "This is the demo. Connect Garmin to use your own data."
 
 
 def register(app):
-    @app.get("/api/status")
-    @app.get("/api/demo/status")
+    @app.get("/api/status", response_model=StatusResponse)
+    @app.get("/api/demo/status", response_model=StatusResponse)
     def status(request: Request):
         ws = workspace(request)
         with ws.store.sessions() as db:

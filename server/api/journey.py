@@ -28,6 +28,7 @@ from ..db.models import (
 )
 from ..derive import rederive_user
 from ..workspace import workspace
+from .schemas import JourneyResponse
 
 
 class JourneyChange(BaseModel):
@@ -250,8 +251,10 @@ def mark_recap_seen(request: Request, week: date):
 
 def register(app):
     for prefix in ("/api", "/api/demo"):
-        app.add_api_route(f"{prefix}/journey", journey_view, methods=["GET"])
-        app.add_api_route(f"{prefix}/journey", change_journey, methods=["PUT"])
+        app.add_api_route(f"{prefix}/journey", journey_view, methods=["GET"], response_model=JourneyResponse)
+        app.add_api_route(
+            f"{prefix}/journey", change_journey, methods=["PUT"], response_model=JourneyResponse
+        )
         app.add_api_route(f"{prefix}/checkins/{{day}}", put_checkin, methods=["PUT"])
         app.add_api_route(f"{prefix}/milestones/seen", mark_milestones_seen, methods=["POST"])
         app.add_api_route(f"{prefix}/recaps/{{week}}", recap_view, methods=["GET"])

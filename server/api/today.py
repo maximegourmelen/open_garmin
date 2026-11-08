@@ -31,6 +31,7 @@ from ..db.models import (
 )
 from ..workspace import workspace
 from .activity_views import summary as activity_summary
+from .schemas import TodayResponse
 
 
 def today_view(request: Request):
@@ -264,5 +265,5 @@ def today_view(request: Request):
 
 
 def register(app):
-    app.add_api_route("/api/today", today_view, methods=["GET"])
-    app.add_api_route("/api/demo/today", today_view, methods=["GET"])
+    app.add_api_route("/api/today", today_view, methods=["GET"], response_model=TodayResponse)
+    app.add_api_route("/api/demo/today", today_view, methods=["GET"], response_model=TodayResponse)

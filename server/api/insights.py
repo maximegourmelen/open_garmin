@@ -9,6 +9,7 @@ from ..analytics.common import local_today
 from ..analytics.insights import insights_for
 from ..db.models import Activity, ActivityDerived, BestEffort, CheckIn, Daily, User
 from ..workspace import workspace
+from .schemas import Insight
 
 
 def insight_view(request: Request):
@@ -49,5 +50,5 @@ def insight_view(request: Request):
 
 
 def register(app):
-    app.add_api_route("/api/insights", insight_view, methods=["GET"])
-    app.add_api_route("/api/demo/insights", insight_view, methods=["GET"])
+    app.add_api_route("/api/insights", insight_view, methods=["GET"], response_model=list[Insight])
+    app.add_api_route("/api/demo/insights", insight_view, methods=["GET"], response_model=list[Insight])

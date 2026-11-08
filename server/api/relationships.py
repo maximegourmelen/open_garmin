@@ -12,6 +12,7 @@ from ..analytics.common import local_today
 from ..analytics.relationships import relationship
 from ..db.models import Activity, ActivityDerived, CheckIn, Daily, User
 from ..workspace import workspace
+from .schemas import RelationshipResponse
 
 Variable = Literal[
     "sleep_minutes",
@@ -102,5 +103,9 @@ def relationship_view(
 
 
 def register(app):
-    app.add_api_route("/api/relationships", relationship_view, methods=["GET"])
-    app.add_api_route("/api/demo/relationships", relationship_view, methods=["GET"])
+    app.add_api_route(
+        "/api/relationships", relationship_view, methods=["GET"], response_model=RelationshipResponse
+    )
+    app.add_api_route(
+        "/api/demo/relationships", relationship_view, methods=["GET"], response_model=RelationshipResponse
+    )

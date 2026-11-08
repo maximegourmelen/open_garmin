@@ -9,6 +9,7 @@ from fastapi import Request
 
 from ..analytics.insights import CATALOG_IDS
 from ..workspace import workspace
+from .schemas import Method
 
 RESEARCH = Path(__file__).resolve().parents[2] / "research"
 
@@ -304,8 +305,8 @@ for insight_id in CATALOG_IDS:
 
 
 def register(app):
-    @app.get("/api/methods")
-    @app.get("/api/demo/methods")
+    @app.get("/api/methods", response_model=list[Method])
+    @app.get("/api/demo/methods", response_model=list[Method])
     def methods(request: Request):
         workspace(request)
         return METHODS

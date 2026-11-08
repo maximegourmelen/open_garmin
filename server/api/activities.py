@@ -19,6 +19,7 @@ from ..storage import Activity, ActivityDerived, ActivityFeel, ActivitySamples, 
 from ..workspace import workspace
 from .activity_views import detail as activity_detail
 from .activity_views import summary as activity_summary
+from .schemas import ActivityDetail, ActivityList
 
 
 def register(app, store, worker, current_user, limit):
@@ -68,7 +69,7 @@ def register(app, store, worker, current_user, limit):
         next_cursor = str(cursor + page_limit) if cursor + page_limit < len(items) else None
         return {"items": page, "next_cursor": next_cursor, "totals": totals}
 
-    @app.get("/api/activities")
+    @app.get("/api/activities", response_model=ActivityList)
     def list_activities(
         from_date: Annotated[date | None, Query(alias="from")] = None,
         to_date: Annotated[date | None, Query(alias="to")] = None,
@@ -80,7 +81,7 @@ def register(app, store, worker, current_user, limit):
     ):
         return read_list(store, user.id, from_date, to_date, sport, q, limit, cursor)
 
-    @app.get("/api/demo/activities")
+    @app.get("/api/demo/activities", response_model=ActivityList)
     def demo_list_activities(
         request: Request,
         from_date: Annotated[date | None, Query(alias="from")] = None,
@@ -110,11 +111,11 @@ def register(app, store, worker, current_user, limit):
             )
             return activity_detail(row.data, derived.data if derived else None, full_samples, note_data)
 
-    @app.get("/api/activities/{activity_id}")
+    @app.get("/api/activities/{activity_id}", response_model=ActivityDetail)
     def activity(activity_id: str, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
         return read_activity(store, user.id, activity_id)
 
-    @app.get("/api/demo/activities/{activity_id}")
+    @app.get("/api/demo/activities/{activity_id}", response_model=ActivityDetail)
     def demo_activity(activity_id: str, request: Request):
         ws = workspace(request)
         return read_activity(ws.store, ws.user_id, activity_id)
