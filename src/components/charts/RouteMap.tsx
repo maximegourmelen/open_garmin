@@ -54,6 +54,8 @@ export function RouteMap({
   }, [valid]);
   const [view, setView] = useState({ x: 0, y: 0, zoom: 1 });
   const drag = useRef<{ x: number; y: number; originX: number; originY: number } | null>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ distance: number; zoom: number } | null>(null);
   if (!geometry)
     return (
       <div className="flex h-56 items-center justify-center rounded-tile bg-surface-2 text-sm text-text-2">
@@ -100,12 +102,37 @@ export function RouteMap({
           zoom(event.deltaY < 0 ? 1.2 : 1 / 1.2);
         }}
         onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          drag.current = { x: event.clientX, y: event.clientY, originX: view.x, originY: view.y };
+          event.currentTarget.setPointerCapture?.(event.pointerId);
+          pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          if (pointers.current.size === 1) {
+            drag.current = { x: event.clientX, y: event.clientY, originX: view.x, originY: view.y };
+          } else if (pointers.current.size === 2) {
+            const [a, b] = [...pointers.current.values()];
+            pinch.current = { distance: Math.hypot(a.x - b.x, a.y - b.y), zoom: view.zoom };
+            drag.current = null;
+          }
         }}
         onPointerMove={(event) => {
+          if (!pointers.current.has(event.pointerId)) return;
+          pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          if (pointers.current.size === 2 && pinch.current) {
+            const [a, b] = [...pointers.current.values()];
+            const distance = Math.hypot(a.x - b.x, a.y - b.y);
+            setView((old) => ({
+              ...old,
+              zoom: Math.max(
+                1,
+                Math.min(
+                  8,
+                  (pinch.current!.zoom * distance) / Math.max(1, pinch.current!.distance),
+                ),
+              ),
+            }));
+            return;
+          }
           if (!drag.current) return;
           const rect = event.currentTarget.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
           setView((old) => ({
             ...old,
             x:
@@ -116,7 +143,17 @@ export function RouteMap({
               (((event.clientY - drag.current!.y) / rect.height) * 200) / old.zoom,
           }));
         }}
-        onPointerUp={() => {
+        onPointerUp={(event) => {
+          pointers.current.delete(event.pointerId);
+          pinch.current = null;
+          const remaining = [...pointers.current.values()][0];
+          drag.current = remaining
+            ? { x: remaining.x, y: remaining.y, originX: view.x, originY: view.y }
+            : null;
+        }}
+        onPointerCancel={(event) => {
+          pointers.current.delete(event.pointerId);
+          pinch.current = null;
           drag.current = null;
         }}
       >

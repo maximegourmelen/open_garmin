@@ -19,12 +19,15 @@ import {
   ZoneBars,
 } from './components/charts';
 import {
+  Avatar,
   Button,
   Card,
   Dialog,
   Disclosure,
   EmptyState,
   ErrorState,
+  Explainer,
+  Kbd,
   Pill,
   ProgressBar,
   SegmentedControl,
@@ -33,7 +36,21 @@ import {
   SourceBadge,
   Switch,
   Tabs,
+  useToast,
 } from './components/ui';
+
+function GalleryToastButton() {
+  const toast = useToast();
+  return (
+    <Button
+      onClick={() =>
+        toast({ message: 'Your goal was saved', action: { label: 'Undo', onClick: () => {} } })
+      }
+    >
+      Show toast
+    </Button>
+  );
+}
 
 export default function GalleryPage() {
   const theme = useTheme();
@@ -120,6 +137,16 @@ export default function GalleryPage() {
           <Button variant="danger">Delete</Button>
           <Button disabled>Disabled</Button>
           <Button onClick={() => setDialog(true)}>Open dialog</Button>
+          <GalleryToastButton />
+          <Avatar name="Alex Runner" />
+          <Kbd>⌘ K</Kbd>
+          <Explainer
+            title="Effort points"
+            what="Minutes in each heart rate zone, with harder zones counting more."
+            why="They help you compare sessions."
+            source="Calculated from Garmin heart rate zones"
+            method="effort_points"
+          />
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <Pill>Neutral</Pill>

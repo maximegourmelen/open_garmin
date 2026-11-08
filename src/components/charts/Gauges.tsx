@@ -195,7 +195,12 @@ export function WeekDots({
           <span
             className={`flex size-7 items-center justify-center rounded-full ${day.isToday ? 'ring-2 ring-accent ring-offset-2 ring-offset-surface' : ''}`}
             style={{
-              background: day.sports.length ? chartColor(`sport-${day.sports[0]}`) : 'transparent',
+              background:
+                day.sports.length > 1
+                  ? `conic-gradient(${day.sports.map((sport, index) => `${chartColor(`sport-${sport}`)} ${(index / day.sports.length) * 100}% ${((index + 1) / day.sports.length) * 100}%`).join(', ')})`
+                  : day.sports.length
+                    ? chartColor(`sport-${day.sports[0]}`)
+                    : 'transparent',
               border: day.sports.length ? undefined : `1px solid ${chartColor('border-strong')}`,
             }}
             aria-label={`${day.date}: ${day.sports.length ? day.sports.join(', ') : day.isRest ? 'planned rest' : day.isFuture ? 'future' : 'no activity'}`}

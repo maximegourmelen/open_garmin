@@ -3,6 +3,7 @@ import {
   AreaChart,
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   Line,
   LineChart,
@@ -133,8 +134,23 @@ export function BarSeries({
               stackId={item.stackId}
               fill={chartColor(item.color)}
               radius={[3, 3, 0, 0]}
-              opacity={currentKey || partialKey ? 0.9 : 1}
-            />
+            >
+              {data.map((row, index) => (
+                <Cell
+                  key={index}
+                  fill={
+                    partialKey && row[partialKey]
+                      ? 'url(#partial-week-hatch)'
+                      : chartColor(item.color)
+                  }
+                  fillOpacity={
+                    currentKey && data.some((entry) => entry[currentKey]) && !row[currentKey]
+                      ? 0.45
+                      : 1
+                  }
+                />
+              ))}
+            </Bar>
           ))}
         </BarChart>
       </ResponsiveContainer>
