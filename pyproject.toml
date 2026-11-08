@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-garmin-app"
+version = "0.1.0"
+description = "An independent, open-source training workspace for your Garmin data"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn[standard]>=0.32,<1",
+  "sqlalchemy>=2.0,<3", "httpx>=0.28,<1", "cryptography>=44",
+  "fitdecode>=0.11,<1", "python-multipart>=0.0.20",
+  "tzdata>=2025.1"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24"]
+postgres = ["psycopg[binary]>=3.2"]
+
+[tool.setuptools.packages.find]
+include = ["server*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

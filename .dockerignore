@@ -1,0 +1,13 @@
+.runtime
+.venv
+node_modules
+dist
+.git
+.env
+.env.*
+*.db
+*.fit
+*.zip
+*.egg-info
+__pycache__
+.pytest_cache

@@ -1,0 +1,100 @@
+# Garmin data access: research and recommendation
+
+Research date: October 31, 2026. Recommendation updated after discovering Garmin's newly available Personal API and official Python package.
+
+**Recommendation: defer creating a new general-purpose Garmin library.** First evaluate the official client against Personal Suite Health. Use existing projects where they fit, contribute focused improvements where possible, and consider a companion package only after demonstrating a recurring gap.
+
+This research reviewed public Garmin documentation, the embedded Personal API OpenAPI definition, current package metadata, project source and issue reports, and the existing Health integration. Local inspection was read-only and included database structure, aggregate completeness checks, and saved file structure. No Garmin credentials or tokens were read, no authenticated Garmin requests were made, and Personal Suite was not changed. “Documented” below does not mean successfully tested against an account.
+
+## The change that alters the decision
+
+Garmin now offers a Personal API for individuals accessing their own data. A key is created in Garmin Connect, then exchanged for an OAuth2 bearer token. Keys can expire after 30, 90, or 180 days, or one year. Tokens last up to 24 hours; there is no refresh token, so applications exchange the key again. Deleting the key invalidates its associated tokens. This is separate from commercial integrations serving multiple end users. [Garmin Personal API FAQ](https://developer.garmin.com/gc-developer-program/personal/personal-faq).
+
+Garmin also distributes `garmin-connect-personal-api-python`; PyPI metadata dates version 1.0.0 to October 21, 2026. It requires Python 3.12+, is Apache-2.0 licensed, and includes an authenticator, data client, and CLI. A new repository offering basic Python access would substantially overlap it. [Official Python client](https://github.com/garmin/connect-personal-api-python), [package release](https://pypi.org/project/garmin-connect-personal-api-python/1.0.0/).
+
+Many existing READMEs still say personal API access does not exist or that `python-garminconnect` depends on Garth. Those claims need date checks. They describe an earlier situation and should not determine a new architecture.
+
+## Available access routes
+
+| Route | Suitable use | Limitation and decision |
+| --- | --- | --- |
+| Official Personal API | Individuals reading their own account | Preferred candidate for Health; establish actual coverage before migration |
+| Official business APIs | Applications integrating multiple users | Separate access program and deployment model; not automatically supplied by distributing an open-source library |
+| Unofficial Garmin Connect endpoints | Features absent from the Personal API | Broader surface, with authentication and endpoint maintenance costs; keep optional and explicit |
+| Garmin account export | Initial archive, recovery, offline imports | User requests an asynchronous export; not a continuous API feed |
+| Original activity files and device files | Detailed activity parsing | Preserve originals; cloud summaries and FIT files contain different information |
+| Direct Bluetooth | Live nearby-watch telemetry | Separate hardware integration problem; not a substitute for cloud account history |
+| Connect IQ / Health mobile SDKs | On-device applications or mobile device integration | Separate from an ordinary Python cloud-data client |
+
+Garmin's current overview distinguishes Personal pull access, Starter business push access with limited users and no historical data, and Enterprise push or ping/pull access with historical-data options. The current business FAQ describes approval and OAuth2. Do not assume old “free business API” descriptions or third-party pricing summaries remain applicable; public pages inspected did not establish a complete numerical pricing schedule. [Program overview](https://developer.garmin.com/gc-developer-program/overview/), [current business FAQ](https://developer.garmin.com/gc-developer-program/enterprise/program-faq/).
+
+Business Health API documentation includes wellness summaries and sample data; enhanced beat-to-beat intervals and some integration capabilities are marked Enterprise-only. Activity API documentation describes summaries and original activity files. Neither makes every Garmin feature universally available on every device. [Health API](https://developer.garmin.com/gc-developer-program/enterprise/health-api/), [Activity API](https://developer.garmin.com/gc-developer-program/enterprise/activity-api/).
+
+Garmin supports exporting original activities, TCX, GPX, activity/report CSV, daily wellness FIT archives, and an account-wide data export. The account export is emailed, typically within 48 hours but potentially up to 30 days. An offline importer could reduce dependence on historical API retention, but archive layouts and completeness need sample-based validation. [Garmin export instructions](https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8&productID=166370&tab=topics).
+
+Garmin Health SDKs target Android/iOS enterprise integrations, with evaluation and commercial licensing conditions. They are not a drop-in Python alternative. [Health SDK overview](https://developer.garmin.com/health-sdk/).
+
+## Existing projects: strengths and limitations
+
+These are evidence-based assessments of fit, not claims that every library was installed and live-tested.
+
+| Project | What is useful | What limits its fit here | Recommended treatment |
+| --- | --- | --- | --- |
+| Garmin's official Personal API client | Documented authentication, endpoint wrappers, JSON access, downloads, CLI | Small transport/client layer; not a complete local archive and synchronization system | Evaluate first |
+| `python-garminconnect` | Broad Connect endpoint coverage, including gear, training and account features; active releases | Unofficial endpoints and SSO; broad read/write surface; authentication can break | Optional adapter for a demonstrated missing feature |
+| `garmin-health-data` | Local originals plus SQLite, extraction/processing separation, flexible activity metrics, replay | CLI/database-oriented integration; bundled unofficial auth; application must inspect partial completeness | Keep as current baseline and investigate contributing fixes |
+| GarminDB | Established download/import workflow, retained source files, summaries, notebooks, plugins | More configuration and database conventions than a minimal Python client; current dependencies remain relevant to auth failures | Existing archive/analysis option |
+| Garth | Historically useful SSO and Connect client | Explicitly deprecated and unmaintained after authentication changes | Do not choose as a new foundation |
+| `garminexport` | Incremental activity-file backup design | Explicitly no longer maintained; authentication/bot protection drove that decision | Learn from its backup workflow |
+| `aio-garmin-personal` | Async official-API client, typed common fields, raw payload retention, caller-owned HTTP session | Young project; some domains documented as not account-validated; no full archive orchestration | Consider contributing or using for an async requirement |
+| Garmy | Metric registration, typed access, optional SQLite and MCP | Smaller project; production compatibility needs verification beyond feature descriptions | Architectural reference; not an established replacement on this evidence |
+| `garmin-givemydata` | Browser-backed extraction, SQLite, files and MCP | Browser dependency; AGPL-3.0; several introductory claims are outdated | Existing alternative, not code to casually copy into a permissive package |
+| `garmin-grafana` | Practical scheduled ingestion, historical backfill and dashboards | Docker/InfluxDB/Grafana application stack rather than a small library | Evidence that end-to-end user workflows already exist |
+| `garmin-personal-mcp` | Uses the official client and adds endpoint tools and range chunking | Focuses on assistant access rather than an application data layer | Shows that an official-API companion ecosystem already exists |
+| `garmin-ble` | Direct GFDI V2 telemetry, simulator/replay, typed readings | AGPL-3.0; hardware/OS compatibility; file transfer remains on its roadmap | Separate future integration, not MVP scope |
+
+Sources for the assessments:
+
+- [Official client documentation](https://github.com/garmin/connect-personal-api-python) and [request implementation](https://github.com/garmin/connect-personal-api-python/blob/main/src/garmin_personal_api/client.py).
+- [`python-garminconnect`](https://github.com/cyberjunky/python-garminconnect) and [0.3.20 release](https://github.com/cyberjunky/python-garminconnect/releases/tag/0.3.20). PyPI metadata confirms 0.3.20 on October 23, 2026, MIT, Python 3.12+.
+- [`garmin-health-data`](https://github.com/diegoscarabelli/garmin-health-data) and [v2.16.0](https://github.com/diegoscarabelli/garmin-health-data/releases/tag/v2.16.0). The installed Health dependency is this version, published September 7, 2026; Apache-2.0, Python 3.10+.
+- [GarminDB](https://github.com/tcgoetz/GarminDB), [dependency file](https://github.com/tcgoetz/GarminDB/blob/master/requirements.txt), and [PyPI metadata](https://pypi.org/project/garmindb/). Registry inspection found 4.0.0, September 16, 2026, Python 3.12+, GPL metadata. Verify the exact license before reusing its code.
+- [Garth deprecation notice](https://github.com/matin/garth) and [garminexport maintenance notice](https://github.com/petergardfjall/garminexport).
+- [`aio-garmin-personal`](https://github.com/pentiak/aio-garmin-personal), [Garmy](https://github.com/bes-dev/garmy), [`garmin-givemydata`](https://github.com/nrvim/garmin-givemydata), [`garmin-grafana`](https://github.com/arpanghosh8453/garmin-grafana), [`garmin-personal-mcp`](https://github.com/Mason-Levyy/garmin-personal-mcp), and [`garmin-ble`](https://github.com/gwerneckp/garmin-ble).
+
+## What works and what still needs engineering
+
+**The official client already handles the basic task.** Its source supplies authenticated JSON requests and original activity downloads. Its data methods return general JSON values rather than a normalized domain model. The default request path does not implement automatic range splitting, pagination traversal, checkpointed history, or a database. Downloads are returned in memory. These are possible companion features, not evidence that the client fails at its intended role. [Client source](https://github.com/garmin/connect-personal-api-python/blob/main/src/garmin_personal_api/client.py).
+
+**Authentication recovery still deserves application policy.** The official authenticator checks cached expiry when obtaining a token; a long-lived application must arrange to obtain/update tokens again. The documented recovery for early 401 responses is explicit refresh. Its default cache is on disk. A server may prefer an application-owned credential store. [Authenticator source](https://github.com/garmin/connect-personal-api-python/blob/main/src/garmin_personal_api/auth.py).
+
+**Unofficial authentication has observable maintenance costs.** Version 0.3.20 of `python-garminconnect` fixed a mobile-login 429 condition and classified nonstandard 427 responses as rate limits. A separate issue reports valid tokens receiving 403 responses under one HTTP transport. These are different failure classes: indiscriminately discarding tokens or retrying passwords can make recovery worse. They do not prove every current login is broken. [Release notes](https://github.com/cyberjunky/python-garminconnect/releases/tag/0.3.20), [transport issue #444](https://github.com/cyberjunky/python-garminconnect/issues/444).
+
+**A completed download is not proof of complete parsed data.** `garmin-health-data` previously fixed a sleep orchestration bug that populated summary rows while silently omitting detail tables. Raw-file retention enabled replay. The lesson is to validate source-to-output coverage, not merely command success or table existence. [Resolved issue #52](https://github.com/diegoscarabelli/garmin-health-data/issues/52).
+
+**Device and account differences need explicit representation.** Missing data can mean unsupported hardware, disabled collection, an external sensor not attached, insufficient baseline history, a manual activity, an unsynced watch, unavailable API coverage, or parser failure. Empty tables cannot distinguish these. A reusable layer should preserve raw payloads and attach source, units, timestamps, device information when available, and availability reasons.
+
+**High-resolution history should be treated as an archive problem.** Preserve originals, reprocess locally, maintain progress per domain/date/activity, and revisit mutable recent data. A single maximum timestamp can skip a failed domain. Resuming should not interpret a period without activities as an API failure, or a successful empty response as proof that a feature is unsupported forever.
+
+**FIT parsing is valuable but already has implementations.** `fitdecode` is MIT and is already used locally. Garmin publishes an official Python FIT SDK, but its repository uses a separate FIT Protocol License; do not assume its terms match the Apache-2.0 Personal API client. Use existing parsers, preserve unknown fields, and assess dependency terms before selecting a default. [fitdecode](https://github.com/polyvertex/fitdecode), [FIT overview](https://developer.garmin.com/fit/overview/), [official SDK license](https://github.com/garmin/fit-python-sdk/blob/main/LICENSE.txt).
+
+## Personal Suite findings and remaining coverage questions
+
+See [HEALTH_AUDIT.md](/Users/maximeg/Documents/Python/open_garmin/HEALTH_AUDIT.md) for the inspected code paths, field groups, and limitations. The app already contains substantial synchronization policy and field conversion, so a small internal official-API adapter is likely the cheapest first experiment.
+
+The published Personal API specification inspected contains 26 data paths. It documents steps/stress windows of 28 days; hydration, sleep summaries and Body Battery windows of 31 days; daily summaries up to one year. It includes activity originals, heart rate, HRV, SpO2, weight, nutrition, fitness age, and women's health. No dedicated gear, weather, Coach-calendar, training-readiness or training-status path appears. Sleep is described by a summary DTO; full sleep-stage/movement parity is unproven. Limits on request windows are not guarantees of retained history. No numerical request quota was established. [Personal API Swagger](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/).
+
+This is a static coverage assessment. A missing documented endpoint is a migration risk, not proof that its information can never be obtained from another documented response or an original file.
+
+## Revised plan and decision criteria
+
+1. **Run a bounded compatibility pilot.** Use a user-created Personal API key through the existing official package. Compare the same saved dates and activities against Health's current outputs, writing results to a separate scratch location. Include sleep, HRV, daily samples, daily totals, fitness age, one outdoor run, and strength data. Establish both shape and semantics, including units and local dates.
+2. **Check history and update behavior.** Use sparse old dates and small adjacent windows, not an immediate full-account pull. Determine which domains retain detail, how inclusive bounds behave, and how late sleep edits or activity changes propagate. Honour 429/Retry-After and stop repeated authentication failures.
+3. **Classify each field.** Record official API, original FIT, unofficial-only, app-derived, or unknown. Preserve uncertainty; do not equate your FR165 account with all devices. Seek volunteered, sanitized fixtures from advanced running watches, cycling computers/power meters, swimming/multisport devices, and relevant health devices before making broader claims.
+4. **Migrate covered features inside Health.** Keep the app-facing schema stable initially. Prefer the official path, retain a visible optional fallback only where necessary, and measure whether the new arrangement actually removes maintenance.
+5. **Choose the smallest useful open-source contribution.** Offer focused upstream fixes where the project accepts them. Otherwise publish examples, a field/availability guide, or a small companion implementing proven needs. Check contribution policy: the official repository currently displays restricted PR access, so upstream acceptance is not guaranteed.
+6. **Create a standalone companion only after the pilot proves the need.** Plausible scope: resumable archive/import/export, a documented normalized schema, and completeness reporting across API and FIT sources. Require reuse by Health plus at least one independent consumer before investing in broad framework abstractions.
+
+If a companion becomes justified, keep it read-only initially, depend on an existing transport, offer optional SQLite/Parquet/DataFrame integrations, and keep estimates in a separate analytical module. Prioritize offline fixture tests covering changed records, DST/travel, missing fields, empty responses, unknown FIT fields, and interrupted sync. Build a public capability matrix with evidence levels rather than claiming support for every watch.
+
+**Decision today:** use and assess Garmin's official client first. There is not yet enough evidence that a new comprehensive library would add more value than improving the existing ecosystem.

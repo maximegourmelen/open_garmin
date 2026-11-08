@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - garmin-data:/data
+    environment:
+      OPEN_GARMIN_ALLOW_REGISTRATION: "0"
+      OPEN_GARMIN_SECURE_COOKIES: "0"
+    restart: unless-stopped
+volumes:
+  garmin-data:
