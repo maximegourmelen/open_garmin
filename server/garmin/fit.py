@@ -3,13 +3,57 @@
 from __future__ import annotations
 
 import io
-import math
 import zipfile
 from datetime import datetime
 
 import fitdecode
 
 from .normalize import number, pick, sport_name
+
+
+def record_to_sample(fields: dict, sport: str) -> dict:
+    """Convert one FIT record, retaining nulls for absent channels."""
+    cadence = number(fields.get("cadence"))
+    fractional = number(fields.get("fractional_cadence"))
+    vo = number(fields.get("vertical_oscillation"))
+    step = number(fields.get("step_length"))
+    sample = {
+        "distance": number(fields.get("distance")),
+        "hr": number(fields.get("heart_rate")),
+        "speed": number(pick(fields.get("enhanced_speed"), fields.get("speed"))),
+        "elevation": number(pick(fields.get("enhanced_altitude"), fields.get("altitude"))),
+        "power": number(fields.get("power")),
+        "cadence": cadence,
+        "fractional_cadence": fractional,
+        "cadence_spm": (cadence + (fractional or 0)) * 2
+        if cadence is not None and sport in ("running", "walking", "hiking")
+        else None,
+        "cadence_rpm": cadence if sport == "cycling" else None,
+        "gct": number(fields.get("stance_time")),
+        "vo": vo / 10 if vo is not None else None,
+        "vr": number(fields.get("vertical_ratio")),
+        "step_len": step / 1000 if step is not None else None,
+        "temp": number(fields.get("temperature")),
+        "lat": number(fields.get("position_lat")),
+        "lon": number(fields.get("position_long")),
+    }
+    for key in ("lat", "lon"):
+        if sample[key] is not None:
+            sample[key] = sample[key] * 180 / 2**31
+    return sample
+
+
+def session_to_meta(fields: dict) -> dict:
+    """Convert the watch's session sport, feeling and effort answers."""
+    sub_sport = str(fields.get("sub_sport") or "")
+    sport = sport_name(sub_sport if "hiking" in sub_sport.lower() else fields.get("sport") or sub_sport)
+    feel = number(fields.get("workout_feel"))
+    rpe = number(fields.get("workout_rpe"))
+    return {
+        "sport": sport,
+        "watch_feel": max(1, min(5, round(feel / 25) + 1)) if feel is not None else None,
+        "watch_rpe": rpe / 10 if rpe is not None else None,
+    }
 
 
 def parse_original(content: bytes) -> dict:
@@ -39,6 +83,8 @@ def parse_original(content: bytes) -> dict:
     started = None
     sport = "other"
     device = "Garmin"
+    watch_feel = None
+    watch_rpe = None
     with fitdecode.FitReader(io.BytesIO(data), check_crc=fitdecode.CrcCheck.WARN) as reader:
         for frame in reader:
             if not isinstance(frame, fitdecode.FitDataMessage):
@@ -49,20 +95,7 @@ def parse_original(content: bytes) -> dict:
                 if not isinstance(stamp, datetime):
                     continue
                 started = started or stamp
-                sample = {
-                    "time": max(0, (stamp - started).total_seconds()),
-                    "distance": number(f.get("distance")),
-                    "hr": number(f.get("heart_rate")),
-                    "speed": number(pick(f.get("enhanced_speed"), f.get("speed"))),
-                    "elevation": number(pick(f.get("enhanced_altitude"), f.get("altitude"))),
-                    "power": number(f.get("power")),
-                    "cadence": number(f.get("cadence")),
-                    "lat": number(f.get("position_lat")),
-                    "lon": number(f.get("position_long")),
-                }
-                for key in ("lat", "lon"):
-                    if sample[key] is not None:
-                        sample[key] = sample[key] * 180 / 2**31
+                sample = {"time": max(0, (stamp - started).total_seconds()), **record_to_sample(f, sport)}
                 samples.append(sample)
             elif frame.name == "lap":
                 duration = number(f.get("total_timer_time"))
@@ -91,7 +124,10 @@ def parse_original(content: bytes) -> dict:
             elif frame.name == "event":
                 events.append({"event": str(f.get("event")), "type": str(f.get("event_type"))})
             elif frame.name == "session":
-                sport = sport_name(f.get("sport") or f.get("sub_sport") or sport)
+                meta = session_to_meta(f)
+                sport = meta["sport"]
+                watch_feel = meta["watch_feel"]
+                watch_rpe = meta["watch_rpe"]
                 for field in frame.fields:
                     value = number(field.value)
                     if value is not None and not field.name.startswith("unknown"):
@@ -107,10 +143,15 @@ def parse_original(content: bytes) -> dict:
                 product = f.get("product_name") or f.get("garmin_product")
                 if product:
                     device = f"Garmin {str(product)[:80]}"
-    if len(samples) > 6000:
-        # Keep temporal endpoints; originals remain available for full-resolution export.
-        step = math.ceil(len(samples) / 6000)
-        samples = samples[::step] + ([samples[-1]] if (len(samples) - 1) % step else [])
+    for sample in samples:
+        cadence = sample["cadence"]
+        fractional = sample.pop("fractional_cadence")
+        sample["cadence_spm"] = (
+            (cadence + (fractional or 0)) * 2
+            if cadence is not None and sport in ("running", "walking", "hiking")
+            else None
+        )
+        sample["cadence_rpm"] = cadence if sport == "cycling" else None
     return {
         "samples": samples,
         "laps": laps,
@@ -118,10 +159,13 @@ def parse_original(content: bytes) -> dict:
         "events": events,
         "session_metrics": session_metrics,
         "detail_state": "ready",
-        "sample_resolution": "Original samples; downsampled for display above 6,000 points",
+        "sample_resolution": "Original full-resolution samples",
         "recorded_start": started.isoformat() if started else None,
         "recorded_sport": sport,
         "recorded_device": device,
+        "watch_feel": watch_feel,
+        "watch_rpe": watch_rpe,
+        "parser_version": 2,
     }
 
 
@@ -173,4 +217,12 @@ def parse_tcx(data: bytes) -> dict:
                 "power": None,
             }
         )
-    return {"samples": samples, "laps": laps, "sets": [], "detail_state": "ready"}
+    return {
+        "samples": samples,
+        "laps": laps,
+        "sets": [],
+        "detail_state": "ready",
+        "parser_version": 2,
+        "watch_feel": None,
+        "watch_rpe": None,
+    }

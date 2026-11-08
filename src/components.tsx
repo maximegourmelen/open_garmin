@@ -32,6 +32,7 @@ export const sportColor: Record<string, string> = {
   strength: 'var(--purple)',
   swimming: 'var(--teal)',
   walking: 'var(--green)',
+  hiking: 'var(--green)',
   other: 'var(--muted)',
 };
 export function SportIcon({ sport, size = 18 }: { sport: Sport; size?: number }) {
@@ -42,7 +43,7 @@ export function SportIcon({ sport, size = 18 }: { sport: Sport; size?: number })
         ? Dumbbell
         : sport === 'swimming'
           ? Waves
-          : sport === 'walking'
+          : sport === 'walking' || sport === 'hiking'
             ? Footprints
             : sport === 'running'
               ? Footprints

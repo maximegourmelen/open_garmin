@@ -26,7 +26,9 @@ def sport_name(key: str) -> str:
         return "strength"
     if "swim" in key:
         return "swimming"
-    if "walk" in key or "hiking" in key:
+    if "hiking" in key or "hike" in key:
+        return "hiking"
+    if "walk" in key:
         return "walking"
     return "other"
 

@@ -1,7 +1,7 @@
 """Compatibility exports for Garmin transport, normalization, and FIT parsing."""
 
 from .garmin.client import TOKEN_PATH, GarminClient, GarminError
-from .garmin.fit import parse_original, parse_tcx
+from .garmin.fit import parse_original, parse_tcx, record_to_sample, session_to_meta
 from .garmin.normalize import (
     chunks,
     device_name,
@@ -28,6 +28,8 @@ __all__ = [
     "number",
     "parse_original",
     "parse_tcx",
+    "record_to_sample",
+    "session_to_meta",
     "pick",
     "sleep_values",
     "sport_name",

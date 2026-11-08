@@ -6,6 +6,7 @@ export const sportLabels: Record<string, string> = {
   strength: 'Strength',
   swimming: 'Swimming',
   walking: 'Walking',
+  hiking: 'Hiking',
   other: 'Other',
 };
 export const dayDate = (d: string) => new Date(`${d.slice(0, 10)}T12:00:00`);

@@ -1,4 +1,5 @@
-export type Sport = 'running' | 'cycling' | 'strength' | 'swimming' | 'walking' | 'other';
+export type Sport =
+  'running' | 'cycling' | 'strength' | 'swimming' | 'walking' | 'hiking' | 'other';
 export interface Sample {
   time: number;
   distance: number | null;
