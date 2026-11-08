@@ -7,7 +7,7 @@ import os
 from fastapi import HTTPException, Request
 from sqlalchemy import func, select
 
-from ..db.models import Connection, Daily, Job, MilestoneAward, User, WeeklyRecap
+from ..db.models import Activity, Connection, Daily, Job, MilestoneAward, User, WeeklyRecap
 from ..workspace import workspace
 
 DEMO_DENIED = "This is the demo. Connect Garmin to use your own data."
@@ -26,7 +26,16 @@ def register(app):
                     select(Job).where(Job.user_id == ws.user_id).order_by(Job.created_at.desc()).limit(10)
                 )
             )
-            data_through = db.scalar(select(func.max(Daily.date)).where(Daily.user_id == ws.user_id))
+            data_through = (
+                max(
+                    (
+                        db.scalar(select(func.max(Daily.date)).where(Daily.user_id == ws.user_id)) or "",
+                        db.scalar(select(func.max(Activity.date)).where(Activity.user_id == ws.user_id))
+                        or "",
+                    )
+                )
+                or None
+            )
             milestones = (
                 db.scalar(
                     select(func.count())

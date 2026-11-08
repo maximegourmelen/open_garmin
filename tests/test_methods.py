@@ -33,6 +33,8 @@ def test_every_demo_method_has_registry_entry():
             "relationships?x=steps&y=hrv",
             "insights",
             "journey",
+            "progress",
+            "progress/deeper",
         ]
         responses = []
         for path in paths:

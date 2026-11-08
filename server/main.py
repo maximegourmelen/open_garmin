@@ -185,6 +185,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     from .api import insights as insights_api
     from .api import journey as journey_api
     from .api import methods as methods_api
+    from .api import progress as progress_api
     from .api import relationships as relationships_api
     from .api import settings as settings_api
     from .api import status as status_api
@@ -199,6 +200,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     insights_api.register(app)
     journey_api.register(app)
     methods_api.register(app)
+    progress_api.register(app)
 
     dist = Path(__file__).resolve().parent.parent / "dist"
     if (dist / "assets").exists():

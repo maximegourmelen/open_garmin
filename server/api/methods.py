@@ -237,6 +237,22 @@ METHODS = [
         ["daily readings"],
         "One daily reading",
     ),
+    _entry(
+        "progress_overview@1",
+        "Progress overview",
+        "Your fitness signs, personal bests, weekly volume and movement days.",
+        "Combine the listed calculations over their own evidence windows.",
+        ["activities", "daily readings", "effort points"],
+        "One recorded activity or daily reading",
+    ),
+    _entry(
+        "progress_deeper@1",
+        "Deeper progress",
+        "Detailed trends for your recent activities and effort.",
+        "Show recorded values and calculated trend series over the selected range.",
+        ["activities", "effort points"],
+        "One recorded activity",
+    ),
 ]
 
 for kind, title, inputs in (
