@@ -174,6 +174,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
 
     from .api import activities as activities_api
     from .api import auth as auth_api
+    from .api import insights as insights_api
     from .api import relationships as relationships_api
     from .api import settings as settings_api
     from .api import status as status_api
@@ -185,6 +186,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     activities_api.register(app, store, worker, current_user, limit)
     wellness_api.register(app)
     relationships_api.register(app)
+    insights_api.register(app)
 
     dist = Path(__file__).resolve().parent.parent / "dist"
     if (dist / "assets").exists():
