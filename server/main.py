@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .demo.seed import build_demo_workspace
 from .garmin import GarminClient
 from .security import install_security
 from .storage import Job, Store
@@ -148,13 +149,17 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
 
     app = FastAPI(title="Open Garmin", version="0.1.0", lifespan=lifespan)
     app.state.store, app.state.worker = store, worker
+    app.state.demo_workspace = build_demo_workspace()
 
     current_user, set_session, limit = install_security(app, store)
+    app.state.current_user = current_user
 
     from .api import activities as activities_api
     from .api import auth as auth_api
     from .api import settings as settings_api
+    from .api import status as status_api
 
+    status_api.register(app)
     auth_api.register(app, store, worker, current_user, set_session, limit)
     settings_api.register(app, store, worker, current_user, limit, client_factory)
     activities_api.register(app, store, worker, current_user, limit)

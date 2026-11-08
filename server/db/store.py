@@ -3,17 +3,26 @@ from __future__ import annotations
 import os
 import threading
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from cryptography.fernet import Fernet
 from sqlalchemy import create_engine, event, select
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from .models import Activity, ActivitySamples, Base
 
 
 class Store:
-    def __init__(self, directory: str | Path | None = None, database_url: str | None = None):
-        self.directory = Path(directory or os.environ.get("OPEN_GARMIN_DATA_DIR", ".runtime")).resolve()
+    def __init__(
+        self,
+        directory: str | Path | None = None,
+        database_url: str | None = None,
+        in_memory: bool = False,
+    ):
+        self._temporary_directory = TemporaryDirectory(prefix="open-garmin-demo-") if in_memory else None
+        root = self._temporary_directory.name if self._temporary_directory else directory
+        self.directory = Path(root or os.environ.get("OPEN_GARMIN_DATA_DIR", ".runtime")).resolve()
         self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.directory.chmod(0o700)
         keyfile = self.directory / "encryption.key"
@@ -28,7 +37,9 @@ class Store:
         self.fernet = Fernet(keyfile.read_bytes())
         self.archive_lock = threading.RLock()
         url = (
-            database_url
+            "sqlite+pysqlite:///:memory:"
+            if in_memory
+            else database_url
             or os.environ.get("OPEN_GARMIN_DATABASE_URL")
             or f"sqlite:///{self.directory / 'app.db'}"
         )
@@ -36,6 +47,7 @@ class Store:
             url,
             connect_args={"check_same_thread": False, "timeout": 30} if url.startswith("sqlite") else {},
             pool_pre_ping=True,
+            **({"poolclass": StaticPool} if in_memory else {}),
         )
         if url.startswith("sqlite"):
 
