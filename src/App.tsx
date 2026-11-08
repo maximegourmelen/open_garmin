@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, CircleHelp, Compass, HeartPulse, LayoutDashboard, LineChart, Menu, Info, RefreshCw, Search, Settings, ShieldCheck, Sparkles, X, Check, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Activity, ArrowRight, ArrowUpRight, BookOpen, CalendarDays, ChevronDown, CircleHelp, Compass, HeartPulse, LayoutDashboard, LineChart, Menu, Info, RefreshCw, Search, Settings, ShieldCheck, Sparkles, X, Check, LogOut, Eye, EyeOff } from 'lucide-react';
 import { api, setCsrf } from './api';
 import { makeDemo } from './demo';
 import { AppContext } from './context';
@@ -8,9 +8,10 @@ import { ActivityPage, ActivitiesPage, TodayPage, TrainingPage, RecoveryPage, In
 import { Dialog, SportBadge } from './components';
 import { displayDate, todayKey } from './analytics';
 import { DashboardPage } from './dashboard';
+import { ResearchPage } from './research-page';
 import type { Activity as ActivityType, DashboardData, Prefs } from './types';
 
-const nav=[{path:'/dashboard',label:'Dashboard',icon:LayoutDashboard},{path:'/today',label:'Today',icon:CalendarDays},{path:'/activities',label:'Activities',icon:Activity},{path:'/training',label:'Training',icon:LineChart},{path:'/recovery',label:'Recovery',icon:HeartPulse},{path:'/insights',label:'Insights',icon:Sparkles}];
+const nav=[{path:'/dashboard',label:'Dashboard',icon:LayoutDashboard},{path:'/today',label:'Today',icon:CalendarDays},{path:'/activities',label:'Activities',icon:Activity},{path:'/training',label:'Training',icon:LineChart},{path:'/recovery',label:'Recovery',icon:HeartPulse},{path:'/insights',label:'Insights',icon:Sparkles},{path:'/research',label:'Research',icon:BookOpen}];
 type Session={user:{name:string;email:string}|null;csrf_token:string|null;registration_open?:boolean};
 export default function App(){
   const [demoData,setDemoData]=useState(()=>{const d=makeDemo();try{d.preferences={...d.preferences,...JSON.parse(localStorage.getItem('og_demo_preferences')||'{}')};}catch{/* defaults */}return d;});
@@ -51,7 +52,7 @@ export default function App(){
     {error&&!demo&&<div className="notice-banner error" role="alert">{error}<button onClick={()=>refresh().catch(()=>{})}>Try again</button></div>}
     {activeJob&&!demo&&<div className="sync-banner"><RefreshCw className="spin" size={15}/><span>{activeJob.message}</span><div className="sync-progress"><span style={{width:`${activeJob.progress}%`}}/></div><small>{activeJob.progress}%</small></div>}
     {!demo&&data.status.message&&!activeJob&&<div className="notice-banner"><Info size={15}/><span>{data.status.message}</span><Link to="/settings">View connection</Link></div>}
-    <main id="main-content" className="main-content"><Routes><Route path="/" element={<Navigate to="/dashboard" replace/>}/><Route path="/dashboard" element={<DashboardPage/>}/><Route path="/today" element={<TodayPage/>}/><Route path="/activities" element={<ActivitiesPage/>}/><Route path="/activities/:id" element={<ActivityPage/>}/><Route path="/training" element={<TrainingPage/>}/><Route path="/recovery" element={<RecoveryPage/>}/><Route path="/insights" element={<InsightsPage/>}/><Route path="/settings" element={<SettingsPage/>}/><Route path="*" element={<Navigate to="/today" replace/>}/></Routes></main>
+    <main id="main-content" className="main-content"><Routes><Route path="/" element={<Navigate to="/dashboard" replace/>}/><Route path="/dashboard" element={<DashboardPage/>}/><Route path="/today" element={<TodayPage/>}/><Route path="/activities" element={<ActivitiesPage/>}/><Route path="/activities/:id" element={<ActivityPage/>}/><Route path="/training" element={<TrainingPage/>}/><Route path="/recovery" element={<RecoveryPage/>}/><Route path="/insights" element={<InsightsPage/>}/><Route path="/research" element={<ResearchPage/>}/><Route path="/settings" element={<SettingsPage/>}/><Route path="*" element={<Navigate to="/today" replace/>}/></Routes></main>
     <footer className="app-footer"><span><span className="tiny-mark"/> Open Garmin · Independent & open source</span><span>{demo?'Synthetic demo data':<>Garmin device-sourced data <span className="dot-separator">·</span> {data.status.last_checked?`Checked ${new Date(data.status.last_checked).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:data.preferences.timezone})}`:'Not yet synced'}</>}</span></footer></div>
     <nav className="mobile-bottom-nav" aria-label="Mobile navigation">{nav.map(({path,label,icon:Icon})=><NavLink key={path} to={path}><Icon size={19}/><span>{label}</span></NavLink>)}</nav>
     {notice&&<div className="toast" role="status"><Check size={17}/>{notice}<button aria-label="Dismiss notification" onClick={()=>setNotice('')}><X size={15}/></button></div>}
