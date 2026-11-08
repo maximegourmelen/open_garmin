@@ -1,0 +1,8 @@
+Open Garmin redesign baseline — 2026-11-08
+Branch: redesign
+Python: 31 passed, 1 warning
+Frontend: 9 passed
+Build: passed (Vite 7.3.7)
+Backup: .runtime-backup-20261108 (20 files, SQLite integrity_check: ok)
+Note: source .runtime remained active during backup and grew after the copy; both databases passed integrity_check. No personal values were inspected or recorded.
+Demo-only screenshots: docs/screenshots/before/ (dashboard, today, activities, activity detail, training, recovery, insights, research, settings)
