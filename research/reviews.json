@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "review_method": "Focused reading of full-text methods, results, discussion and conclusions; findings are approved only for the narrowly stated claim.",
+  "reviews": [
+    {
+      "paper_id": "pmid:38809828",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Risk of bias",
+        "Discussion",
+        "Conclusion"
+      ],
+      "population": "Endurance athletes in 14 included studies; only two running studies among several sports.",
+      "finding": "Overreaching protocols were associated with a small reduction in actigraphic sleep efficiency (mean difference -2.0 percentage points, 95% CI -3.2 to -0.8) across three objectively measured studies. Subjective sleep quality did not show a clear effect.",
+      "limitations": "High risk of bias, only three objective sleep studies, and no polysomnography. A normal training week or a single short night cannot be labeled overreaching from these results.",
+      "approved_use": "Context for a future sustained high-training plus sleep-change insight, with caution; never infer overreaching from Garmin sleep duration alone."
+    },
+    {
+      "paper_id": "pmid:39080098",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Discussion",
+        "Conclusions"
+      ],
+      "population": "Umbrella review of 24 systematic reviews covering multiple consumer wearable brands and outcomes.",
+      "finding": "Wearable sleep estimates often overestimated total sleep time and sleep efficiency compared with reference standards; validity varied by device and measure.",
+      "limitations": "The synthesis lags new hardware and software, and its aggregate results do not validate or invalidate a particular Garmin model. It cannot supply a personal error correction factor.",
+      "approved_use": "Explain measurement uncertainty when showing sleep trends; avoid treating sleep stages or small nightly changes as exact."
+    },
+    {
+      "paper_id": "pmid:34639599",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Discussion",
+        "Conclusions"
+      ],
+      "population": "Trials comparing HRV-guided with predefined endurance training in healthy adults of varied training status.",
+      "finding": "HRV-guided training improved some vagal-related HRV measures, but pooled differences in aerobic fitness and endurance performance were small and not statistically significant.",
+      "limitations": "Few studies, varied HRV indices and recording methods, and limited subgroup power. Overnight consumer HRV is not interchangeable with every protocol in the reviewed trials.",
+      "approved_use": "Explain why an isolated low HRV reading should be interpreted with sleep, symptoms and recent training, rather than dictate a workout."
+    },
+    {
+      "paper_id": "pmid:38697289",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Discussion",
+        "Conclusion"
+      ],
+      "population": "Umbrella review of 13 reviews of running-related injury risk factors.",
+      "finding": "Injury associations involve training, health, lifestyle, morphology and biomechanics, with heterogeneous definitions and populations.",
+      "limitations": "All included reviews were rated low or critically low quality; no single weekly-volume change can be used as a reliable personal injury prediction.",
+      "approved_use": "Caution against labeling a larger running week as an injury forecast."
+    },
+    {
+      "paper_id": "pmid:38165636",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Strengths and Limitations",
+        "Conclusions"
+      ],
+      "population": "Middle- and long-distance runners across training levels in controlled strength-training studies.",
+      "finding": "High-load and plyometric strength training were associated with improved laboratory running economy in the meta-analysis; effects varied by method and tested speed.",
+      "limitations": "Running economy is not the same as race performance. Many tests used absolute rather than athlete-relative speeds, and some method subgroups had few studies.",
+      "approved_use": "Context for a future strength-training trend; do not infer that a particular user gained economy from counting strength sessions."
+    },
+    {
+      "paper_id": "pmid:32158285",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Limitations",
+        "Conclusion"
+      ],
+      "population": "Twenty-seven heterogeneous studies, largely across sports rather than runners alone.",
+      "finding": "The review found associations between some acute:chronic workload ratios and injury, but definitions, loads and reference groups varied enough to prevent a stable pooled estimate.",
+      "limitations": "Potential search and publication bias, no pooled meta-analysis, and limited transferability to an individual runner. No threshold should be presented as a safe zone.",
+      "approved_use": "Support a decision to avoid an injury-risk score based solely on an acute:chronic ratio."
+    },
+    {
+      "paper_id": "pmid:39713859",
+      "status": "focused_review",
+      "sections_checked": [
+        "Methods",
+        "Results",
+        "Strength and Limitations",
+        "Conclusion"
+      ],
+      "population": "Prospective Garmin-RUNSAFE cohort of recreational runners followed for up to 18 months.",
+      "finding": "Reported injury occurrence differed by running experience, weekly frequency, weekly distance and structured-program participation.",
+      "limitations": "Observational baseline group comparisons cannot show that increasing frequency or distance will reduce an individual runner’s injury risk. Some groups were small.",
+      "approved_use": "Context for why a simple mileage-spike warning must consider training history and other factors; do not recommend a 25 km/week target."
+    }
+  ]
+}

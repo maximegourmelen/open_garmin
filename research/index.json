@@ -890,11 +890,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35800136/",
       "publisher_url": "https://doi.org/10.1016/j.crphys.2022.06.006",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY-NC-ND",
+      "local_full_text": "research/papers/PMC9253837.xml"
     },
     {
       "id": "pmid:42280321",
@@ -1479,11 +1481,12 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/42724227/",
       "publisher_url": "https://doi.org/10.3389/fspor.2026.1858271",
-      "full_text_status": "not_checked",
+      "full_text_status": "unavailable",
       "review_status": "candidate",
       "topics": [
         "hrv"
-      ]
+      ],
+      "download_error": "ParseError"
     },
     {
       "id": "pmid:36370207",
@@ -1498,11 +1501,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/36370207/",
       "publisher_url": "https://doi.org/10.1186/s40798-022-00511-1",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC9653533.xml"
     },
     {
       "id": "pmid:41766811",
@@ -1517,11 +1522,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41766811/",
       "publisher_url": "https://doi.org/10.5114/jhk/205427",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12946864.xml"
     },
     {
       "id": "pmid:41869606",
@@ -1783,11 +1790,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41752909/",
       "publisher_url": "https://doi.org/10.3390/life16020272",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_injury"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12942261.xml"
     },
     {
       "id": "pmid:42862511",
@@ -1840,11 +1849,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41562854/",
       "publisher_url": "https://doi.org/10.3390/muscles5010002",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12821614.xml"
     },
     {
       "id": "pmid:42254608",
@@ -2221,11 +2232,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/35878109/",
       "publisher_url": "https://doi.org/10.3390/sports10070098",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC9319953.xml"
     },
     {
       "id": "pmid:42824430",
@@ -2526,11 +2539,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40550392/",
       "publisher_url": "https://doi.org/10.1016/j.jshs.2025.101069",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_training"
-      ]
+      ],
+      "license": "CC BY-NC-ND",
+      "local_full_text": "research/papers/PMC12305619.xml"
     },
     {
       "id": "pmid:41664969",
@@ -2564,11 +2579,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/40964543/",
       "publisher_url": "https://doi.org/10.7759/cureus.90322",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "running_injury"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12440572.xml"
     },
     {
       "id": "pmid:42405338",
@@ -2659,11 +2676,13 @@
       "open_access_reported": true,
       "pubmed_url": "https://pubmed.ncbi.nlm.nih.gov/41753086/",
       "publisher_url": "https://doi.org/10.3390/jcm15041398",
-      "full_text_status": "not_checked",
+      "full_text_status": "downloaded",
       "review_status": "candidate",
       "topics": [
         "sleep_recovery"
-      ]
+      ],
+      "license": "CC BY",
+      "local_full_text": "research/papers/PMC12941826.xml"
     },
     {
       "id": "pmid:42676084",

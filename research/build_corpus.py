@@ -25,7 +25,9 @@ QUERIES = {
 }
 SEEDS = ["38809828", "39713859", "38697289", "34749417", "38165636", "34489178", "34639599", "39080098", "32158285", "35418513", "29182410", "31246714", "33352457"]
 SEED_PMCS = ["PMC11135706", "PMC11664494", "PMC11052887", "PMC8507742", "PMC11560992",
-             "PMC11336318", "PMC7047972", "PMC12592170", "PMC12748164", "PMC13219871"]
+             "PMC11336318", "PMC7047972", "PMC12592170", "PMC12748164", "PMC13219871",
+             "PMC9253837", "PMC9653533", "PMC12946864", "PMC12942261", "PMC9319953",
+             "PMC12305619", "PMC12440572", "PMC12941826", "PMC13558445", "PMC12821614"]
 DIRECT_PUBLISHER = {"34489178": "https://www.sciencedirect.com/science/article/pii/S1440244021001080"}
 
 
@@ -79,7 +81,8 @@ def main() -> None:
         if match is None:
             continue
         try:
-            data = get(f"https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_xml/{pmcid}/unicode")
+            local = PAPERS / f"{pmcid}.xml"
+            data = local.read_bytes() if local.exists() else get(f"https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_xml/{pmcid}/unicode")
             root = ET.fromstring(data)
             license_text = next((x.text for x in root.iter("infon") if x.get("key") == "license"), None)
             passages = [" ".join(t.strip() for t in passage.itertext() if t and t.strip()) for passage in root.iter("passage")]

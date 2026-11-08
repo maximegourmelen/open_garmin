@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "claims": [
+    {
+      "id": "sleep-measurement-caution",
+      "title": "Wearable sleep is an estimate",
+      "summary": "Consumer wearables can overestimate sleep duration and efficiency; look for repeated patterns rather than treating a small nightly difference as exact.",
+      "paper_ids": ["pmid:39080098"],
+      "applies_to": ["sleep-context"]
+    },
+    {
+      "id": "hrv-context-caution",
+      "title": "HRV alone is not a workout instruction",
+      "summary": "Trials of HRV-guided training have not established a clear endurance-performance advantage over predefined training. Interpret a reading with recent training and other context.",
+      "paper_ids": ["pmid:34639599"],
+      "applies_to": ["hrv-context"]
+    },
+    {
+      "id": "running-injury-context",
+      "title": "A bigger week is not an injury prediction",
+      "summary": "Running injury risk has multiple interacting factors, and the available reviews are low quality. A change in mileage alone cannot estimate personal risk.",
+      "paper_ids": ["pmid:38697289"],
+      "applies_to": ["weekly-volume"]
+    }
+  ]
+}
