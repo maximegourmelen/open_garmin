@@ -4,14 +4,28 @@ from __future__ import annotations
 
 import hashlib
 from collections.abc import Callable
+from datetime import date, timedelta
 
 from sqlalchemy import delete, select
 
 from .analytics.activity import derive_activity
-from .analytics.common import local_today
+from .analytics.common import local_today, week_start
 from .analytics.efforts import collect_best_efforts
+from .analytics.reports import weekly_recap
 from .analytics.zones import activity_zones, effort_points, estimate_max_hr
-from .db.models import Activity, ActivityDerived, ActivitySamples, BestEffort, Daily, User
+from .companion.milestones import evaluate_milestones
+from .companion.streaks import streak
+from .db.models import (
+    Activity,
+    ActivityDerived,
+    ActivitySamples,
+    BestEffort,
+    CheckIn,
+    Daily,
+    MilestoneAward,
+    User,
+    WeeklyRecap,
+)
 from .db.store import Store
 from .garmin.fit import parse_original
 from .garmin.normalize import normalize_activity_v2, normalize_daily_v2
@@ -141,6 +155,73 @@ def rederive_user(store: Store, user_id: str) -> None:
             if not fresh.get("date"):
                 fresh["date"] = row.date
             row.data = {**row.data, **fresh}
+        daily_rows = [row.data for row in db.scalars(select(Daily).where(Daily.user_id == user_id))]
+        checkins = [
+            {"date": row.date, "mood": row.mood, "energy": row.energy, "soreness": row.soreness}
+            for row in db.scalars(select(CheckIn).where(CheckIn.user_id == user_id))
+        ]
+        milestones = evaluate_milestones(
+            [row.data for row in activities], daily_rows, candidates, checkins, prefs, today
+        )
+        existing_awards = {
+            award.milestone_id
+            for award in db.scalars(select(MilestoneAward).where(MilestoneAward.user_id == user_id))
+        }
+        joined = user.created_at[:10] if user else today.isoformat()
+        for item in milestones:
+            if not item["earned"] or item["id"] in existing_awards:
+                continue
+            db.add(
+                MilestoneAward(
+                    user_id=user_id,
+                    milestone_id=item["id"],
+                    earned_on=item["earned_on"],
+                    activity_id=item["activity_id"],
+                    value=item["value"],
+                    seen=item["earned_on"] < joined,
+                )
+            )
+        all_dates = [row.date for row in activities] + [row["date"] for row in daily_rows if row.get("date")]
+        if all_dates:
+            first_week = date.fromisoformat(week_start(min(all_dates), prefs.get("week_start", "monday")))
+            current_week = date.fromisoformat(week_start(today, prefs.get("week_start", "monday")))
+            existing_recaps = {
+                row.week_start
+                for row in db.scalars(select(WeeklyRecap).where(WeeklyRecap.user_id == user_id))
+            }
+            activity_data = [row.data for row in activities]
+            award_by_week: dict[str, list[str]] = {}
+            for item in milestones:
+                if item["earned"]:
+                    key = week_start(item["earned_on"], prefs.get("week_start", "monday"))
+                    award_by_week.setdefault(key, []).append(item["id"])
+            cursor = first_week
+            while cursor < current_week:
+                key = cursor.isoformat()
+                if key not in existing_recaps:
+                    end = cursor + timedelta(days=6)
+                    past_activities = [
+                        item for item in activity_data if item.get("date", "") <= end.isoformat()
+                    ]
+                    past_daily = [item for item in daily_rows if item.get("date", "") <= end.isoformat()]
+                    data = weekly_recap(
+                        cursor,
+                        past_activities,
+                        past_daily,
+                        prefs,
+                        streak(past_activities, past_daily, prefs, end),
+                        award_by_week.get(key, []),
+                    )
+                    db.add(
+                        WeeklyRecap(
+                            user_id=user_id,
+                            week_start=key,
+                            version=1,
+                            data=data,
+                            seen=end.isoformat() < joined,
+                        )
+                    )
+                cursor += timedelta(days=7)
 
 
 def rederive_all(store: Store, report: Callable[[int], None] | None = None) -> None:

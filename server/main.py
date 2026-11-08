@@ -63,6 +63,7 @@ class JourneyPreference(BaseModel):
     id: str
     started: str
     paused: bool = False
+    repeats: list[int] = Field(default_factory=list)
 
     @field_validator("id")
     @classmethod
@@ -75,6 +76,13 @@ class JourneyPreference(BaseModel):
     @classmethod
     def valid_start(cls, value: str) -> str:
         date.fromisoformat(value)
+        return value
+
+    @field_validator("repeats")
+    @classmethod
+    def valid_repeats(cls, value: list[int]) -> list[int]:
+        if len(value) > 52 or any(week < 1 or week > 52 for week in value):
+            raise ValueError("Choose valid journey weeks to repeat.")
         return value
 
 
@@ -175,6 +183,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     from .api import activities as activities_api
     from .api import auth as auth_api
     from .api import insights as insights_api
+    from .api import journey as journey_api
     from .api import relationships as relationships_api
     from .api import settings as settings_api
     from .api import status as status_api
@@ -187,6 +196,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     wellness_api.register(app)
     relationships_api.register(app)
     insights_api.register(app)
+    journey_api.register(app)
 
     dist = Path(__file__).resolve().parent.parent / "dist"
     if (dist / "assets").exists():

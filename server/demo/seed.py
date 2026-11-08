@@ -6,8 +6,10 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from sqlalchemy import select
+
 from ..config import DEFAULT_PREFS
-from ..db.models import Activity, ActivitySamples, CheckIn, Daily, MilestoneAward, Note, User
+from ..db.models import Activity, ActivitySamples, CheckIn, Daily, MilestoneAward, Note, User, WeeklyRecap
 from ..db.store import Store
 from ..derive import rederive_user
 from ..workspace import Workspace
@@ -81,11 +83,20 @@ def build_demo_workspace() -> Workspace:
         db.add(
             MilestoneAward(
                 user_id="demo",
-                milestone_id="first_50k",
+                milestone_id="total_50km",
                 earned_on=(today - timedelta(days=2)).isoformat(),
                 value=50000,
                 seen=False,
             )
         )
     rederive_user(store, "demo")
+    with store.sessions.begin() as db:
+        latest_recap = db.scalar(
+            select(WeeklyRecap)
+            .where(WeeklyRecap.user_id == "demo")
+            .order_by(WeeklyRecap.week_start.desc())
+            .limit(1)
+        )
+        if latest_recap:
+            latest_recap.seen = False
     return Workspace(store, "demo", "demo", True)
