@@ -8,16 +8,9 @@ from datetime import date
 import httpx
 import pytest
 
-from server.garmin import (
-    GarminClient,
-    GarminError,
-    chunks,
-    normalize_activity,
-    normalize_daily,
-    number,
-    parse_original,
-    sleep_values,
-)
+from server.garmin.client import GarminClient, GarminError
+from server.garmin.fit import parse_original
+from server.garmin.normalize import chunks, normalize_activity, normalize_daily, number, sleep_values
 
 
 def token():

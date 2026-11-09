@@ -14,13 +14,13 @@ from sqlalchemy import delete, select
 
 from ..config import COOKIE
 from ..derive import rederive_user
-from ..garmin import GarminError
+from ..garmin.client import GarminError
 from ..main import (
     KeyInput,
     Preferences,
     update_job_cancel,
 )
-from ..storage import (
+from ..db.models import (
     Activity,
     ActivityDerived,
     ActivityFeel,

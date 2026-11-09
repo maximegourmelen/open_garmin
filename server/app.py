@@ -1,7 +1,7 @@
 """Stable import path for the Open Garmin application."""
 
 from .config import DEFAULT_PREFS
-from .garmin import parse_original
+from .garmin.fit import parse_original
 from .main import create_app
 from .security import password_hash, password_matches
 

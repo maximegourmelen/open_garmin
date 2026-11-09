@@ -15,7 +15,7 @@ from sqlalchemy import select
 from ..main import (
     NoteInput,
 )
-from ..storage import Activity, ActivityDerived, ActivityFeel, ActivitySamples, Connection, Note
+from ..db.models import Activity, ActivityDerived, ActivityFeel, ActivitySamples, Connection, Note
 from ..workspace import workspace
 from .activity_views import detail as activity_detail
 from .activity_views import summary as activity_summary

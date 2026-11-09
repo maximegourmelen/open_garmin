@@ -8,7 +8,7 @@ from server.app import create_app
 from server.config import DEFAULT_PREFS
 from server.db.models import Activity, ActivitySamples, Base, Connection, Daily, Job, LoginSession, Note, User
 from server.main import Preferences
-from server.storage import Store
+from server.db.store import Store
 
 
 def test_create_all_adds_new_tables_without_changing_existing_user(tmp_path):
@@ -82,5 +82,5 @@ def test_api_respects_existing_saved_light_theme(tmp_path, monkeypatch):
         )
     with TestClient(app, base_url="http://localhost") as client:
         assert client.get("/api/session").json()["user"]["name"] == "Existing"
-        prefs = client.get("/api/data").json()["preferences"]
+        prefs = client.get("/api/preferences").json()
         assert prefs["theme"] == "light" and prefs["weekly_minutes"] == 150

@@ -11,8 +11,9 @@ import secrets
 from sqlalchemy import func, select
 
 from server.app import DEFAULT_PREFS, password_hash
-from server.garmin import GarminClient, GarminError
-from server.storage import Activity, Connection, Daily, Job, Store, User
+from server.garmin.client import GarminClient, GarminError
+from server.db.models import Activity, Connection, Daily, Job, User
+from server.db.store import Store
 from server.worker import Worker
 
 store = Store()

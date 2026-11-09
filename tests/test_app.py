@@ -3,7 +3,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 
 from server.app import create_app
-from server.storage import Activity, ActivitySamples, Connection, Store, User
+from server.db.models import Activity, ActivitySamples, Connection, User
+from server.db.store import Store
 
 
 @pytest.fixture
@@ -63,14 +64,14 @@ def test_fit_import_is_private_and_deduplicated(app, monkeypatch):
         assert first.status_code == 200 and first.json()["status"] == "imported"
         second = client.post("/api/import/fit", files={"file": ("run.fit", b"fixture")})
         assert second.json() == {"id": first.json()["id"], "status": "duplicate"}
-        row = next(a for a in client.get("/api/data").json()["activities"] if a["id"] == first.json()["id"])
+        row = next(a for a in client.get("/api/activities").json()["items"] if a["id"] == first.json()["id"])
         assert row["source"] == "imported_fit" and row["device"] == "Garmin Forerunner"
 
 
 def test_demo_requires_no_auth_but_real_data_does(app):
     with TestClient(app) as client:
         assert client.get("/api/session").json()["user"] is None
-        assert client.get("/api/data").status_code == 401
+        assert client.get("/api/activities").status_code == 401
         assert client.get("/api/export").status_code == 401
 
 
@@ -168,16 +169,16 @@ def test_local_workspace_connects_key_without_app_sign_in(tmp_path, monkeypatch)
             "/api/connection", json={"api_key": "private-personal-key-12345", "region": "com"}
         )
         assert response.status_code == 200 and response.json()["job_id"]
-        assert client.get("/api/data").json()["status"]["connected"] is True
+        assert client.get("/api/status").json()["connection"]["connected"] is True
         with local_app.state.store.sessions() as db:
             conn = db.scalar(select(Connection))
             assert conn.encrypted_key != "private-personal-key-12345"
             assert local_app.state.store.decrypt(conn.encrypted_key) == "private-personal-key-12345"
-        assert "private-personal-key-12345" not in client.get("/api/data").text
+        assert "private-personal-key-12345" not in client.get("/api/status").text
     with TestClient(local_app, base_url="http://127.0.0.1:8000") as restarted:
         resumed = restarted.get("/api/session")
         assert resumed.json()["user"] is not None
-        assert restarted.get("/api/data").json()["status"]["connected"] is True
+        assert restarted.get("/api/status").json()["connection"]["connected"] is True
 
 
 def test_local_workspace_reuses_single_existing_user_and_rejects_other_hosts(tmp_path, monkeypatch):
@@ -188,7 +189,7 @@ def test_local_workspace_reuses_single_existing_user_and_rejects_other_hosts(tmp
         user_id = seed(local_app, "athlete@example.test")
         client.post("/api/auth/logout")
         assert client.post("/api/auth/local").status_code == 200
-        assert client.get("/api/data").json()["activities"][0]["id"] == "42"
+        assert client.get("/api/activities").json()["items"][0]["id"] == "42"
         with local_app.state.store.sessions() as db:
             assert db.scalar(select(User)).id == user_id
     with TestClient(local_app, base_url="http://example.com") as remote:
@@ -206,7 +207,7 @@ def test_preferences_validate_timezone_and_keep_goals(app):
             ).status_code
             == 200
         )
-        assert client.get("/api/data").json()["preferences"]["weekly_distance"] == 50000
+        assert client.get("/api/preferences").json()["weekly_distance"] == 50000
 
 
 def test_encrypted_key_storage_and_disconnect_keep_data(app):
@@ -224,9 +225,9 @@ def test_encrypted_key_storage_and_disconnect_keep_data(app):
                 )
             )
         assert "private-key" not in (store.directory / "app.db").read_bytes().decode(errors="ignore")
-        assert "private-key" not in client.get("/api/data").text
+        assert "private-key" not in client.get("/api/status").text
         assert client.delete("/api/connection").status_code == 200
-        assert len(client.get("/api/data").json()["activities"]) == 1
+        assert len(client.get("/api/activities").json()["items"]) == 1
         with store.sessions() as db:
             assert db.get(Connection, uid).encrypted_key is None
 
@@ -238,8 +239,8 @@ def test_deletion_is_scoped_and_account_deletion_invalidates_session(app):
     seed(app, "alice@example.test")
     seed(app, "bob@example.test")
     assert a.delete("/api/account").status_code == 200
-    assert a.get("/api/data").status_code == 401
-    assert len(b.get("/api/data").json()["activities"]) == 1
+    assert a.get("/api/activities").status_code == 401
+    assert len(b.get("/api/activities").json()["items"]) == 1
 
 
 def test_security_and_cache_headers(app):
@@ -260,9 +261,9 @@ def test_stream_storage_is_private_exportable_and_cascades_on_delete(app):
         row = db.get(Activity, (uid, "42"))
         row.data = {**row.data, "samples": samples[::5], "sample_count": len(samples)}
         db.add(ActivitySamples(user_id=uid, activity_id="42", samples=samples))
-    preview = alice.get("/api/data").json()["activities"][0]
-    assert len(preview["samples"]) <= 80
-    assert preview["sample_count"] == 250
+    preview = alice.get("/api/activities").json()["items"][0]
+    assert "samples" not in preview
+    assert alice.get("/api/activities/42").json()["sample_count"] == 250
     assert alice.get("/api/activities/42").json()["samples"] == samples
     assert alice.get("/api/export").json()["activities"][0]["samples"] == samples
     assert bob.get("/api/activities/42").status_code == 404

@@ -14,9 +14,10 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from .demo.seed import build_demo_workspace
 from .derive import rederive_all
-from .garmin import GarminClient
+from .garmin.client import GarminClient
 from .security import install_security
-from .storage import Job, Store
+from .db.models import Job
+from .db.store import Store
 from .worker import Worker
 
 

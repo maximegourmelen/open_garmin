@@ -8,15 +8,11 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from sqlalchemy import select, update
 
 from .derive import after_sync
-from .garmin import (
-    GarminClient,
-    GarminError,
-    chunks,
-    normalize_activity_v2,
-    normalize_daily_v2,
-    parse_original,
-)
-from .storage import Activity, ActivitySamples, Connection, Daily, Job, Store, User, now_iso
+from .garmin.client import GarminClient, GarminError
+from .garmin.fit import parse_original
+from .garmin.normalize import chunks, normalize_activity_v2, normalize_daily_v2
+from .db.models import Activity, ActivitySamples, Connection, Daily, Job, User, now_iso
+from .db.store import Store
 
 
 class Worker:

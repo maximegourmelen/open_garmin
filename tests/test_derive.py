@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 
 from server.db.models import Activity, ActivityDerived, ActivitySamples, Daily, User
 from server.derive import rederive_user
-from server.storage import Store
+from server.db.store import Store
 
 
 def test_rederive_is_idempotent_preserves_details_and_raw(tmp_path):

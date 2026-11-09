@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from server.app import create_app
 from server.db.models import Activity
-from server.storage import Store
+from server.db.store import Store
 
 
 def test_demo_list_detail_gpx_and_note(tmp_path):

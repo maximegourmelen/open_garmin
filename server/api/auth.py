@@ -14,7 +14,7 @@ from sqlalchemy.exc import IntegrityError
 from ..config import COOKIE, DEFAULT_PREFS
 from ..main import Credentials
 from ..security import password_hash, password_matches
-from ..storage import Activity, Connection, Daily, Job, LoginSession, Note, User
+from ..db.models import LoginSession, User
 
 
 def register(app, store, worker, current_user, set_session, limit):
@@ -119,61 +119,3 @@ def register(app, store, worker, current_user, set_session, limit):
             db.execute(delete(LoginSession).where(LoginSession.digest == digest))
         response.delete_cookie(COOKIE)
         return {"ok": True}
-
-    @app.get("/api/data")
-    def data(user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
-        with store.sessions() as db:
-            conn = db.get(Connection, user.id)
-            rows = list(
-                db.scalars(select(Activity).where(Activity.user_id == user.id).order_by(Activity.date.desc()))
-            )
-            notes = {
-                n.activity_id: {"text": n.text, "rpe": n.rpe, "tags": n.tags}
-                for n in db.scalars(select(Note).where(Note.user_id == user.id))
-            }
-            activities = [
-                {
-                    **r.data,
-                    "samples": r.data.get("samples", [])[
-                        :: max(1, (len(r.data.get("samples", [])) + 69) // 70)
-                    ],
-                    "note": notes.get(r.id, {"text": "", "rpe": None, "tags": []}),
-                    "sample_count": r.data.get("sample_count", len(r.data.get("samples", []))),
-                }
-                for r in rows
-            ]
-            daily = [
-                r.data for r in db.scalars(select(Daily).where(Daily.user_id == user.id).order_by(Daily.date))
-            ]
-            jobs = [
-                {
-                    "id": j.id,
-                    "kind": j.kind,
-                    "activity_id": j.activity_id,
-                    "state": j.state,
-                    "progress": j.progress,
-                    "message": j.message,
-                }
-                for j in db.scalars(
-                    select(Job).where(Job.user_id == user.id).order_by(Job.created_at.desc()).limit(8)
-                )
-            ]
-            status = {
-                "connected": bool(conn and conn.encrypted_key),
-                "state": conn.state if conn else "not_connected",
-                "last_checked": conn.last_checked if conn else None,
-                "last_success": conn.last_success if conn else None,
-                "message": conn.message if conn else None,
-                "region": conn.region if conn else "com",
-            }
-        return {
-            "mode": "live",
-            "activities": activities,
-            "daily": daily,
-            "preferences": {**DEFAULT_PREFS, **user.preferences},
-            "status": status,
-            "jobs": jobs,
-            "user": {"name": user.name, "email": user.email},
-            "data_through": max((d["date"] for d in daily), default=None),
-            "local_mode": os.environ.get("OPEN_GARMIN_LOCAL_MODE") == "1",
-        }

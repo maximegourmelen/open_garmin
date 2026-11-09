@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from server.analytics.zones import activity_zones, effort_points, estimate_max_hr, intensity_mix
 from server.app import create_app
-from server.storage import Store
+from server.db.store import Store
 
 
 def test_garmin_zones_and_edwards_points():

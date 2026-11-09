@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import delete
 
 from .config import COOKIE
-from .storage import LoginSession, User
+from .db.models import LoginSession, User
 
 
 def password_hash(password: str, salt: str | None = None) -> str:
