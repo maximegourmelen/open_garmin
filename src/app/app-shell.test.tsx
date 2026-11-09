@@ -8,6 +8,7 @@ import AppShell from './AppShell';
 
 vi.mock('../lib/queries', () => ({
   useStatus: () => ({ data: { mode: 'demo', jobs: [], connection: { connected: false } } }),
+  usePreferences: () => ({ data: { onboarded: true } }),
 }));
 vi.mock('../pages/Journey/JourneyPage', () => ({
   default: () => <h2>Journey</h2>,

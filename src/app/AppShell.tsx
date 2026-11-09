@@ -12,6 +12,8 @@ import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
 import JourneyPage from '../pages/Journey/JourneyPage';
 import HealthPage from '../pages/Health/HealthPage';
 import ProgressPage from '../pages/Progress/ProgressPage';
+import OnboardingPage from '../pages/Onboarding/OnboardingPage';
+import { usePreferences } from '../lib/queries';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -28,6 +30,8 @@ function Placeholder({ title }: { title: string }) {
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const preferences = usePreferences();
+  const welcome = location.pathname === '/welcome';
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -50,38 +54,42 @@ export default function AppShell() {
       >
         Skip to content
       </a>
-      <SideNav />
+      {!welcome && <SideNav />}
       <div className="min-w-0 flex-1">
-        <TopBar onSearch={() => setSearchOpen(true)} />
+        {!welcome && <TopBar onSearch={() => setSearchOpen(true)} />}
         <main id="main-content" className="px-4 pb-24 pt-6 md:px-8 md:pb-8">
-          <Routes>
-            <Route path="/" element={<TodayPage />} />
-            <Route path="/activities" element={<ActivitiesPage />} />
-            <Route
-              path="/activities/compare"
-              element={<Placeholder title="Compare activities" />}
-            />
-            <Route path="/activities/:id" element={<ActivityDetailPage />} />
-            <Route path="/journey" element={<JourneyPage />} />
-            <Route path="/health" element={<HealthPage />} />
-            <Route path="/health/:tab" element={<HealthPage />} />
-            <Route path="/progress" element={<ProgressPage />} />
-            <Route path="/methods" element={<Placeholder title="How it works" />} />
-            <Route path="/settings" element={<Placeholder title="Settings" />} />
-            <Route path="/welcome" element={<Placeholder title="Welcome" />} />
-            {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
-            <Route path="/today" element={<Navigate to="/" replace />} />
-            <Route path="/dashboard" element={<Navigate to="/" replace />} />
-            <Route path="/training" element={<Navigate to="/progress" replace />} />
-            <Route path="/recovery" element={<Navigate to="/health" replace />} />
-            <Route path="/insights" element={<Navigate to="/progress" replace />} />
-            <Route path="/research" element={<Navigate to="/methods" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          {preferences.data?.onboarded === false && !welcome ? (
+            <Navigate to="/welcome" replace />
+          ) : (
+            <Routes>
+              <Route path="/" element={<TodayPage />} />
+              <Route path="/activities" element={<ActivitiesPage />} />
+              <Route
+                path="/activities/compare"
+                element={<Placeholder title="Compare activities" />}
+              />
+              <Route path="/activities/:id" element={<ActivityDetailPage />} />
+              <Route path="/journey" element={<JourneyPage />} />
+              <Route path="/health" element={<HealthPage />} />
+              <Route path="/health/:tab" element={<HealthPage />} />
+              <Route path="/progress" element={<ProgressPage />} />
+              <Route path="/methods" element={<Placeholder title="How it works" />} />
+              <Route path="/settings" element={<Placeholder title="Settings" />} />
+              <Route path="/welcome" element={<OnboardingPage />} />
+              {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
+              <Route path="/today" element={<Navigate to="/" replace />} />
+              <Route path="/dashboard" element={<Navigate to="/" replace />} />
+              <Route path="/training" element={<Navigate to="/progress" replace />} />
+              <Route path="/recovery" element={<Navigate to="/health" replace />} />
+              <Route path="/insights" element={<Navigate to="/progress" replace />} />
+              <Route path="/research" element={<Navigate to="/methods" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          )}
         </main>
       </div>
-      <BottomTabBar />
-      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {!welcome && <BottomTabBar />}
+      {!welcome && <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />}
     </div>
   );
 }

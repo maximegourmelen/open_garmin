@@ -12,6 +12,7 @@ from fastapi import Depends, HTTPException, Request, Response
 from sqlalchemy import delete, select
 
 from ..config import COOKIE
+from ..derive import rederive_user
 from ..garmin import GarminError
 from ..main import (
     KeyInput,
@@ -52,7 +53,11 @@ def register(app, store, worker, current_user, limit, client_factory):
     def save_demo_preferences(request: Request, body: Preferences):
         ws = workspace(request)
         with ws.store.sessions.begin() as db:
-            db.get(User, ws.user_id).preferences = body.model_dump()
+            user = db.get(User, ws.user_id)
+            first_finish = not user.preferences.get("onboarded", False) and body.onboarded
+            user.preferences = body.model_dump()
+        if first_finish:
+            rederive_user(ws.store, ws.user_id)
         return {"ok": True}
 
     @app.post("/api/connection")
@@ -134,7 +139,11 @@ def register(app, store, worker, current_user, limit, client_factory):
         except ZoneInfoNotFoundError:
             raise HTTPException(422, "Choose a valid IANA timezone, such as America/Toronto.") from None
         with store.sessions.begin() as db:
-            db.get(User, user.id).preferences = body.model_dump()
+            saved = db.get(User, user.id)
+            first_finish = not saved.preferences.get("onboarded", False) and body.onboarded
+            saved.preferences = body.model_dump()
+        if first_finish:
+            rederive_user(store, user.id)
         return {"ok": True}
 
     @app.get("/api/export")
