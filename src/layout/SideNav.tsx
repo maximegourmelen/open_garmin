@@ -54,7 +54,7 @@ export function SideNav() {
         to="/"
         className="mb-8 flex items-center gap-2 px-2 pt-3 text-lg font-bold text-text"
       >
-        <span className="flex size-9 items-center justify-center rounded-xl bg-accent text-white">
+        <span className="flex size-9 items-center justify-center rounded-xl bg-accent text-on-accent">
           O
         </span>
         <span className={collapsed ? 'sr-only' : ''}>Open Garmin</span>

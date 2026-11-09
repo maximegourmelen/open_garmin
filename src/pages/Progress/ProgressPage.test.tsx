@@ -86,7 +86,7 @@ test('shows progress and switches volume units without fetching deeper data', ()
   expect(screen.getByText('Active on 11 of the last 28 days')).toBeTruthy();
   expect(mocks.deeper).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('radio', { name: 'Distance' }));
-  expect(screen.getByRole('img', { name: 'Weekly distance' })).toBeTruthy();
+  expect(screen.getByRole('img', { name: /Weekly distance/ })).toBeTruthy();
 });
 
 test('deeper data loads only when expanded', () => {

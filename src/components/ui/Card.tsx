@@ -36,7 +36,7 @@ export function Card({
       )}
       aria-label={title}
     >
-      <header className="mb-4 flex min-h-8 items-center gap-2.5">
+      <header className="mb-4 flex min-h-8 flex-wrap items-center gap-2.5">
         {Icon && (
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
             <Icon size={18} aria-hidden="true" />
@@ -45,13 +45,13 @@ export function Card({
         {href ? (
           <Link
             to={href}
-            className="flex min-w-0 flex-1 items-center gap-1 font-semibold hover:text-accent"
+            className="flex min-w-0 flex-[1_1_7rem] items-center gap-1 font-semibold hover:text-accent"
           >
-            <span className="truncate">{title}</span>
-            <ChevronRight size={16} aria-hidden="true" />
+            <span>{title}</span>
+            <ChevronRight size={16} className="shrink-0" aria-hidden="true" />
           </Link>
         ) : (
-          <h2 className="min-w-0 flex-1 truncate font-semibold">{title}</h2>
+          <h2 className="min-w-0 flex-[1_1_7rem] font-semibold">{title}</h2>
         )}
         {source && <SourceBadge source={source} />}
         {explainer && <Explainer title={title} {...explainer} />}

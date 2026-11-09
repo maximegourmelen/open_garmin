@@ -1,20 +1,21 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { BottomTabBar } from '../layout/BottomTabBar';
 import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
 import { TopBar } from '../layout/TopBar';
-import GalleryPage from '../gallery';
-import TodayPage from '../pages/Today/TodayPage';
-import ActivitiesPage from '../pages/Activities/ActivitiesPage';
-import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
-import JourneyPage from '../pages/Journey/JourneyPage';
-import HealthPage from '../pages/Health/HealthPage';
-import ProgressPage from '../pages/Progress/ProgressPage';
-import OnboardingPage from '../pages/Onboarding/OnboardingPage';
-import SettingsPage from '../pages/Settings/SettingsPage';
-import MethodsPage from '../pages/Methods/MethodsPage';
 import { usePreferences } from '../lib/queries';
+
+const GalleryPage = lazy(() => import('../gallery'));
+const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
+const ActivitiesPage = lazy(() => import('../pages/Activities/ActivitiesPage'));
+const ActivityDetailPage = lazy(() => import('../pages/ActivityDetail/ActivityDetailPage'));
+const JourneyPage = lazy(() => import('../pages/Journey/JourneyPage'));
+const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
+const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
+const OnboardingPage = lazy(() => import('../pages/Onboarding/OnboardingPage'));
+const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'));
+const MethodsPage = lazy(() => import('../pages/Methods/MethodsPage'));
 
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -57,27 +58,29 @@ export default function AppShell() {
           {preferences.data?.onboarded === false && !welcome ? (
             <Navigate to="/welcome" replace />
           ) : (
-            <Routes>
-              <Route path="/" element={<TodayPage />} />
-              <Route path="/activities" element={<ActivitiesPage />} />
-              <Route path="/activities/compare" element={<ActivitiesPage />} />
-              <Route path="/activities/:id" element={<ActivityDetailPage />} />
-              <Route path="/journey" element={<JourneyPage />} />
-              <Route path="/health" element={<HealthPage />} />
-              <Route path="/health/:tab" element={<HealthPage />} />
-              <Route path="/progress" element={<ProgressPage />} />
-              <Route path="/methods" element={<MethodsPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/welcome" element={<OnboardingPage />} />
-              {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
-              <Route path="/today" element={<Navigate to="/" replace />} />
-              <Route path="/dashboard" element={<Navigate to="/" replace />} />
-              <Route path="/training" element={<Navigate to="/progress" replace />} />
-              <Route path="/recovery" element={<Navigate to="/health" replace />} />
-              <Route path="/insights" element={<Navigate to="/progress" replace />} />
-              <Route path="/research" element={<Navigate to="/methods" replace />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<div role="status">Loading page…</div>}>
+              <Routes>
+                <Route path="/" element={<TodayPage />} />
+                <Route path="/activities" element={<ActivitiesPage />} />
+                <Route path="/activities/compare" element={<ActivitiesPage />} />
+                <Route path="/activities/:id" element={<ActivityDetailPage />} />
+                <Route path="/journey" element={<JourneyPage />} />
+                <Route path="/health" element={<HealthPage />} />
+                <Route path="/health/:tab" element={<HealthPage />} />
+                <Route path="/progress" element={<ProgressPage />} />
+                <Route path="/methods" element={<MethodsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/welcome" element={<OnboardingPage />} />
+                {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
+                <Route path="/today" element={<Navigate to="/" replace />} />
+                <Route path="/dashboard" element={<Navigate to="/" replace />} />
+                <Route path="/training" element={<Navigate to="/progress" replace />} />
+                <Route path="/recovery" element={<Navigate to="/health" replace />} />
+                <Route path="/insights" element={<Navigate to="/progress" replace />} />
+                <Route path="/research" element={<Navigate to="/methods" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           )}
         </main>
       </div>

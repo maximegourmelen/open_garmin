@@ -189,10 +189,11 @@ export function WeekDots({
 }) {
   const ordered = weekStart === 'sunday' ? [...days.slice(-1), ...days.slice(0, -1)] : days;
   return (
-    <div className="flex justify-between gap-2" aria-label="Activity this week">
+    <div className="flex justify-between gap-2" role="group" aria-label="Activity this week">
       {ordered.map((day) => (
         <div key={day.date} className="flex flex-col items-center gap-1" title={day.date}>
           <span
+            role="img"
             className={`flex size-7 items-center justify-center rounded-full ${day.isToday ? 'ring-2 ring-accent ring-offset-2 ring-offset-surface' : ''}`}
             style={{
               background:

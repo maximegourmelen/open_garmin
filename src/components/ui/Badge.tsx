@@ -43,6 +43,7 @@ export function Avatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md'
         size === 'sm' ? 'size-8 text-xs' : 'size-10 text-sm',
       )}
       aria-label={name}
+      role="img"
     >
       {initials}
     </span>

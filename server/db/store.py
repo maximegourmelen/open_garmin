@@ -19,8 +19,11 @@ class Store:
         directory: str | Path | None = None,
         database_url: str | None = None,
         in_memory: bool = False,
+        temporary: bool = False,
     ):
-        self._temporary_directory = TemporaryDirectory(prefix="open-garmin-demo-") if in_memory else None
+        self._temporary_directory = (
+            TemporaryDirectory(prefix="open-garmin-demo-") if in_memory or temporary else None
+        )
         root = self._temporary_directory.name if self._temporary_directory else directory
         self.directory = Path(root or os.environ.get("OPEN_GARMIN_DATA_DIR", ".runtime")).resolve()
         self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)

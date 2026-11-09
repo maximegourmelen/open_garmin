@@ -4,16 +4,16 @@ from fastapi.testclient import TestClient
 
 from server.app import create_app
 from server.demo.seed import build_demo_workspace
-from server.storage import Store
+from server.db.store import Store
 
 
-def test_demo_seeds_quickly_and_is_in_memory():
+def test_demo_seeds_quickly_in_isolated_temporary_database():
     start = time.perf_counter()
     ws = build_demo_workspace()
     assert time.perf_counter() - start < 3
     assert ws.user_id == "demo" and ws.mode == "demo" and ws.read_only
-    assert ws.store.engine.url.database == ":memory:"
-    assert not (ws.store.directory / "app.db").exists()
+    assert ws.store.engine.url.database == str(ws.store.directory / "app.db")
+    assert (ws.store.directory / "app.db").exists()
 
 
 def test_demo_status_and_forbidden_mutations_are_isolated(tmp_path):
@@ -24,7 +24,7 @@ def test_demo_status_and_forbidden_mutations_are_isolated(tmp_path):
         assert demo.json()["mode"] == "demo"
         assert demo.json()["user"] == {"name": "Alex"}
         assert client.get("/api/status").status_code == 401
-        assert client.get("/api/data").status_code == 401
+        assert client.get("/api/activities").status_code == 401
         for method, path in (
             ("post", "/api/demo/connection"),
             ("delete", "/api/demo/connection"),

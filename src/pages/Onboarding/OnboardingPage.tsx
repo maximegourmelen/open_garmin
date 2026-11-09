@@ -38,7 +38,7 @@ const goals = [
   },
   {
     id: 'curious',
-    title: 'Just curious',
+    title: 'Exploring',
     detail: 'Explore your data at your own pace.',
     journey: null,
   },

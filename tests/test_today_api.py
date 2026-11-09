@@ -1,4 +1,6 @@
 from fastapi.testclient import TestClient
+from statistics import median
+from time import perf_counter
 
 from server.db.store import Store
 from server.main import create_app
@@ -21,3 +23,14 @@ def test_demo_today_has_single_request_view():
         assert data["journey"] and data["insights"]
         assert data["unseen_milestones"] and data["recap_ready"]
         assert client.get("/api/today").status_code == 401
+
+
+def test_demo_today_stays_under_300ms_after_warmup():
+    with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
+        assert client.get("/api/demo/today").status_code == 200
+        timings = []
+        for _ in range(5):
+            start = perf_counter()
+            assert client.get("/api/demo/today").status_code == 200
+            timings.append(perf_counter() - start)
+        assert median(timings) < 0.3, f"median Today response: {median(timings):.3f}s"

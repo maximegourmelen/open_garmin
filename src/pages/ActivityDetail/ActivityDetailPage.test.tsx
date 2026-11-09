@@ -129,7 +129,7 @@ afterEach(() => {
 test('renders route, synchronized streams, zones, and watch laps', () => {
   mount();
   expect(screen.getByRole('img', { name: 'Activity route' })).toBeTruthy();
-  expect(screen.getByRole('img', { name: 'Heart rate over activity' })).toBeTruthy();
+  expect(screen.getByRole('img', { name: /Heart rate over activity/ })).toBeTruthy();
   expect(screen.getByLabelText('Heart rate zones').textContent).toMatch(/^Z5.*Z4.*Z3.*Z2.*Z1/);
   fireEvent.click(screen.getByRole('tab', { name: 'Watch laps' }));
   expect(screen.getAllByText('140').length).toBeGreaterThan(1);

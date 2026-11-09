@@ -37,7 +37,7 @@ function JourneyPath({ weeks, current }: { weeks: JourneyWeek[]; current: number
   const width = Math.max(360, weeks.length * 72);
   const points = weeks.map((_, i) => ({ x: 38 + i * 72, y: i % 2 ? 70 : 38 }));
   return (
-    <div className="overflow-x-auto" aria-label="Journey week path">
+    <div className="overflow-x-auto" role="region" aria-label="Journey week path" tabIndex={0}>
       <svg
         viewBox={`0 0 ${width} 120`}
         className="h-32 min-w-full"

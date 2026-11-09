@@ -42,17 +42,17 @@ function renderAt(path: string) {
   );
 }
 
-test('old routes redirect into the new shell', () => {
+test('old routes redirect into the new shell', async () => {
   renderAt('/training');
-  expect(screen.getByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
+  expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
   expect(screen.getAllByRole('navigation', { name: 'Mobile navigation' })).toHaveLength(1);
 });
 
-test('primary navigation and command palette work', () => {
+test('primary navigation and command palette work', async () => {
   renderAt('/journey');
-  expect(screen.getByRole('heading', { name: 'Journey', level: 2 })).toBeTruthy();
+  expect(await screen.findByRole('heading', { name: 'Journey', level: 2 })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Search activities' }));
   expect(screen.getByRole('dialog', { name: 'Search and jump' })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Progress' }));
-  expect(screen.getByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
+  expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
 });

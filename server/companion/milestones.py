@@ -216,13 +216,14 @@ def evaluate_milestones(
         earn("checkin_7", checkin_rows[6]["date"], value=7)
     progress["checkin_7"] = (len(checkin_rows), 7, "check-ins")
     nights_by_week: dict[str, list[dict]] = {}
-    for item in days:
+    for index, item in enumerate(days):
         nights_by_week.setdefault(week_start(item["date"], prefs.get("week_start", "monday")), []).append(
             item
         )
-        rhythm = bedtime_rhythm(days, date.fromisoformat(item["date"]))
-        if rhythm["within_7"] == 7:
-            earn("bedtime_regular", item["date"])
+        if "bedtime_regular" not in award:
+            rhythm = bedtime_rhythm(days[max(0, index - 13) : index + 1], date.fromisoformat(item["date"]))
+            if rhythm["within_7"] == 7:
+                earn("bedtime_regular", item["date"])
     for nights in nights_by_week.values():
         enough = [
             item

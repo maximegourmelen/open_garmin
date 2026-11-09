@@ -17,7 +17,9 @@ from .generator import TIMEZONE, generate_demo
 
 
 def build_demo_workspace() -> Workspace:
-    store = Store(in_memory=True)
+    # Browser requests run in separate worker threads. A temporary SQLite file lets
+    # them use independent connections rather than sharing one in-memory connection.
+    store = Store(temporary=True)
     today = datetime.now(ZoneInfo(TIMEZONE)).date()
     generated = generate_demo(today)
     prefs = deepcopy(DEFAULT_PREFS)

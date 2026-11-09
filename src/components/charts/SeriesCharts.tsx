@@ -16,6 +16,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useState } from 'react';
 import { chartColor, chartTheme, chartTooltipStyle } from './chartTheme';
 import type { StreamData } from '../../lib/types';
 
@@ -23,14 +24,58 @@ export function ChartFrame({
   children,
   label,
   height = 220,
+  table,
 }: {
   children: React.ReactNode;
   label: string;
   height?: number;
+  table?: { columns: { key: string; label: string }[]; rows: Record<string, unknown>[] };
 }) {
+  const [showTable, setShowTable] = useState(false);
   return (
-    <div role="img" aria-label={label} className="w-full" style={{ height }}>
-      {children}
+    <div className="w-full">
+      <div role="img" aria-label={label} className="w-full" style={{ height }}>
+        {children}
+      </div>
+      {table && (
+        <>
+          <button
+            type="button"
+            className="mt-1 rounded-control px-2 py-1 text-xs text-accent hover:bg-accent-soft"
+            aria-expanded={showTable}
+            onClick={() => setShowTable((value) => !value)}
+          >
+            {showTable ? 'Hide table' : 'Show as table'}
+          </button>
+          {showTable && (
+            <div className="max-h-72 overflow-auto">
+              <table className="w-full text-left text-xs">
+                <caption className="sr-only">{label}</caption>
+                <thead>
+                  <tr>
+                    {table.columns.map((column) => (
+                      <th key={column.key} scope="col" className="p-1">
+                        {column.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row, index) => (
+                    <tr key={index}>
+                      {table.columns.map((column) => (
+                        <td key={column.key} className="border-t border-border p-1">
+                          {row[column.key] == null ? 'No data' : String(row[column.key])}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -55,7 +100,17 @@ export function BandLineChart({
   height?: number;
 }) {
   return (
-    <ChartFrame label={label} height={height}>
+    <ChartFrame
+      label={`${label}. ${data.length} observations.`}
+      height={height}
+      table={{
+        columns: [
+          { key: xKey, label: xKey },
+          { key: dataKey, label: label },
+        ],
+        rows: data,
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
@@ -109,7 +164,17 @@ export function BarSeries({
   height?: number;
 }) {
   return (
-    <ChartFrame label={label} height={height}>
+    <ChartFrame
+      label={`${label}. ${data.length} observations.`}
+      height={height}
+      table={{
+        columns: [
+          { key: xKey, label: xKey },
+          ...series.map(({ key, label: name }) => ({ key, label: name })),
+        ],
+        rows: data,
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
           <defs>
@@ -186,7 +251,16 @@ export function ScatterPlot({
       ? [Math.min(...xs), Math.max(...xs)].map((x) => ({ x, y: trend.slope * x + trend.intercept }))
       : [];
   return (
-    <ChartFrame label={label}>
+    <ChartFrame
+      label={`${label}. ${data.length} observations.`}
+      table={{
+        columns: [
+          { key: 'x', label: xLabel ?? 'X' },
+          { key: 'y', label: yLabel ?? 'Y' },
+        ],
+        rows: data,
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <ScatterChart margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" />
@@ -241,17 +315,28 @@ export function StreamCharts({
   return (
     <div className="space-y-4">
       {available.map((channel) => (
-        <ChartFrame key={channel.key} label={`${channel.label} over activity`} height={150}>
+        <ChartFrame
+          key={channel.key}
+          label={`${channel.label} over activity. ${data.length} samples.`}
+          height={150}
+          table={{
+            columns: [
+              { key: 'x', label: xAxis },
+              { key: channel.key, label: channel.label },
+            ],
+            rows: data,
+          }}
+        >
           <p className="mb-1 text-xs font-medium text-text-2">{channel.label}</p>
           <ResponsiveContainer width="100%" height="85%">
             <AreaChart
               data={data}
               syncId="activity"
-              onMouseMove={(event) =>
-                onHover?.(
-                  typeof event?.activeTooltipIndex === 'number' ? event.activeTooltipIndex : null,
-                )
-              }
+              onMouseMove={(event) => {
+                const active = event?.activeTooltipIndex;
+                const index = active == null ? null : Number(active);
+                onHover?.(index !== null && Number.isInteger(index) ? index : null);
+              }}
               onMouseLeave={() => onHover?.(null)}
               margin={{ top: 5, right: 10, left: -25, bottom: 0 }}
             >

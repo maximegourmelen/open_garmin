@@ -46,8 +46,8 @@ for (const [theme, values] of Object.entries({ dark, light })) {
     for (const [text, minimum] of [
       ['text', 4.5],
       ['text-2', 4.5],
-      ['text-3', 3],
-      ['accent', 3],
+      ['text-3', 4.5],
+      ['accent', 4.5],
     ]) {
       const ratio = contrast(values[text], values[surface]);
       const okay = ratio >= minimum;
@@ -57,5 +57,13 @@ for (const [theme, values] of Object.entries({ dark, light })) {
       );
     }
   }
+}
+for (const [theme, values] of Object.entries({ dark, light })) {
+  const ratio = contrast(values['on-accent'], values.accent);
+  const okay = ratio >= 4.5;
+  if (!okay) failed = true;
+  console.log(
+    `${okay ? 'PASS' : 'FAIL'} ${theme} on-accent on accent: ${ratio.toFixed(2)}:1 (min 4.5:1)`,
+  );
 }
 if (failed) process.exitCode = 1;

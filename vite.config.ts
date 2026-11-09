@@ -4,8 +4,12 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  test: { environment: 'jsdom' },
-  server: { port: 5173, strictPort: true, proxy: { '/api': 'http://127.0.0.1:8000' } },
+  test: { environment: 'jsdom', exclude: ['tests/e2e/**', 'node_modules/**'] },
+  server: {
+    port: 5173,
+    strictPort: true,
+    proxy: { '/api': process.env.OPEN_GARMIN_API_TARGET ?? 'http://127.0.0.1:8000' },
+  },
   build: {
     rollupOptions: {
       output: {
