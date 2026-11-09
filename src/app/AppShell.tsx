@@ -11,6 +11,7 @@ import ActivitiesPage from '../pages/Activities/ActivitiesPage';
 import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
 import JourneyPage from '../pages/Journey/JourneyPage';
 import HealthPage from '../pages/Health/HealthPage';
+import ProgressPage from '../pages/Progress/ProgressPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -64,7 +65,7 @@ export default function AppShell() {
             <Route path="/journey" element={<JourneyPage />} />
             <Route path="/health" element={<HealthPage />} />
             <Route path="/health/:tab" element={<HealthPage />} />
-            <Route path="/progress" element={<Placeholder title="Progress" />} />
+            <Route path="/progress" element={<ProgressPage />} />
             <Route path="/methods" element={<Placeholder title="How it works" />} />
             <Route path="/settings" element={<Placeholder title="Settings" />} />
             <Route path="/welcome" element={<Placeholder title="Welcome" />} />

@@ -5,6 +5,7 @@ import { workspaceRequest } from './api';
 import type {
   ActivityDetail,
   ActivityList,
+  DeeperResponse,
   HealthSeries,
   Insight,
   JourneyResponse,
@@ -12,6 +13,7 @@ import type {
   Preferences,
   ProgressResponse,
   Range,
+  RelationshipResponse,
   StatusResponse,
   TodayResponse,
   WeeklyRecap,
@@ -70,14 +72,14 @@ export const useWellness = (kind: string, range: Range = '4W') =>
   useWorkspaceQuery<HealthSeries>(['wellness', kind, range], `/wellness/${kind}?range=${range}`);
 export const useProgress = () => useWorkspaceQuery<ProgressResponse>(['progress'], '/progress');
 export const useDeeper = (range: Range = '4W') =>
-  useWorkspaceQuery<Record<string, unknown>>(['deeper', range], `/progress/deeper?range=${range}`);
+  useWorkspaceQuery<DeeperResponse>(['deeper', range], `/progress/deeper?range=${range}`);
 export const useJourney = () => useWorkspaceQuery<JourneyResponse>(['journey'], '/journey');
 export const useInsights = () => useWorkspaceQuery<Insight[]>(['insights'], '/insights');
 export const useMethods = () => useWorkspaceQuery<Method[]>(['methods'], '/methods');
 export const useResearch = () =>
   useWorkspaceQuery<Record<string, unknown>>(['research'], '/research');
 export const useRelationship = (x: string, y: string, lag: number, range: Range) =>
-  useWorkspaceQuery<Record<string, unknown>>(
+  useWorkspaceQuery<RelationshipResponse>(
     ['relationships', x, y, lag, range],
     `/relationships?x=${encodeURIComponent(x)}&y=${encodeURIComponent(y)}&lag=${lag}&range=${range}`,
   );

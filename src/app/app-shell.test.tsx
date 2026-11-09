@@ -12,6 +12,9 @@ vi.mock('../lib/queries', () => ({
 vi.mock('../pages/Journey/JourneyPage', () => ({
   default: () => <h2>Journey</h2>,
 }));
+vi.mock('../pages/Progress/ProgressPage', () => ({
+  default: () => <h2>Progress</h2>,
+}));
 afterEach(() => cleanup());
 window.scrollTo = vi.fn();
 

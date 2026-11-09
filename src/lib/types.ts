@@ -312,10 +312,102 @@ export interface FitnessSignal {
 
 export interface ProgressResponse {
   signals: FitnessSignal[];
-  bests: Record<string, unknown>[];
-  volume: Record<string, unknown>[];
+  bests: {
+    kind: string;
+    all_time: {
+      activity_id: string;
+      kind: string;
+      date: string;
+      sport: Sport;
+      value: number;
+      source: Source;
+      is_new: boolean;
+    };
+    recent_90: {
+      activity_id: string;
+      kind: string;
+      date: string;
+      sport: Sport;
+      value: number;
+      source: Source;
+      is_new: boolean;
+    } | null;
+  }[];
+  volume: {
+    start: string;
+    end: string;
+    minutes: number;
+    goal: number;
+    sessions: number;
+    distance: number;
+    by_sport: Record<string, number>;
+    partial: boolean;
+    method: string;
+  }[];
   consistency: { days: { date: string; minutes: number }[]; active_days_28: number };
-  ramp: Record<string, unknown>;
+  ramp: {
+    band: string;
+    ratio: number | null;
+    this_week: number;
+    average_four_weeks: number | null;
+    projected: number | null;
+    sentence: string;
+    n: number;
+    source: Source;
+    method: string;
+  };
+  method: string;
+}
+
+export interface DeeperResponse {
+  range: Range;
+  from: string;
+  to: string;
+  effort_trend: {
+    days: {
+      date: string;
+      effort: number;
+      acute: number | null;
+      chronic: number | null;
+      ratio: number | null;
+    }[];
+    caption: string;
+  };
+  intensity_mix: {
+    easy_minutes: number;
+    moderate_minutes: number;
+    hard_minutes: number;
+    sentence: string;
+    n: number;
+  };
+  benefit_mix: Record<string, number>;
+  pace_hr: { id: string; date: string; sport: Sport; pace_s_per_km: number; average_hr: number }[];
+  running_form: {
+    date: string;
+    cadence_spm: number | null;
+    stride_length_m: number | null;
+    ground_contact_ms: number | null;
+    vertical_oscillation_cm: number | null;
+    vertical_ratio_pct: number | null;
+  }[];
+  five_k_estimate: {
+    seconds: number | null;
+    based_on: { activity_id: string; date: string } | null;
+    sentence: string;
+  };
+  vo2max: { date: string; value: number }[];
+  method: string;
+}
+
+export interface RelationshipResponse {
+  x: string;
+  y: string;
+  lag: number;
+  points: [number, number, string][];
+  rho: number | null;
+  n: number;
+  words: string;
+  disclaimer: string;
   method: string;
 }
 
