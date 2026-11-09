@@ -13,6 +13,7 @@ import JourneyPage from '../pages/Journey/JourneyPage';
 import HealthPage from '../pages/Health/HealthPage';
 import ProgressPage from '../pages/Progress/ProgressPage';
 import OnboardingPage from '../pages/Onboarding/OnboardingPage';
+import SettingsPage from '../pages/Settings/SettingsPage';
 import { usePreferences } from '../lib/queries';
 
 function Placeholder({ title }: { title: string }) {
@@ -32,6 +33,13 @@ export default function AppShell() {
   const location = useLocation();
   const preferences = usePreferences();
   const welcome = location.pathname === '/welcome';
+  useEffect(() => {
+    if (preferences.data)
+      document.documentElement.setAttribute(
+        'data-reduce-motion',
+        String(preferences.data.reduce_motion),
+      );
+  }, [preferences.data]);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -74,7 +82,7 @@ export default function AppShell() {
               <Route path="/health/:tab" element={<HealthPage />} />
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/methods" element={<Placeholder title="How it works" />} />
-              <Route path="/settings" element={<Placeholder title="Settings" />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/welcome" element={<OnboardingPage />} />
               {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
               <Route path="/today" element={<Navigate to="/" replace />} />

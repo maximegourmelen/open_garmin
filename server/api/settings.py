@@ -9,6 +9,7 @@ import time
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from fastapi import Depends, HTTPException, Request, Response
+from pydantic import BaseModel, Field
 from sqlalchemy import delete, select
 
 from ..config import COOKIE
@@ -37,7 +38,28 @@ from ..storage import (
 from ..workspace import workspace
 
 
+class ProfileInput(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+
+
 def register(app, store, worker, current_user, limit, client_factory):
+    @app.put("/api/profile")
+    def save_profile(body: ProfileInput, user=Depends(current_user)):  # noqa: B008
+        if not body.name.strip():
+            raise HTTPException(422, "Enter a display name.")
+        with store.sessions.begin() as db:
+            db.get(User, user.id).name = body.name.strip()
+        return {"name": body.name.strip()}
+
+    @app.put("/api/demo/profile")
+    def save_demo_profile(request: Request, body: ProfileInput):
+        if not body.name.strip():
+            raise HTTPException(422, "Enter a display name.")
+        ws = workspace(request)
+        with ws.store.sessions.begin() as db:
+            db.get(User, ws.user_id).name = body.name.strip()
+        return {"name": body.name.strip()}
+
     @app.get("/api/preferences", response_model=Preferences)
     def get_preferences(user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
         with store.sessions() as db:

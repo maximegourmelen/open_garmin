@@ -43,3 +43,17 @@ def test_finishing_onboarding_awards_first_milestone():
         assert client.put("/api/preferences", json=prefs).status_code == 200
         after = client.get("/api/journey").json()
         assert next(item for item in after["milestones"] if item["id"] == "hello")["earned"]
+
+
+def test_display_name_update_is_scoped_and_rejects_blank_names():
+    app = create_app(Store(in_memory=True), start_worker=False)
+    with TestClient(app) as client:
+        signed_in = client.post(
+            "/api/auth/register",
+            json={"email": "name@example.test", "password": "a-long-test-password", "name": "Original"},
+        )
+        assert signed_in.status_code == 200
+        client.headers["X-CSRF-Token"] = signed_in.json()["csrf_token"]
+        assert client.put("/api/profile", json={"name": "  Updated  "}).json()["name"] == "Updated"
+        assert client.get("/api/session").json()["user"]["name"] == "Updated"
+        assert client.put("/api/profile", json={"name": "   "}).status_code == 422
