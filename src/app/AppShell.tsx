@@ -8,6 +8,7 @@ import { TopBar } from '../layout/TopBar';
 import GalleryPage from '../gallery';
 import TodayPage from '../pages/Today/TodayPage';
 import ActivitiesPage from '../pages/Activities/ActivitiesPage';
+import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -57,7 +58,7 @@ export default function AppShell() {
               path="/activities/compare"
               element={<Placeholder title="Compare activities" />}
             />
-            <Route path="/activities/:id" element={<Placeholder title="Activity details" />} />
+            <Route path="/activities/:id" element={<ActivityDetailPage />} />
             <Route path="/journey" element={<Placeholder title="Journey" />} />
             <Route path="/health" element={<Placeholder title="Health" />} />
             {['sleep', 'heart', 'energy', 'stress', 'steps'].map((page) => (

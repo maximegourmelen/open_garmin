@@ -17,6 +17,7 @@ import {
   YAxis,
 } from 'recharts';
 import { chartColor, chartTheme, chartTooltipStyle } from './chartTheme';
+import type { StreamData } from '../../lib/types';
 
 export function ChartFrame({
   children,
@@ -203,12 +204,15 @@ export function StreamCharts({
   channels,
   onHover,
   zones,
+  xAxis = 'time',
 }: {
-  streams: Record<string, (number | null)[]>;
+  streams: Partial<StreamData>;
   channels?: { key: string; label: string; color: string }[];
   onHover?: (index: number | null) => void;
   zones?: { low: number; high: number; color: string }[];
+  xAxis?: 'time' | 'distance';
 }) {
+  const read = (key: string): (number | null)[] | undefined => streams[key as keyof StreamData];
   const available = (
     channels ?? [
       { key: 'speed', label: 'Speed', color: 'accent' },
@@ -217,12 +221,13 @@ export function StreamCharts({
       { key: 'cadence_spm', label: 'Cadence', color: 'warning' },
       { key: 'power', label: 'Power', color: 'celebrate' },
     ]
-  ).filter((channel) => streams[channel.key]?.some((value) => value !== null));
-  const count = Math.max(0, ...Object.values(streams).map((values) => values.length));
+  ).filter((channel) => read(channel.key)?.some((value) => value !== null));
+  const count = Math.max(0, ...Object.values(streams).map((values) => values?.length ?? 0));
   const data = Array.from({ length: Math.min(count, 1500) }, (_, index) => ({
     index,
+    x: streams[xAxis]?.[index] ?? index,
     ...Object.fromEntries(
-      available.map((channel) => [channel.key, streams[channel.key]?.[index] ?? null]),
+      available.map((channel) => [channel.key, read(channel.key)?.[index] ?? null]),
     ),
   }));
   return (
@@ -242,7 +247,7 @@ export function StreamCharts({
               onMouseLeave={() => onHover?.(null)}
               margin={{ top: 5, right: 10, left: -25, bottom: 0 }}
             >
-              <XAxis dataKey="index" hide />
+              <XAxis dataKey="x" hide />
               <YAxis tick={axis} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={chartTooltipStyle()} />
               {channel.key === 'hr' &&
