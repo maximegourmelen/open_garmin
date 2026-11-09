@@ -3,6 +3,7 @@ from xml.etree import ElementTree as ET
 from fastapi.testclient import TestClient
 
 from server.app import create_app
+from server.db.models import Activity
 from server.storage import Store
 
 
@@ -41,3 +42,24 @@ def test_demo_list_detail_gpx_and_note(tmp_path):
         assert gpx.headers["content-type"].startswith("application/gpx+xml")
         root = ET.fromstring(gpx.content)
         assert len(root.findall(".//{http://www.topografix.com/GPX/1/1}trkpt")) >= 2
+
+
+def test_activity_list_excludes_child_laps(tmp_path):
+    app = create_app(Store(tmp_path), start_worker=False)
+    ws = app.state.demo_workspace
+    with ws.store.sessions.begin() as db:
+        parent = db.get(Activity, (ws.user_id, "900000"))
+        activity_date = parent.date
+        db.add(
+            Activity(
+                user_id=ws.user_id,
+                id="lap-example",
+                date=parent.date,
+                data={**parent.data, "id": "lap-example", "parent_id": parent.id},
+                raw={},
+            )
+        )
+    with TestClient(app) as client:
+        result = client.get(f"/api/demo/activities?from={activity_date}&to={activity_date}").json()
+        assert all(item["id"] != "lap-example" for item in result["items"])
+        assert len(result["items"]) == result["totals"]["sessions"]

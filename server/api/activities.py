@@ -41,6 +41,8 @@ def register(app, store, worker, current_user, limit):
         items = []
         for row in rows:
             data = row.data
+            if data.get("parent_id"):
+                continue
             if from_date and row.date < from_date.isoformat() or to_date and row.date > to_date.isoformat():
                 continue
             if sports and data.get("sport") not in sports:
@@ -57,8 +59,7 @@ def register(app, store, worker, current_user, limit):
             if query and query not in search:
                 continue
             items.append(activity_summary(data, derived.get(row.id)))
-        parents = {row.id: row.data.get("parent_id") for row in rows}
-        top_level = [item for item in items if not parents.get(item["id"])]
+        top_level = items
         totals = {
             "sessions": len(top_level),
             "duration": round(sum(item["duration"] or 0 for item in top_level)),
