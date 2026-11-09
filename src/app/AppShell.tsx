@@ -9,6 +9,7 @@ import GalleryPage from '../gallery';
 import TodayPage from '../pages/Today/TodayPage';
 import ActivitiesPage from '../pages/Activities/ActivitiesPage';
 import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
+import JourneyPage from '../pages/Journey/JourneyPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -59,7 +60,7 @@ export default function AppShell() {
               element={<Placeholder title="Compare activities" />}
             />
             <Route path="/activities/:id" element={<ActivityDetailPage />} />
-            <Route path="/journey" element={<Placeholder title="Journey" />} />
+            <Route path="/journey" element={<JourneyPage />} />
             <Route path="/health" element={<Placeholder title="Health" />} />
             {['sleep', 'heart', 'energy', 'stress', 'steps'].map((page) => (
               <Route

@@ -9,6 +9,9 @@ import AppShell from './AppShell';
 vi.mock('../lib/queries', () => ({
   useStatus: () => ({ data: { mode: 'demo', jobs: [], connection: { connected: false } } }),
 }));
+vi.mock('../pages/Journey/JourneyPage', () => ({
+  default: () => <h2>Journey</h2>,
+}));
 afterEach(() => cleanup());
 window.scrollTo = vi.fn();
 

@@ -14,6 +14,7 @@ import type {
   Range,
   StatusResponse,
   TodayResponse,
+  WeeklyRecap,
 } from './types';
 
 export function queryKey(mode: 'demo' | 'live', ...parts: unknown[]) {
@@ -81,6 +82,6 @@ export const useRelationship = (x: string, y: string, lag: number, range: Range)
     `/relationships?x=${encodeURIComponent(x)}&y=${encodeURIComponent(y)}&lag=${lag}&range=${range}`,
   );
 export const useRecap = (week: string) =>
-  useWorkspaceQuery<Record<string, unknown>>(['recap', week], `/recaps/${week}`, {
+  useWorkspaceQuery<WeeklyRecap>(['recap', week], `/recaps/${week}`, {
     enabled: Boolean(week),
   });
