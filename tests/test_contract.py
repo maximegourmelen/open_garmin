@@ -1,10 +1,14 @@
 """Validate demo responses against Pydantic's exported JSON Schemas."""
 
+import json
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
 from pydantic import TypeAdapter
 
 from server.api.schemas import (
+    EXPORTED_SCHEMAS,
     ActivityDetail,
     ActivityList,
     DeeperResponse,
@@ -19,6 +23,12 @@ from server.api.schemas import (
 )
 from server.db.store import Store
 from server.main import create_app
+
+
+def test_exported_schema_files_match_models():
+    root = Path(__file__).resolve().parents[1] / "docs" / "api-schemas"
+    for name, model in EXPORTED_SCHEMAS.items():
+        assert json.loads((root / f"{name}.json").read_text()) == TypeAdapter(model).json_schema()
 
 
 def test_demo_response_schemas():

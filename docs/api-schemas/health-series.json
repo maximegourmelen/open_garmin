@@ -1,0 +1,52 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "days": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Days",
+      "type": "array"
+    },
+    "from": {
+      "title": "From",
+      "type": "string"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "range": {
+      "title": "Range",
+      "type": "string"
+    },
+    "sentences": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sentences",
+      "type": "array"
+    },
+    "summary": {
+      "additionalProperties": true,
+      "title": "Summary",
+      "type": "object"
+    },
+    "to": {
+      "title": "To",
+      "type": "string"
+    }
+  },
+  "required": [
+    "range",
+    "from",
+    "to",
+    "days",
+    "summary",
+    "sentences",
+    "method"
+  ],
+  "title": "HealthSeries",
+  "type": "object"
+}

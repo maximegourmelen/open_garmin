@@ -1,0 +1,82 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "benefit_mix": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Benefit Mix",
+      "type": "object"
+    },
+    "effort_trend": {
+      "additionalProperties": true,
+      "title": "Effort Trend",
+      "type": "object"
+    },
+    "five_k_estimate": {
+      "additionalProperties": true,
+      "title": "Five K Estimate",
+      "type": "object"
+    },
+    "from": {
+      "title": "From",
+      "type": "string"
+    },
+    "intensity_mix": {
+      "additionalProperties": true,
+      "title": "Intensity Mix",
+      "type": "object"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "pace_hr": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Pace Hr",
+      "type": "array"
+    },
+    "range": {
+      "title": "Range",
+      "type": "string"
+    },
+    "running_form": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Running Form",
+      "type": "array"
+    },
+    "to": {
+      "title": "To",
+      "type": "string"
+    },
+    "vo2max": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Vo2Max",
+      "type": "array"
+    }
+  },
+  "required": [
+    "range",
+    "from",
+    "to",
+    "effort_trend",
+    "intensity_mix",
+    "benefit_mix",
+    "pace_hr",
+    "running_form",
+    "five_k_estimate",
+    "vo2max",
+    "method"
+  ],
+  "title": "DeeperResponse",
+  "type": "object"
+}

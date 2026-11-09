@@ -242,3 +242,18 @@ class Method(ResponseShape):
     formula: str
     inputs: list[str]
     minimum_data: str
+
+
+EXPORTED_SCHEMAS = {
+    "activity-detail": ActivityDetail,
+    "activity-list": ActivityList,
+    "deeper": DeeperResponse,
+    "health-series": HealthSeries,
+    "insights": list[Insight],
+    "journey": JourneyResponse,
+    "methods": list[Method],
+    "progress": ProgressResponse,
+    "relationship": RelationshipResponse,
+    "status": StatusResponse,
+    "today": TodayResponse,
+}

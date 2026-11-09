@@ -1,0 +1,53 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "bests": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Bests",
+      "type": "array"
+    },
+    "consistency": {
+      "additionalProperties": true,
+      "title": "Consistency",
+      "type": "object"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "ramp": {
+      "additionalProperties": true,
+      "title": "Ramp",
+      "type": "object"
+    },
+    "signals": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Signals",
+      "type": "array"
+    },
+    "volume": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Volume",
+      "type": "array"
+    }
+  },
+  "required": [
+    "signals",
+    "bests",
+    "volume",
+    "consistency",
+    "ramp",
+    "method"
+  ],
+  "title": "ProgressResponse",
+  "type": "object"
+}

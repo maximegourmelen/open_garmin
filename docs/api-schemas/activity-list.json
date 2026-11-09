@@ -1,0 +1,221 @@
+{
+  "$defs": {
+    "ActivitySummary": {
+      "additionalProperties": true,
+      "properties": {
+        "average_hr": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Average Hr"
+        },
+        "average_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Average Speed"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "detail_state": {
+          "title": "Detail State",
+          "type": "string"
+        },
+        "device": {
+          "title": "Device",
+          "type": "string"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Distance"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duration"
+        },
+        "effort_points": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effort Points"
+        },
+        "elevation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Elevation"
+        },
+        "gap_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gap Speed"
+        },
+        "has_route": {
+          "title": "Has Route",
+          "type": "boolean"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "is_best": {
+          "title": "Is Best",
+          "type": "boolean"
+        },
+        "location_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Location Name"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "sport": {
+          "title": "Sport",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "zone_minutes": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Zone Minutes"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sport",
+        "type",
+        "date",
+        "start",
+        "distance",
+        "duration",
+        "average_speed",
+        "gap_speed",
+        "average_hr",
+        "elevation",
+        "effort_points",
+        "zone_minutes",
+        "has_route",
+        "detail_state",
+        "location_name",
+        "is_best",
+        "device",
+        "source"
+      ],
+      "title": "ActivitySummary",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "items": {
+      "items": {
+        "$ref": "#/$defs/ActivitySummary"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "next_cursor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Next Cursor"
+    },
+    "totals": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Totals",
+      "type": "object"
+    }
+  },
+  "required": [
+    "items",
+    "next_cursor",
+    "totals"
+  ],
+  "title": "ActivityList",
+  "type": "object"
+}

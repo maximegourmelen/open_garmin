@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "Insight": {
+      "additionalProperties": true,
+      "properties": {
+        "activity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Activity Ids",
+          "type": "array"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "claims": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Claims",
+          "type": "array"
+        },
+        "dates": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dates",
+          "type": "array"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "tone": {
+          "title": "Tone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "tone",
+        "title",
+        "body",
+        "evidence",
+        "dates",
+        "activity_ids",
+        "method",
+        "claims"
+      ],
+      "title": "Insight",
+      "type": "object"
+    }
+  },
+  "items": {
+    "$ref": "#/$defs/Insight"
+  },
+  "type": "array"
+}

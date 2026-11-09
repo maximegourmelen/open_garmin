@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "Method": {
+      "additionalProperties": true,
+      "properties": {
+        "formula": {
+          "title": "Formula",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "minimum_data": {
+          "title": "Minimum Data",
+          "type": "string"
+        },
+        "plain": {
+          "title": "Plain",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "title",
+        "plain",
+        "formula",
+        "inputs",
+        "minimum_data"
+      ],
+      "title": "Method",
+      "type": "object"
+    }
+  },
+  "items": {
+    "$ref": "#/$defs/Method"
+  },
+  "type": "array"
+}

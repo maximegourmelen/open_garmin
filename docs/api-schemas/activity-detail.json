@@ -1,0 +1,615 @@
+{
+  "$defs": {
+    "CompanionMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "data_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Refs",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "pose": {
+          "title": "Pose",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "pose",
+        "data_refs"
+      ],
+      "title": "CompanionMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "aerobic_te": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Aerobic Te"
+    },
+    "anaerobic_te": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Anaerobic Te"
+    },
+    "average_hr": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Average Hr"
+    },
+    "average_speed": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Average Speed"
+    },
+    "best_efforts": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Best Efforts",
+      "type": "array"
+    },
+    "body_battery_impact": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Body Battery Impact"
+    },
+    "cadence_rpm": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Cadence Rpm"
+    },
+    "cadence_spm": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Cadence Spm"
+    },
+    "calories": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Calories"
+    },
+    "date": {
+      "title": "Date",
+      "type": "string"
+    },
+    "detail_state": {
+      "title": "Detail State",
+      "type": "string"
+    },
+    "device": {
+      "title": "Device",
+      "type": "string"
+    },
+    "distance": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Distance"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duration"
+    },
+    "efficiency": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Efficiency"
+    },
+    "effort_points": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Effort Points"
+    },
+    "elapsed": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Elapsed"
+    },
+    "elevation": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Elevation"
+    },
+    "elevation_loss": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Elevation Loss"
+    },
+    "gap_speed": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Gap Speed"
+    },
+    "has_route": {
+      "title": "Has Route",
+      "type": "boolean"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "is_best": {
+      "title": "Is Best",
+      "type": "boolean"
+    },
+    "laps": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Laps",
+      "type": "array"
+    },
+    "location_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Location Name"
+    },
+    "max_hr": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Hr"
+    },
+    "max_power": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Power"
+    },
+    "max_speed": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Speed"
+    },
+    "milestones": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Milestones",
+      "type": "array"
+    },
+    "moving": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Moving"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "normalized_power": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Normalized Power"
+    },
+    "note": {
+      "additionalProperties": true,
+      "title": "Note",
+      "type": "object"
+    },
+    "power": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Power"
+    },
+    "power_zones": {
+      "anyOf": [
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Power Zones"
+    },
+    "running_form": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Running Form"
+    },
+    "session_metrics": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Session Metrics",
+      "type": "array"
+    },
+    "sets": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Sets",
+      "type": "array"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    },
+    "splits_km": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Splits Km",
+      "type": "array"
+    },
+    "splits_mi": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Splits Mi",
+      "type": "array"
+    },
+    "sport": {
+      "title": "Sport",
+      "type": "string"
+    },
+    "start": {
+      "title": "Start",
+      "type": "string"
+    },
+    "steps": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Steps"
+    },
+    "streams": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Streams"
+    },
+    "summary": {
+      "$ref": "#/$defs/CompanionMessage"
+    },
+    "te_label": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Te Label"
+    },
+    "temperature_max": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Temperature Max"
+    },
+    "temperature_min": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Temperature Min"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string"
+    },
+    "vo2max": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Vo2Max"
+    },
+    "watch_feel": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Watch Feel"
+    },
+    "watch_rpe": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Watch Rpe"
+    },
+    "zone_details": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Zone Details"
+    },
+    "zone_minutes": {
+      "anyOf": [
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Zone Minutes"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "sport",
+    "type",
+    "date",
+    "start",
+    "distance",
+    "duration",
+    "average_speed",
+    "gap_speed",
+    "average_hr",
+    "elevation",
+    "effort_points",
+    "zone_minutes",
+    "has_route",
+    "detail_state",
+    "location_name",
+    "is_best",
+    "device",
+    "source",
+    "elapsed",
+    "moving",
+    "max_hr",
+    "max_speed",
+    "calories",
+    "steps",
+    "cadence_spm",
+    "cadence_rpm",
+    "power",
+    "normalized_power",
+    "max_power",
+    "elevation_loss",
+    "temperature_min",
+    "temperature_max",
+    "aerobic_te",
+    "anaerobic_te",
+    "te_label",
+    "body_battery_impact",
+    "vo2max",
+    "running_form",
+    "zone_details",
+    "power_zones",
+    "streams",
+    "splits_km",
+    "splits_mi",
+    "laps",
+    "sets",
+    "best_efforts",
+    "efficiency",
+    "summary",
+    "milestones",
+    "note",
+    "watch_feel",
+    "watch_rpe",
+    "session_metrics"
+  ],
+  "title": "ActivityDetail",
+  "type": "object"
+}

@@ -1,0 +1,66 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "connection": {
+      "additionalProperties": true,
+      "title": "Connection",
+      "type": "object"
+    },
+    "data_through": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Data Through"
+    },
+    "jobs": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Jobs",
+      "type": "array"
+    },
+    "local_mode": {
+      "title": "Local Mode",
+      "type": "boolean"
+    },
+    "mode": {
+      "title": "Mode",
+      "type": "string"
+    },
+    "rederive": {
+      "additionalProperties": true,
+      "title": "Rederive",
+      "type": "object"
+    },
+    "unseen": {
+      "additionalProperties": true,
+      "title": "Unseen",
+      "type": "object"
+    },
+    "user": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "User",
+      "type": "object"
+    }
+  },
+  "required": [
+    "mode",
+    "local_mode",
+    "user",
+    "connection",
+    "jobs",
+    "rederive",
+    "data_through",
+    "unseen"
+  ],
+  "title": "StatusResponse",
+  "type": "object"
+}

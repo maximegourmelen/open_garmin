@@ -3,6 +3,7 @@ dist
 .runtime*
 .venv
 docs/screenshots
+docs/api-schemas
 plan.md
 research
 *.lock

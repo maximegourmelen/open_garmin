@@ -1,0 +1,77 @@
+{
+  "additionalProperties": true,
+  "properties": {
+    "disclaimer": {
+      "title": "Disclaimer",
+      "type": "string"
+    },
+    "lag": {
+      "title": "Lag",
+      "type": "integer"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "n": {
+      "title": "N",
+      "type": "integer"
+    },
+    "points": {
+      "items": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Points",
+      "type": "array"
+    },
+    "rho": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Rho"
+    },
+    "words": {
+      "title": "Words",
+      "type": "string"
+    },
+    "x": {
+      "title": "X",
+      "type": "string"
+    },
+    "y": {
+      "title": "Y",
+      "type": "string"
+    }
+  },
+  "required": [
+    "x",
+    "y",
+    "lag",
+    "points",
+    "rho",
+    "n",
+    "words",
+    "disclaimer",
+    "method"
+  ],
+  "title": "RelationshipResponse",
+  "type": "object"
+}

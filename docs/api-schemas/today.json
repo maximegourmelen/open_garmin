@@ -1,0 +1,551 @@
+{
+  "$defs": {
+    "CompanionMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "data_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Refs",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "pose": {
+          "title": "Pose",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "pose",
+        "data_refs"
+      ],
+      "title": "CompanionMessage",
+      "type": "object"
+    },
+    "Insight": {
+      "additionalProperties": true,
+      "properties": {
+        "activity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Activity Ids",
+          "type": "array"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "claims": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Claims",
+          "type": "array"
+        },
+        "dates": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dates",
+          "type": "array"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "tone": {
+          "title": "Tone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "tone",
+        "title",
+        "body",
+        "evidence",
+        "dates",
+        "activity_ids",
+        "method",
+        "claims"
+      ],
+      "title": "Insight",
+      "type": "object"
+    },
+    "Milestone": {
+      "additionalProperties": true,
+      "properties": {
+        "activity_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Activity Id"
+        },
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "earned": {
+          "title": "Earned",
+          "type": "boolean"
+        },
+        "earned_on": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Earned On"
+        },
+        "how_to_earn": {
+          "title": "How To Earn",
+          "type": "string"
+        },
+        "icon": {
+          "title": "Icon",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "progress": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Progress"
+        },
+        "tier": {
+          "title": "Tier",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "how_to_earn",
+        "icon",
+        "tier",
+        "color",
+        "earned",
+        "earned_on",
+        "activity_id",
+        "progress"
+      ],
+      "title": "Milestone",
+      "type": "object"
+    },
+    "Streak": {
+      "additionalProperties": true,
+      "properties": {
+        "at_risk": {
+          "title": "At Risk",
+          "type": "boolean"
+        },
+        "current": {
+          "title": "Current",
+          "type": "integer"
+        },
+        "longest": {
+          "title": "Longest",
+          "type": "integer"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "remaining_minutes": {
+          "title": "Remaining Minutes",
+          "type": "number"
+        },
+        "remaining_sessions": {
+          "title": "Remaining Sessions",
+          "type": "integer"
+        },
+        "weeks": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Weeks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "current",
+        "longest",
+        "at_risk",
+        "remaining_minutes",
+        "remaining_sessions",
+        "weeks",
+        "method"
+      ],
+      "title": "Streak",
+      "type": "object"
+    },
+    "Suggestion": {
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "pose": {
+          "title": "Pose",
+          "type": "string"
+        },
+        "signals": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Signals",
+          "type": "array"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "title",
+        "text",
+        "pose",
+        "signals",
+        "method"
+      ],
+      "title": "Suggestion",
+      "type": "object"
+    },
+    "WeekProgress": {
+      "additionalProperties": true,
+      "properties": {
+        "by_day": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "By Day",
+          "type": "array"
+        },
+        "days_left": {
+          "title": "Days Left",
+          "type": "integer"
+        },
+        "end": {
+          "title": "End",
+          "type": "string"
+        },
+        "goal": {
+          "title": "Goal",
+          "type": "number"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "minutes": {
+          "title": "Minutes",
+          "type": "number"
+        },
+        "pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pct"
+        },
+        "remaining_minutes": {
+          "title": "Remaining Minutes",
+          "type": "number"
+        },
+        "sentence": {
+          "title": "Sentence",
+          "type": "string"
+        },
+        "sessions": {
+          "title": "Sessions",
+          "type": "integer"
+        },
+        "sessions_goal": {
+          "title": "Sessions Goal",
+          "type": "integer"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "minutes",
+        "goal",
+        "pct",
+        "sessions",
+        "sessions_goal",
+        "remaining_minutes",
+        "days_left",
+        "by_day",
+        "sentence",
+        "method"
+      ],
+      "title": "WeekProgress",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "body_battery": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Body Battery"
+    },
+    "checkin": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Checkin"
+    },
+    "date": {
+      "title": "Date",
+      "type": "string"
+    },
+    "greeting": {
+      "title": "Greeting",
+      "type": "string"
+    },
+    "hrv": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Hrv"
+    },
+    "insights": {
+      "items": {
+        "$ref": "#/$defs/Insight"
+      },
+      "title": "Insights",
+      "type": "array"
+    },
+    "journey": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Journey"
+    },
+    "latest_activity": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Latest Activity"
+    },
+    "layout": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Layout",
+      "type": "array"
+    },
+    "message": {
+      "$ref": "#/$defs/CompanionMessage"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "next_milestone": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Milestone"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recap_ready": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Recap Ready"
+    },
+    "resting_hr": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Resting Hr"
+    },
+    "sleep": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sleep"
+    },
+    "steps": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Steps"
+    },
+    "streak": {
+      "$ref": "#/$defs/Streak"
+    },
+    "suggestion": {
+      "$ref": "#/$defs/Suggestion"
+    },
+    "unseen_milestones": {
+      "items": {
+        "$ref": "#/$defs/Milestone"
+      },
+      "title": "Unseen Milestones",
+      "type": "array"
+    },
+    "week": {
+      "$ref": "#/$defs/WeekProgress"
+    }
+  },
+  "required": [
+    "date",
+    "greeting",
+    "message",
+    "week",
+    "suggestion",
+    "streak",
+    "sleep",
+    "body_battery",
+    "resting_hr",
+    "hrv",
+    "steps",
+    "checkin",
+    "latest_activity",
+    "next_milestone",
+    "journey",
+    "insights",
+    "unseen_milestones",
+    "recap_ready",
+    "layout",
+    "method"
+  ],
+  "title": "TodayResponse",
+  "type": "object"
+}
