@@ -13,6 +13,7 @@ import type {
   Preferences,
   ProgressResponse,
   Range,
+  ResearchResponse,
   RelationshipResponse,
   StatusResponse,
   TodayResponse,
@@ -76,8 +77,7 @@ export const useDeeper = (range: Range = '4W') =>
 export const useJourney = () => useWorkspaceQuery<JourneyResponse>(['journey'], '/journey');
 export const useInsights = () => useWorkspaceQuery<Insight[]>(['insights'], '/insights');
 export const useMethods = () => useWorkspaceQuery<Method[]>(['methods'], '/methods');
-export const useResearch = () =>
-  useWorkspaceQuery<Record<string, unknown>>(['research'], '/research');
+export const useResearch = () => useWorkspaceQuery<ResearchResponse>(['research'], '/research');
 export const useRelationship = (x: string, y: string, lag: number, range: Range) =>
   useWorkspaceQuery<RelationshipResponse>(
     ['relationships', x, y, lag, range],

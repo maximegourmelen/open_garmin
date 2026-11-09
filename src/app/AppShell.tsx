@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Pip } from '../components/companion';
 import { BottomTabBar } from '../layout/BottomTabBar';
 import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
@@ -14,19 +13,8 @@ import HealthPage from '../pages/Health/HealthPage';
 import ProgressPage from '../pages/Progress/ProgressPage';
 import OnboardingPage from '../pages/Onboarding/OnboardingPage';
 import SettingsPage from '../pages/Settings/SettingsPage';
+import MethodsPage from '../pages/Methods/MethodsPage';
 import { usePreferences } from '../lib/queries';
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="mx-auto flex min-h-[60vh] max-w-4xl flex-col items-center justify-center gap-4 text-center">
-      <Pip pose="thinking" size={140} />
-      <h2 className="text-2xl font-bold text-text">{title}</h2>
-      <p className="max-w-md text-sm text-text-2">
-        Your {title.toLowerCase()} view is being prepared.
-      </p>
-    </div>
-  );
-}
 
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -72,16 +60,13 @@ export default function AppShell() {
             <Routes>
               <Route path="/" element={<TodayPage />} />
               <Route path="/activities" element={<ActivitiesPage />} />
-              <Route
-                path="/activities/compare"
-                element={<Placeholder title="Compare activities" />}
-              />
+              <Route path="/activities/compare" element={<ActivitiesPage />} />
               <Route path="/activities/:id" element={<ActivityDetailPage />} />
               <Route path="/journey" element={<JourneyPage />} />
               <Route path="/health" element={<HealthPage />} />
               <Route path="/health/:tab" element={<HealthPage />} />
               <Route path="/progress" element={<ProgressPage />} />
-              <Route path="/methods" element={<Placeholder title="How it works" />} />
+              <Route path="/methods" element={<MethodsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/welcome" element={<OnboardingPage />} />
               {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}

@@ -506,3 +506,40 @@ export interface Method {
   inputs: string[];
   minimum_data: string;
 }
+
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  authors: string;
+  year: number;
+  journal: string;
+  doi: string;
+  pmcid: string | null;
+  pubmed_url: string | null;
+  publisher_url: string | null;
+  full_text_status: string;
+  review_status: string;
+  topics: string[];
+}
+
+export interface ResearchReview {
+  paper_id: string;
+  population: string;
+  finding: string;
+  limitations: string;
+  approved_use: string;
+}
+
+export interface ResearchClaim {
+  id: string;
+  title: string;
+  summary: string;
+  paper_ids: string[];
+  applies_to: string[];
+}
+
+export interface ResearchResponse {
+  papers: ResearchPaper[];
+  reviews: ResearchReview[];
+  claims: ResearchClaim[];
+}
