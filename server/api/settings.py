@@ -33,9 +33,28 @@ from ..storage import (
     User,
     WeeklyRecap,
 )
+from ..workspace import workspace
 
 
 def register(app, store, worker, current_user, limit, client_factory):
+    @app.get("/api/preferences", response_model=Preferences)
+    def get_preferences(user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
+        with store.sessions() as db:
+            return db.get(User, user.id).preferences
+
+    @app.get("/api/demo/preferences", response_model=Preferences)
+    def get_demo_preferences(request: Request):
+        ws = workspace(request)
+        with ws.store.sessions() as db:
+            return db.get(User, ws.user_id).preferences
+
+    @app.put("/api/demo/preferences")
+    def save_demo_preferences(request: Request, body: Preferences):
+        ws = workspace(request)
+        with ws.store.sessions.begin() as db:
+            db.get(User, ws.user_id).preferences = body.model_dump()
+        return {"ok": True}
+
     @app.post("/api/connection")
     def connect(body: KeyInput, request: Request, user=Depends(current_user)):  # noqa: B008 - FastAPI dependency declaration
         limit(request, "connect", 4)

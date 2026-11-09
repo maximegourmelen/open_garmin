@@ -1,0 +1,16 @@
+export const CARD_LABELS: Record<string, string> = {
+  week: 'This week',
+  suggestion: "Today's suggestion",
+  streak: 'Streak',
+  sleep: 'Sleep',
+  body_battery: 'Body Battery',
+  resting_hr: 'Resting heart rate',
+  checkin: 'Check-in',
+  latest_activity: 'Latest activity',
+  next_milestone: 'Next milestone',
+  insights: 'Things I noticed',
+  steps: 'Steps',
+  stress: 'Stress',
+  hrv: 'HRV',
+  journey: 'Journey',
+};

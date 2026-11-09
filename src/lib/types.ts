@@ -29,6 +29,30 @@ export interface StatusResponse {
   unseen: { milestones: number; recap_week: string | null };
 }
 
+export interface Preferences {
+  units: 'metric' | 'imperial';
+  timezone: string;
+  week_start: 'monday' | 'sunday';
+  weekly_distance: number;
+  weekly_minutes: number;
+  weekly_sessions: number;
+  primary_sport: Sport;
+  theme: 'dark' | 'light' | 'system';
+  reduce_motion: boolean;
+  onboarded: boolean;
+  goal_focus: 'move_more' | 'start_running' | 'build_habit' | 'sleep_better' | 'curious';
+  companion_enabled: boolean;
+  companion_name: string;
+  companion_tone: 'cheerful' | 'calm';
+  zone_source: 'garmin' | 'custom';
+  max_hr: number | null;
+  steps_goal_source: 'garmin' | 'custom';
+  steps_goal: number;
+  today_layout: string[];
+  nav_collapsed: boolean;
+  journey: Record<string, unknown> | null;
+}
+
 export interface CompanionMessage {
   id: string;
   text: string;

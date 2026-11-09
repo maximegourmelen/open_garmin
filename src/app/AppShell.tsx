@@ -6,6 +6,7 @@ import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
 import { TopBar } from '../layout/TopBar';
 import GalleryPage from '../gallery';
+import TodayPage from '../pages/Today/TodayPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -49,7 +50,7 @@ export default function AppShell() {
         <TopBar onSearch={() => setSearchOpen(true)} />
         <main id="main-content" className="px-4 pb-24 pt-6 md:px-8 md:pb-8">
           <Routes>
-            <Route path="/" element={<Placeholder title="Today" />} />
+            <Route path="/" element={<TodayPage />} />
             <Route path="/activities" element={<Placeholder title="Activities" />} />
             <Route
               path="/activities/compare"

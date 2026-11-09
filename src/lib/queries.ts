@@ -9,6 +9,7 @@ import type {
   Insight,
   JourneyResponse,
   Method,
+  Preferences,
   ProgressResponse,
   Range,
   StatusResponse,
@@ -63,6 +64,7 @@ export const useActivity = (id: string) =>
   useWorkspaceQuery<ActivityDetail>(['activity', id], `/activities/${encodeURIComponent(id)}`, {
     enabled: Boolean(id),
   });
+export const usePreferences = () => useWorkspaceQuery<Preferences>(['preferences'], '/preferences');
 export const useWellness = (kind: string, range: Range = '4W') =>
   useWorkspaceQuery<HealthSeries>(['wellness', kind, range], `/wellness/${kind}?range=${range}`);
 export const useProgress = () => useWorkspaceQuery<ProgressResponse>(['progress'], '/progress');
