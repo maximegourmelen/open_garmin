@@ -10,6 +10,7 @@ import TodayPage from '../pages/Today/TodayPage';
 import ActivitiesPage from '../pages/Activities/ActivitiesPage';
 import ActivityDetailPage from '../pages/ActivityDetail/ActivityDetailPage';
 import JourneyPage from '../pages/Journey/JourneyPage';
+import HealthPage from '../pages/Health/HealthPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -61,14 +62,8 @@ export default function AppShell() {
             />
             <Route path="/activities/:id" element={<ActivityDetailPage />} />
             <Route path="/journey" element={<JourneyPage />} />
-            <Route path="/health" element={<Placeholder title="Health" />} />
-            {['sleep', 'heart', 'energy', 'stress', 'steps'].map((page) => (
-              <Route
-                key={page}
-                path={`/health/${page}`}
-                element={<Placeholder title={page[0].toUpperCase() + page.slice(1)} />}
-              />
-            ))}
+            <Route path="/health" element={<HealthPage />} />
+            <Route path="/health/:tab" element={<HealthPage />} />
             <Route path="/progress" element={<Placeholder title="Progress" />} />
             <Route path="/methods" element={<Placeholder title="How it works" />} />
             <Route path="/settings" element={<Placeholder title="Settings" />} />

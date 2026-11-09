@@ -69,7 +69,11 @@ export function BandLineChart({
           )}
           <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} />
           <YAxis tick={axis} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
-          <Tooltip contentStyle={chartTooltipStyle()} />
+          <Tooltip
+            contentStyle={chartTooltipStyle()}
+            filterNull={false}
+            formatter={(value, name) => [value == null ? 'No data' : value, name]}
+          />
           <Line
             type="monotone"
             dataKey={dataKey}
@@ -123,7 +127,11 @@ export function BarSeries({
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} />
           <YAxis tick={axis} tickLine={false} axisLine={false} />
-          <Tooltip contentStyle={chartTooltipStyle()} />
+          <Tooltip
+            contentStyle={chartTooltipStyle()}
+            filterNull={false}
+            formatter={(value, name) => [value == null ? 'No data' : value, name]}
+          />
           {goal !== undefined && (
             <ReferenceLine y={goal} stroke={chartColor('text-2')} strokeDasharray="4 3" />
           )}

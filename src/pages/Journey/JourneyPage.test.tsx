@@ -143,7 +143,7 @@ test('opens badge details and navigates the recap story', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Close dialog' }));
   fireEvent.click(screen.getByRole('button', { name: /Week of Nov 2/ }));
   expect(await screen.findByRole('dialog', { name: 'Your week in stories' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Next', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: /^Next$/ }));
   expect(screen.getByText('Goal met')).toBeTruthy();
   await waitFor(() =>
     expect(mocks.request).toHaveBeenCalledWith('demo', '/recaps/2026-11-02/seen', {
