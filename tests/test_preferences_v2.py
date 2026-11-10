@@ -46,7 +46,7 @@ def test_create_all_adds_new_tables_without_changing_existing_user(tmp_path):
 
 def test_preference_defaults_and_validation():
     prefs = Preferences.model_validate(DEFAULT_PREFS)
-    assert prefs.theme == "dark" and prefs.weekly_minutes == 150
+    assert prefs.theme == "system" and prefs.weekly_minutes == 150
     assert Preferences(theme="system", companion_name="  Dot  ").companion_name == "Dot"
     for invalid in (
         {"theme": "blue"},

@@ -11,6 +11,13 @@
   --color-surface-3: var(--surface-3);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-positive: var(--positive);
+  --color-caution: var(--caution);
+  --color-negative: var(--negative);
+  --color-data-1: var(--data-1);
+  --color-data-muted: var(--data-muted);
   --color-text: var(--text);
   --color-text-2: var(--text-2);
   --color-text-3: var(--text-3);
@@ -29,6 +36,8 @@
   --color-sport-strength: var(--sport-strength);
   --color-sport-hiking: var(--sport-hiking);
   --color-sport-other: var(--sport-other);
+  --color-bb: var(--bb);
+  --color-stress-med: var(--stress-med);
   --color-z1: var(--z1);
   --color-z2: var(--z2);
   --color-z3: var(--z3);
@@ -53,10 +62,10 @@
   --color-mix-moderate: var(--mix-moderate);
   --color-mix-hard: var(--mix-hard);
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-num: 'Barlow Semi Condensed', 'Inter Variable', ui-sans-serif, sans-serif;
-  --radius-card: 20px;
-  --radius-tile: 14px;
-  --radius-control: 12px;
+  --font-num: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 12px;
+  --radius-tile: 8px;
+  --radius-control: 8px;
 }
 
 @layer base {
@@ -64,6 +73,8 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss03';
+    font-variant-numeric: tabular-nums;
   }
 
   body {
@@ -78,21 +89,6 @@
 }
 
 @layer utilities {
-  @keyframes pip-breathe {
-    50% {
-      transform: scale(1.03);
-    }
-  }
-
-  .pip-breathe {
-    animation: pip-breathe 4s ease-in-out infinite;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pip-breathe {
-      animation: none;
-    }
-  }
   .font-num {
     font-family: var(--font-num);
     font-variant-numeric: tabular-nums;
@@ -100,26 +96,57 @@
 
   .num-hero {
     font-family: var(--font-num);
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 1;
+    font-size: 44px;
+    font-weight: 560;
+    line-height: 48px;
+    letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
 
   .num-xl {
     font-family: var(--font-num);
-    font-size: 2.75rem;
-    font-weight: 700;
-    line-height: 3rem;
+    font-size: 28px;
+    font-weight: 560;
+    line-height: 32px;
+    letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
 
   .num-lg {
     font-family: var(--font-num);
-    font-size: 1.875rem;
-    font-weight: 600;
-    line-height: 2.125rem;
+    font-size: 20px;
+    font-weight: 560;
+    line-height: 26px;
+    letter-spacing: -0.01em;
     font-variant-numeric: tabular-nums;
+  }
+
+  .type-title {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .type-heading {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .type-body {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .type-label {
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 400;
+  }
+  .type-caption {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
   }
 }
 html[data-reduce-motion='true'] *,

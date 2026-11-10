@@ -17,6 +17,7 @@ function Controls() {
 
 afterEach(() => {
   document.documentElement.removeAttribute('data-theme');
+  document.documentElement.style.removeProperty('--bg');
   document.head.innerHTML = '';
   localStorage.clear();
   vi.unstubAllGlobals();
@@ -24,6 +25,7 @@ afterEach(() => {
 
 test('theme control switches tokens and follows the system preference', () => {
   document.head.innerHTML = '<meta name="theme-color" content="">';
+  document.documentElement.style.setProperty('--bg', 'rgb(11, 11, 12)');
   let changed: (() => void) | undefined;
   const media = {
     matches: true,
@@ -40,7 +42,7 @@ test('theme control switches tokens and follows the system preference', () => {
   );
   expect(document.documentElement.dataset.theme).toBe('dark');
   expect(document.querySelector('meta[name="theme-color"]')?.getAttribute('content')).toBe(
-    '#0A0C10',
+    'rgb(11, 11, 12)',
   );
   fireEvent.click(screen.getByText('Light'));
   expect(document.documentElement.dataset.theme).toBe('light');

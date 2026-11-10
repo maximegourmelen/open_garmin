@@ -30,7 +30,9 @@ export function Celebration({
       particleCount: 65,
       spread: 65,
       origin: { y: 0.35 },
-      colors: ['#2e9bff', '#ffc83d', '#34d399'],
+      colors: ['--data-1', '--caution', '--positive'].map((token) =>
+        getComputedStyle(document.documentElement).getPropertyValue(token).trim(),
+      ),
       disableForReducedMotion: true,
     });
   }, [open]);

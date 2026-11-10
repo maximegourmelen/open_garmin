@@ -9,7 +9,7 @@ function systemTheme(): 'dark' | 'light' {
 
 function storedTheme(): ThemeChoice {
   const value = localStorage.getItem('og_theme');
-  return value === 'light' || value === 'dark' || value === 'system' ? value : 'dark';
+  return value === 'light' || value === 'dark' || value === 'system' ? value : 'system';
 }
 
 export function ThemeProvider({
@@ -35,9 +35,7 @@ export function ThemeProvider({
     const root = document.documentElement;
     root.dataset.theme = resolved;
     localStorage.setItem('og_theme', theme);
-    const colour =
-      getComputedStyle(root).getPropertyValue('--bg').trim() ||
-      (resolved === 'dark' ? '#0A0C10' : '#F3F5F8');
+    const colour = getComputedStyle(root).getPropertyValue('--bg').trim();
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colour);
   }, [theme, resolved]);
 

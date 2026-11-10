@@ -102,7 +102,7 @@ class Preferences(BaseModel):
     primary_sport: Literal["running", "cycling", "strength", "swimming", "walking", "hiking", "other"] = (
         "walking"
     )
-    theme: Literal["dark", "light", "system"] = "dark"
+    theme: Literal["dark", "light", "system"] = "system"
     reduce_motion: bool = False
     onboarded: bool = False
     goal_focus: Literal["move_more", "start_running", "build_habit", "sleep_better", "curious"] = "move_more"

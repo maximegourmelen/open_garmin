@@ -9,7 +9,7 @@ DEFAULT_PREFS = {
     "weekly_minutes": 150,
     "weekly_sessions": 3,
     "primary_sport": "walking",
-    "theme": "dark",
+    "theme": "system",
     "reduce_motion": False,
     "onboarded": False,
     "goal_focus": "move_more",

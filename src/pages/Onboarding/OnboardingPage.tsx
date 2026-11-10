@@ -65,7 +65,7 @@ export default function OnboardingPage() {
   const [sessions, setSessions] = useState(3);
   const [name, setName] = useState('Pip');
   const [tone, setTone] = useState<'cheerful' | 'calm'>('cheerful');
-  const [theme, chooseTheme] = useState<'dark' | 'light' | 'system'>('dark');
+  const [theme, chooseTheme] = useState<'dark' | 'light' | 'system'>('system');
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const skip = useMutation({
     mutationFn: async () => {
