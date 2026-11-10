@@ -55,7 +55,10 @@ for (const file of files) {
       file.startsWith('server/copy/')
     ) {
       const literals = line.match(/(['"`])(?:\\.|(?!\1).)*?\1/g) ?? [];
-      if (literals.some((literal) => literal.includes('!')) || />[^<>]*!</.test(line)) {
+      if (
+        literals.some((literal) => literal.replace(/\$\{[^}]*\}/g, '').includes('!')) ||
+        />[^<>]*!</.test(line)
+      ) {
         violations.push(`${relative('.', file)}:${index + 1}: exclamation in copy`);
       }
     }

@@ -17,6 +17,7 @@ import {
   YAxis,
 } from 'recharts';
 import { useState } from 'react';
+import { DataTable } from '../ui/DataTable';
 import { chartColor, chartTheme, chartTooltipStyle } from './chartTheme';
 import type { StreamData } from '../../lib/types';
 
@@ -25,53 +26,59 @@ export function ChartFrame({
   label,
   height = 220,
   table,
+  title,
+  value,
+  reading,
+  size,
 }: {
   children: React.ReactNode;
   label: string;
   height?: number;
   table?: { columns: { key: string; label: string }[]; rows: Record<string, unknown>[] };
+  title?: string;
+  value?: string;
+  reading?: string;
+  size?: 'S' | 'M' | 'L';
 }) {
   const [showTable, setShowTable] = useState(false);
+  const chartHeight = size ? { S: 120, M: 200, L: 280 }[size] : height;
   return (
-    <div className="w-full">
-      <div role="img" aria-label={label} className="w-full" style={{ height }}>
-        {children}
-      </div>
+    <div className="w-full space-y-3">
+      {(title || value || reading) && (
+        <header>
+          {title && <h3 className="type-heading text-text">{title}</h3>}
+          {value && <p className="num-lg mt-1 text-text">{value}</p>}
+          {reading && <p className="mt-1 type-body text-text-2">{reading}</p>}
+        </header>
+      )}
+      {!showTable && (
+        <div role="img" aria-label={label} className="w-full" style={{ height: chartHeight }}>
+          {children}
+        </div>
+      )}
       {table && (
         <>
           <button
             type="button"
-            className="mt-1 rounded-control px-2 py-1 text-xs text-accent hover:bg-accent-soft"
+            className="type-caption text-text-2 underline hover:text-text"
             aria-expanded={showTable}
             onClick={() => setShowTable((value) => !value)}
           >
-            {showTable ? 'Hide table' : 'Show as table'}
+            {showTable ? 'View chart' : 'View as table'}
           </button>
           {showTable && (
             <div className="max-h-72 overflow-auto">
-              <table className="w-full text-left text-xs">
-                <caption className="sr-only">{label}</caption>
-                <thead>
-                  <tr>
-                    {table.columns.map((column) => (
-                      <th key={column.key} scope="col" className="p-1">
-                        {column.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {table.rows.map((row, index) => (
-                    <tr key={index}>
-                      {table.columns.map((column) => (
-                        <td key={column.key} className="border-t border-border p-1">
-                          {row[column.key] == null ? 'No data' : String(row[column.key])}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <DataTable
+                caption={label}
+                rows={table.rows}
+                keyFor={(_, index) => String(index)}
+                columns={table.columns.map((column) => ({
+                  key: column.key,
+                  label: column.label,
+                  value: (row: Record<string, unknown>) =>
+                    row[column.key] == null ? 'No data' : String(row[column.key]),
+                }))}
+              />
             </div>
           )}
         </>
@@ -80,7 +87,7 @@ export function ChartFrame({
   );
 }
 
-const axis = { fontSize: 11, fill: chartTheme.text };
+const axis = { fontSize: 12, fill: chartColor('text-3') };
 
 export function BandLineChart({
   data,
@@ -113,13 +120,13 @@ export function BandLineChart({
     >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-          <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={chartTheme.grid} strokeDasharray="2 4" vertical={false} />
           {band && (
             <ReferenceArea
               y1={band[0]}
               y2={band[1]}
-              fill={chartColor('hrv-balanced')}
-              fillOpacity={0.12}
+              fill={chartColor('data-muted')}
+              fillOpacity={0.4}
             />
           )}
           <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} />
@@ -130,13 +137,13 @@ export function BandLineChart({
             formatter={(value, name) => [value == null ? 'No data' : value, name]}
           />
           <Line
-            type="monotone"
+            type="linear"
             dataKey={dataKey}
             stroke={chartColor(color)}
-            strokeWidth={2.5}
+            strokeWidth={1.75}
             connectNulls={false}
-            dot={{ r: 2 }}
-            activeDot={{ r: 5 }}
+            dot={false}
+            activeDot={{ r: 3 }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -177,19 +184,7 @@ export function BarSeries({
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-          <defs>
-            <pattern
-              id="partial-week-hatch"
-              width="5"
-              height="5"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(45)"
-            >
-              <rect width="5" height="5" fill={chartColor('accent')} />
-              <line x1="0" x2="0" y1="0" y2="5" stroke={chartColor('surface')} strokeWidth="2" />
-            </pattern>
-          </defs>
-          <CartesianGrid stroke={chartTheme.grid} strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={chartTheme.grid} strokeDasharray="2 4" vertical={false} />
           <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} />
           <YAxis tick={axis} tickLine={false} axisLine={false} />
           <Tooltip
@@ -198,7 +193,12 @@ export function BarSeries({
             formatter={(value, name) => [value == null ? 'No data' : value, name]}
           />
           {goal !== undefined && (
-            <ReferenceLine y={goal} stroke={chartColor('text-2')} strokeDasharray="4 3" />
+            <ReferenceLine
+              y={goal}
+              stroke={chartColor('text-3')}
+              strokeDasharray="4 3"
+              label={{ value: 'Goal', fill: chartColor('text-3'), fontSize: 12 }}
+            />
           )}
           {series.map((item) => (
             <Bar
@@ -207,20 +207,20 @@ export function BarSeries({
               name={item.label}
               stackId={item.stackId}
               fill={chartColor(item.color)}
-              radius={[3, 3, 0, 0]}
+              radius={[2, 2, 0, 0]}
+              maxBarSize={24}
+              barSize={24}
             >
               {data.map((row, index) => (
                 <Cell
                   key={index}
-                  fill={
-                    partialKey && row[partialKey]
-                      ? 'url(#partial-week-hatch)'
-                      : chartColor(item.color)
-                  }
+                  fill={chartColor(item.color)}
                   fillOpacity={
-                    currentKey && data.some((entry) => entry[currentKey]) && !row[currentKey]
-                      ? 0.45
-                      : 1
+                    partialKey && row[partialKey]
+                      ? 0.4
+                      : currentKey && data.some((entry) => entry[currentKey]) && !row[currentKey]
+                        ? 0.45
+                        : 1
                   }
                 />
               ))}
@@ -354,7 +354,7 @@ export function StreamCharts({
                   />
                 ))}
               <Area
-                type="monotone"
+                type="linear"
                 dataKey={channel.key}
                 stroke={chartColor(channel.color)}
                 fill={chartColor(channel.color)}

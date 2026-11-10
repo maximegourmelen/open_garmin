@@ -3,7 +3,7 @@ import { chartColor } from './chartTheme';
 export function Sparkline({
   values,
   label = 'Trend',
-  color = 'accent',
+  color = 'data-1',
 }: {
   values: (number | null)[];
   label?: string;
@@ -12,8 +12,8 @@ export function Sparkline({
   const valid = values.filter((v): v is number => v !== null && Number.isFinite(v));
   const low = valid.length ? Math.min(...valid) : 0;
   const span = valid.length ? Math.max(1, Math.max(...valid) - low) : 1;
-  const x = (i: number) => (values.length <= 1 ? 50 : (i / (values.length - 1)) * 96 + 2);
-  const y = (v: number) => 29 - ((v - low) / span) * 26;
+  const x = (i: number) => (values.length <= 1 ? 30 : (i / (values.length - 1)) * 56 + 2);
+  const y = (v: number) => 18 - ((v - low) / span) * 16;
   const paths: string[] = [];
   let path = '';
   values.forEach((v, i) => {
@@ -28,19 +28,19 @@ export function Sparkline({
     if (v !== null && Number.isFinite(v)) lastIndex = i;
   });
   return (
-    <svg viewBox="0 0 100 32" width="100" height="32" role="img" aria-label={label}>
+    <svg viewBox="0 0 60 20" width="60" height="20" role="img" aria-label={label}>
       {paths.map((d, i) => (
         <path
           key={i}
           d={d}
           fill="none"
           stroke={chartColor(color)}
-          strokeWidth="2"
+          strokeWidth="1.75"
           strokeLinecap="round"
         />
       ))}
       {lastIndex >= 0 && (
-        <circle cx={x(lastIndex)} cy={y(values[lastIndex]!)} r="2.5" fill={chartColor(color)} />
+        <circle cx={x(lastIndex)} cy={y(values[lastIndex]!)} r="2" fill={chartColor(color)} />
       )}
     </svg>
   );
@@ -59,13 +59,11 @@ export function ZoneBars({ minutes, total }: { minutes: (number | null)[]; total
             key={zone}
             className="grid grid-cols-[2.5rem_5.5rem_1fr_3rem_2.5rem] items-center gap-2 text-xs"
           >
-            <span className="font-semibold" style={{ color: chartColor(`z${zone + 1}`) }}>
-              Z{zone + 1}
-            </span>
+            <span className="font-medium text-text-2">Z{zone + 1}</span>
             <span className="text-text-2">{ZONE_NAMES[zone]}</span>
-            <div className="h-2 overflow-hidden rounded-full bg-surface-3">
+            <div className="h-2 overflow-hidden rounded-sm bg-surface-2">
               <div
-                className="h-full rounded-full"
+                className="h-full rounded-sm"
                 style={{ width: `${pct}%`, background: chartColor(`z${zone + 1}`) }}
               />
             </div>
@@ -94,7 +92,7 @@ export function StackedBars({
         return (
           <div key={row.label} className="flex items-center gap-3 text-xs">
             <span className="w-16 shrink-0 text-text-2">{row.label}</span>
-            <div className="flex h-4 flex-1 overflow-hidden rounded-full bg-surface-3">
+            <div className="flex h-4 flex-1 overflow-hidden rounded-sm bg-surface-2">
               {series.map((s) => (
                 <div
                   key={s.key}
@@ -131,7 +129,7 @@ export function StageBar({
   const total = stages.reduce((sum, stage) => sum + stage.minutes, 0);
   return (
     <div aria-label="Sleep stages">
-      <div className="flex h-5 overflow-hidden rounded-full bg-surface-3">
+      <div className="flex h-5 overflow-hidden rounded-sm bg-surface-2">
         {stages.map((stage) => (
           <div
             key={stage.key}
@@ -184,9 +182,9 @@ export function CalendarHeatmap({
           aria-label={`${day.date}: ${day.minutes} active minutes`}
           className="size-3 rounded-sm focus-visible:outline-2"
           style={{
-            background: day.minutes ? chartColor('accent') : chartColor('surface-3'),
+            background: day.minutes ? chartColor('data-1') : chartColor('surface-2'),
             opacity: day.minutes ? 0.25 + (0.75 * day.minutes) / max : 1,
-            outline: day.date === today ? `1px solid ${chartColor('accent')}` : undefined,
+            outline: day.date === today ? `1px solid ${chartColor('data-1')}` : undefined,
           }}
         />
       ))}

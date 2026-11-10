@@ -19,7 +19,7 @@ export function DataTable<Row>({
 }: {
   columns: TableColumn<Row>[];
   rows: Row[];
-  keyFor: (row: Row) => string;
+  keyFor: (row: Row, index: number) => string;
   onRowClick?: (row: Row) => void;
   caption: string;
 }) {
@@ -75,9 +75,9 @@ export function DataTable<Row>({
           </tr>
         </thead>
         <tbody>
-          {ordered.map((row) => (
+          {ordered.map((row, index) => (
             <tr
-              key={keyFor(row)}
+              key={keyFor(row, index)}
               className={cn(
                 'h-11 border-b border-border hover:bg-surface-2',
                 onRowClick && 'cursor-pointer',
