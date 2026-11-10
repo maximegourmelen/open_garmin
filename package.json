@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
-    "contrast": "node scripts/check_contrast.mjs"
+    "contrast": "node scripts/check_contrast.mjs",
+    "check:ui": "node scripts/check_ui_rules.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
