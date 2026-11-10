@@ -4,6 +4,7 @@ dist
 .venv
 docs/screenshots
 docs/api-schemas
+docs/archive
 plan.md
 research
 *.lock

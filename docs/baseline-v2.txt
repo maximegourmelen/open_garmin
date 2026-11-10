@@ -1,0 +1,13 @@
+Open Garmin redesign v2 baseline — 2026-11-09
+Base commit: a500bab (redesign); branch: redesign-v2
+Python: 101 passed, 1 Starlette deprecation warning
+Ruff: passed
+Frontend unit tests: 47 passed
+Build: passed
+Contrast: passed
+Playwright: 51 passed across desktop dark, desktop light, and mobile dark
+Before screenshots: docs/screenshots/v2-before/ (41 PNG files)
+Initial lint failure: Prettier checked the newly archived v1 plan.
+Resolution: docs/archive/ is now excluded in .prettierignore; lint passes.
+UI rules script: scheduled for V2-P1-T4, so not available at baseline.
+The real .runtime/ workspace was not used by these checks.
