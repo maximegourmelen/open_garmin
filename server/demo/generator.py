@@ -19,7 +19,7 @@ def _activity_raw(
     day: date, index: int, progress: float, sport: str, duration_minutes: int, rng: random.Random
 ) -> tuple[dict, list[dict]]:
     speed_base = {"walking": 1.36, "running": 2.38, "strength": 0.0, "cycling": 4.5}[sport]
-    speed = speed_base * (1 + (0.10 * progress if sport == "running" else 0.04 * progress))
+    speed = speed_base * (1 + 0.04 * progress)
     speed *= rng.uniform(0.96, 1.04)
     seconds = duration_minutes * 60
     distance = round(speed * seconds, 1) if sport != "strength" else None
@@ -124,16 +124,22 @@ def _activity_raw(
     return raw, samples
 
 
-def _daily_raw(day: date, day_index: int, progress: float, rng: random.Random) -> dict:
+def _daily_raw(
+    day: date,
+    day_index: int,
+    progress: float,
+    active_minutes: tuple[int, int],
+    rng: random.Random,
+) -> dict:
     weekday = day.weekday()
-    dip = 195 <= day_index < 216
+    dip = 195 <= day_index < 205
     sleep_hours = max(
         6.5, min(8.0, 7.3 + (0.3 if weekday >= 5 else -0.15) + rng.uniform(-0.55, 0.55) - (0.4 if dip else 0))
     )
     sleep_seconds = round(sleep_hours * 3600)
     steps = max(5000, min(11000, round(5500 + progress * 4300 + rng.randint(-1100, 1100))))
-    rhr = round(62 - 7 * progress + rng.uniform(-2, 2))
-    hrv = round(45 + 15 * progress + rng.uniform(-5, 5) - (5 if dip else 0))
+    rhr = round(62 - 3 * progress + rng.uniform(-2, 2) + (5 if dip else 0))
+    hrv = round(45 + 6 * progress + rng.uniform(-5, 5) - (9 if dip else 0))
     bb_wake = max(40, min(95, round(72 + rng.uniform(-15, 15) - (12 if dip else 0))))
     sleep_start = datetime.combine(day - timedelta(days=1), time(22, 40)) + timedelta(
         minutes=rng.randint(-35, 35)
@@ -165,8 +171,8 @@ def _daily_raw(day: date, day_index: int, progress: float, rng: random.Random) -
             "highStressDurationInMillis": 30 * 60 * 1000,
         },
         "intensityMinutes": {
-            "moderate": 20 if weekday in (0, 2, 4, 5, 6) else 0,
-            "vigorous": 5 if progress > 0.2 and weekday in (2, 5) else 0,
+            "moderate": active_minutes[0],
+            "vigorous": active_minutes[1],
             "goal": 150,
         },
         "pulseOx": {"avgValue": 97, "minValue": 94},
@@ -219,7 +225,12 @@ def _daily_raw(day: date, day_index: int, progress: float, rng: random.Random) -
         "bodyBatteryAtWakeTime": bb_wake,
         "lastSevenDaysAvgRestingHeartRate": rhr,
     }
-    return {"summary": summary, "sleep": sleep, "hrv": hrv_raw, "summary_legacy": legacy}
+    return {
+        "summary": summary,
+        "sleep": None if (day_index * 37 + 11) % 100 < 5 else sleep,
+        "hrv": None if (day_index * 37 + 53) % 100 < 10 else hrv_raw,
+        "summary_legacy": legacy,
+    }
 
 
 def generate_demo(today: date | None = None) -> dict:
@@ -230,37 +241,52 @@ def generate_demo(today: date | None = None) -> dict:
     activities = []
     daily = []
     activity_index = 0
+    holiday_start = next(i for i in range(300, 307) if (start + timedelta(days=i)).weekday() == 0)
     for day_index in range(365):
         day = start + timedelta(days=day_index)
         progress = day_index / 364
-        raw_day = _daily_raw(day, day_index, progress, rng)
-        daily.append({"date": day.isoformat(), "raw": raw_day, "data": normalize_daily_v2(raw_day)})
         weekday = day.weekday()
-        dip = 195 <= day_index < 216
-        if weekday not in ((2, 5) if dip else (0, 2, 4, 5, 6)):
-            continue
-        sport = "walking"
-        if progress > 0.18 and weekday in (2, 5):
-            sport = "running"
-        elif progress > 0.15 and weekday == 6:
-            sport = "strength"
-        elif progress > 0.3 and weekday == 4 and day_index % 28 < 7:
-            sport = "cycling"
-        if dip:
+        week = day_index // 7
+        illness = 195 <= day_index < 205
+        holiday = holiday_start <= day_index < holiday_start + 7
+        deload = week % 5 == 4
+        scheduled = weekday in (0, 2, 4, 5, 6) or (weekday == 1 and week % 3 == 0)
+        if illness or holiday:
+            scheduled = False
+        moderate = vigorous = 0
+        if scheduled:
             sport = "walking"
-        duration = round(14 + progress * 22 + rng.randint(-3, 4))
-        if sport == "strength":
-            duration = round(24 + progress * 8)
-        if dip:
-            duration = 15
-        raw_activity, samples = _activity_raw(day, activity_index, progress, sport, duration, rng)
-        activities.append(
-            {
-                "date": day.isoformat(),
-                "raw": raw_activity,
-                "data": normalize_activity_v2(raw_activity),
-                "samples": samples,
-            }
-        )
-        activity_index += 1
+            if progress > 0.18 and weekday in (2, 5):
+                sport = "running"
+            elif progress > 0.15 and weekday == 6:
+                sport = "strength"
+            elif progress > 0.3 and weekday == 4 and day_index % 28 < 7:
+                sport = "cycling"
+            duration = round(14 + progress * 22 + rng.randint(-3, 4))
+            if sport == "strength":
+                duration = round(24 + progress * 8)
+            if deload:
+                duration = round(duration * 0.6)
+            raw_activity, samples = _activity_raw(
+                day, activity_index, progress, sport, duration, rng
+            )
+            moderate = raw_activity["moderateIntensityMinutes"]
+            vigorous = raw_activity["vigorousIntensityMinutes"]
+            # Day-level Garmin intensity includes unrecorded movement too.
+            moderate += rng.randint(0, 5)
+            activities.append(
+                {
+                    "date": day.isoformat(),
+                    "raw": raw_activity,
+                    "data": normalize_activity_v2(raw_activity),
+                    "samples": samples,
+                }
+            )
+            activity_index += 1
+        raw_day = _daily_raw(day, day_index, progress, (moderate, vigorous), rng)
+        daily.append({"date": day.isoformat(), "raw": raw_day, "data": normalize_daily_v2(raw_day)})
+    recent = [item for item in activities if item["date"] >= (today - timedelta(days=60)).isoformat()]
+    for item in (recent[len(recent) // 2], recent[-3], recent[-1]):
+        item["raw"]["isPR"] = True
+        item["data"] = normalize_activity_v2(item["raw"])
     return {"activities": activities, "daily": daily}
