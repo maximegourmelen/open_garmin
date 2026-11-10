@@ -21,7 +21,7 @@ describe('data displays', () => {
   it('judges a decreasing delta according to its meaning', () => {
     const { container } = render(<DeltaChip value={-3} unit=" bpm" good="down" />);
     expect(container.querySelector('[aria-label="Down 3 bpm"]')?.className).toContain(
-      'text-success',
+      'text-positive',
     );
   });
 

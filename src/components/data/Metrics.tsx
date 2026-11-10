@@ -1,28 +1,4 @@
 import { cn } from '../../lib/cn';
-import { useEffect, useState } from 'react';
-
-function CountValue({ value }: { value: number }) {
-  const [shown, setShown] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      // Reduced motion presents the final value immediately.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShown(value);
-      return;
-    }
-    let frame = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / 700);
-      setShown(value * (1 - (1 - t) ** 3));
-      if (t < 1) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [value]);
-  const digits = String(value).split('.')[1]?.length ?? 0;
-  return <>{shown.toFixed(Math.min(2, digits))}</>;
-}
 
 export function BigNumber({
   value,
@@ -48,7 +24,7 @@ export function BigNumber({
       )}
       data-count-up={countUp || undefined}
     >
-      {missing ? '—' : countUp && typeof value === 'number' ? <CountValue value={value} /> : value}
+      {missing ? '—' : value}
       {!missing && unit && (
         <span className="ml-1 text-[0.45em] font-medium text-text-2">{unit}</span>
       )}
@@ -75,12 +51,8 @@ export function DeltaChip({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
-        favorable
-          ? 'bg-success/10 text-success'
-          : unfavorable
-            ? 'bg-danger/10 text-danger'
-            : 'bg-surface-3 text-text-2',
+        'inline-flex items-center gap-1 type-caption',
+        favorable ? 'text-positive' : unfavorable ? 'text-caution' : 'text-text-2',
       )}
       aria-label={`${value > 0 ? 'Up' : value < 0 ? 'Down' : 'No change'} ${Math.abs(value)} ${unit.trim()}${label ? ` ${label}` : ''}`}
     >
@@ -106,9 +78,7 @@ export function StatTile({
 }) {
   return (
     <div className="min-w-0 rounded-tile bg-surface-2 p-4">
-      <p className="mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-text-2">
-        {label}
-      </p>
+      <p className="mb-1 type-label text-text-2">{label}</p>
       <BigNumber value={value} unit={unit} size={size} />
       {delta && (
         <div className="mt-2">
