@@ -12,9 +12,9 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.exc import IntegrityError
 
 from ..config import COOKIE, DEFAULT_PREFS
+from ..db.models import LoginSession, User
 from ..main import Credentials
 from ..security import password_hash, password_matches
-from ..db.models import LoginSession, User
 
 
 def register(app, store, worker, current_user, set_session, limit):

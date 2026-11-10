@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 from server.app import create_app
 from server.config import DEFAULT_PREFS
 from server.db.models import Activity, ActivitySamples, Base, Connection, Daily, Job, LoginSession, Note, User
-from server.main import Preferences
 from server.db.store import Store
+from server.main import Preferences
 
 
 def test_create_all_adds_new_tables_without_changing_existing_user(tmp_path):

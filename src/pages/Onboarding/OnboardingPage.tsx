@@ -52,7 +52,7 @@ function localDate() {
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
-  const { setMode, session } = useWorkspace();
+  const { mode, setMode, session } = useWorkspace();
   const { setTheme } = useTheme();
   const client = useQueryClient();
   const toast = useToast();
@@ -67,6 +67,24 @@ export default function OnboardingPage() {
   const [tone, setTone] = useState<'cheerful' | 'calm'>('cheerful');
   const [theme, chooseTheme] = useState<'dark' | 'light' | 'system'>('dark');
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
+  const skip = useMutation({
+    mutationFn: async () => {
+      if (!prefs.data) throw new Error('Preferences are still loading.');
+      const next = { ...prefs.data, onboarded: true };
+      await workspaceRequest(mode, '/preferences', {
+        method: 'PUT',
+        body: JSON.stringify(next),
+      });
+      return next;
+    },
+    onSuccess: (next) => {
+      client.setQueryData([mode, 'preferences'], next);
+      setTheme(next.theme);
+      void client.invalidateQueries({ queryKey: [mode] });
+      navigate('/');
+    },
+    onError: (error) => toast({ message: error.message }),
+  });
   const save = useMutation({
     mutationFn: async () => {
       if (!prefs.data) throw new Error('Preferences are still loading.');
@@ -125,8 +143,8 @@ export default function OnboardingPage() {
         <div className="mb-3 text-right">
           <button
             className="text-sm text-text-2 underline hover:text-accent"
-            disabled={save.isPending}
-            onClick={() => save.mutate()}
+            disabled={save.isPending || skip.isPending}
+            onClick={() => skip.mutate()}
           >
             Skip setup
           </button>

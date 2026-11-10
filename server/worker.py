@@ -7,12 +7,12 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from sqlalchemy import select, update
 
+from .db.models import Activity, ActivitySamples, Connection, Daily, Job, User, now_iso
+from .db.store import Store
 from .derive import after_sync
 from .garmin.client import GarminClient, GarminError
 from .garmin.fit import parse_original
 from .garmin.normalize import chunks, normalize_activity_v2, normalize_daily_v2
-from .db.models import Activity, ActivitySamples, Connection, Daily, Job, User, now_iso
-from .db.store import Store
 
 
 class Worker:

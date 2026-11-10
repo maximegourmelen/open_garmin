@@ -12,10 +12,10 @@ from fastapi import Depends, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy import select
 
+from ..db.models import Activity, ActivityDerived, ActivityFeel, ActivitySamples, Connection, Note
 from ..main import (
     NoteInput,
 )
-from ..db.models import Activity, ActivityDerived, ActivityFeel, ActivitySamples, Connection, Note
 from ..workspace import workspace
 from .activity_views import detail as activity_detail
 from .activity_views import summary as activity_summary

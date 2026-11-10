@@ -1,6 +1,7 @@
-from fastapi.testclient import TestClient
 from statistics import median
 from time import perf_counter
+
+from fastapi.testclient import TestClient
 
 from server.db.store import Store
 from server.main import create_app

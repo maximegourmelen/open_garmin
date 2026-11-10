@@ -12,12 +12,12 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .db.models import Job
+from .db.store import Store
 from .demo.seed import build_demo_workspace
 from .derive import rederive_all
 from .garmin.client import GarminClient
 from .security import install_security
-from .db.models import Job
-from .db.store import Store
 from .worker import Worker
 
 

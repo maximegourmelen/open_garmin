@@ -3,8 +3,8 @@ import time
 from fastapi.testclient import TestClient
 
 from server.app import create_app
-from server.demo.seed import build_demo_workspace
 from server.db.store import Store
+from server.demo.seed import build_demo_workspace
 
 
 def test_demo_seeds_quickly_in_isolated_temporary_database():

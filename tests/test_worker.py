@@ -2,9 +2,9 @@ from datetime import date
 
 from sqlalchemy import select
 
-from server.garmin.client import GarminError
 from server.db.models import Activity, Connection, Daily, Job, User
 from server.db.store import Store
+from server.garmin.client import GarminError
 from server.worker import Worker
 
 

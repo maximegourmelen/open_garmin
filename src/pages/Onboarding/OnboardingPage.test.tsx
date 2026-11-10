@@ -7,7 +7,19 @@ import { WorkspaceContext } from '../../app/workspace-context';
 import { ToastProvider } from '../../components/ui';
 import OnboardingPage from './OnboardingPage';
 
-const mocks = vi.hoisted(() => ({ request: vi.fn(), setMode: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  request: vi.fn(),
+  setMode: vi.fn(),
+  preferences: {
+    onboarded: false,
+    weekly_minutes: 150,
+    weekly_sessions: 3,
+    units: 'metric',
+    theme: 'dark',
+    companion_name: 'Pip',
+    companion_tone: 'cheerful',
+  },
+}));
 vi.mock('../../lib/api', () => ({
   workspaceRequest: mocks.request,
   request: mocks.request,
@@ -15,15 +27,7 @@ vi.mock('../../lib/api', () => ({
 }));
 vi.mock('../../lib/queries', () => ({
   usePreferences: () => ({
-    data: {
-      onboarded: false,
-      weekly_minutes: 150,
-      weekly_sessions: 3,
-      units: 'metric',
-      theme: 'dark',
-      companion_name: 'Pip',
-      companion_tone: 'cheerful',
-    },
+    data: mocks.preferences,
     isPending: false,
     isError: false,
   }),
@@ -32,8 +36,10 @@ vi.mock('../../lib/queries', () => ({
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  mocks.preferences.theme = 'dark';
+  mocks.preferences.weekly_minutes = 150;
 });
-function mount() {
+function mount(mode: 'demo' | 'live' = 'demo') {
   const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
   return render(
     <MemoryRouter>
@@ -41,9 +47,12 @@ function mount() {
         <QueryClientProvider client={client}>
           <WorkspaceContext.Provider
             value={{
-              mode: 'demo',
+              mode,
               setMode: mocks.setMode,
-              session: null,
+              session:
+                mode === 'live'
+                  ? { user: { name: 'Test', email: 'test@example.test' }, csrf_token: 'token' }
+                  : null,
               booting: false,
               refreshSession: vi.fn(),
             }}
@@ -88,4 +97,18 @@ test('sample path saves goal, companion and theme choices', async () => {
   expect(saved.journey.id).toBe('walk_to_run_9w');
   expect(saved.onboarded).toBe(true);
   expect(await screen.findByText('You’re all set')).toBeTruthy();
+});
+
+test('skipping setup keeps an existing live user and their preferences', async () => {
+  mocks.preferences.theme = 'light';
+  mocks.preferences.weekly_minutes = 175;
+  mocks.request.mockResolvedValue({ ok: true });
+  mount('live');
+  fireEvent.click(screen.getByRole('button', { name: 'Skip setup' }));
+  await waitFor(() =>
+    expect(mocks.request).toHaveBeenCalledWith('live', '/preferences', expect.anything()),
+  );
+  const saved = JSON.parse(mocks.request.mock.calls[0][2].body);
+  expect(saved).toEqual({ ...mocks.preferences, onboarded: true });
+  expect(mocks.setMode).not.toHaveBeenCalled();
 });

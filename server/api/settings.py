@@ -13,13 +13,6 @@ from pydantic import BaseModel, Field
 from sqlalchemy import delete, select
 
 from ..config import COOKIE
-from ..derive import rederive_user
-from ..garmin.client import GarminError
-from ..main import (
-    KeyInput,
-    Preferences,
-    update_job_cancel,
-)
 from ..db.models import (
     Activity,
     ActivityDerived,
@@ -34,6 +27,13 @@ from ..db.models import (
     Note,
     User,
     WeeklyRecap,
+)
+from ..derive import rederive_user
+from ..garmin.client import GarminError
+from ..main import (
+    KeyInput,
+    Preferences,
+    update_job_cancel,
 )
 from ..workspace import workspace
 
