@@ -9,21 +9,21 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback((options: ToastOptions) => setToast(options), []);
   return (
     <ToastContext.Provider value={show}>
-      <RadixToast.Provider duration={5000} swipeDirection="down">
+      <RadixToast.Provider duration={4000} swipeDirection="down">
         {children}
         <RadixToast.Root
           open={Boolean(toast)}
           onOpenChange={(open) => {
             if (!open) setToast(null);
           }}
-          className="flex max-w-sm items-center gap-3 rounded-control border border-border-strong bg-surface-3 p-4 text-sm text-text shadow-xl"
+          className="flex max-w-sm items-center gap-3 rounded-control bg-primary p-4 type-body text-on-primary shadow-lg dark:shadow-none"
         >
           <RadixToast.Title className="flex-1">{toast?.message}</RadixToast.Title>
           {toast?.action && (
             <RadixToast.Action altText={toast.action.label} asChild>
               <button
                 type="button"
-                className="font-semibold text-accent"
+                className="font-medium underline"
                 onClick={toast.action.onClick}
               >
                 {toast.action.label}

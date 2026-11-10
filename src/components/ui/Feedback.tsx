@@ -1,13 +1,18 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CircleHelp, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { Button } from './Button';
-import { Pip } from '../companion/Pip';
 
 export function Skeleton({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn('animate-pulse rounded-tile bg-surface-3', className)} />
+    <div
+      aria-hidden="true"
+      className={cn(
+        'rounded-control bg-surface-2 motion-safe:animate-[pulse_1.5s_ease-in-out_infinite]',
+        className,
+      )}
+    />
   );
 }
 
@@ -21,10 +26,10 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-card border border-dashed border-border-strong bg-surface p-8 text-center text-text">
-      <Pip pose="thinking" size={72} />
-      <h2 className="mt-3 text-lg font-semibold">{title}</h2>
-      <p className="mt-1 max-w-md text-sm text-text-2">{text}</p>
+    <div className="flex flex-col items-center rounded-card border border-border bg-surface p-8 text-center text-text">
+      <CircleHelp size={24} strokeWidth={1.5} className="text-text-2" aria-hidden="true" />
+      <h2 className="mt-3 type-heading">{title}</h2>
+      <p className="mt-1 max-w-md type-body text-text-2">{text}</p>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
@@ -36,9 +41,12 @@ export function ErrorState({ message, retry }: { message: string; retry: () => v
       role="alert"
       className="flex flex-col items-center rounded-card border border-border bg-surface p-8 text-center text-text"
     >
-      <Pip pose="oops" size={72} />
-      <h2 className="mt-3 text-lg font-semibold">Something went wrong loading this</h2>
-      <p className="mt-1 max-w-md text-sm text-text-2">{message}</p>
+      <TriangleAlert size={24} strokeWidth={1.5} className="text-text-2" aria-hidden="true" />
+      <h2 className="mt-3 type-heading">Couldn't load this section</h2>
+      <details className="mt-1 max-w-md type-caption text-text-3">
+        <summary>Technical details</summary>
+        {message}
+      </details>
       <Button className="mt-4" onClick={retry}>
         Try again
       </Button>
@@ -56,7 +64,7 @@ function initialOpen(key: string): boolean {
 
 export function Disclosure({
   id,
-  title = 'Go deeper',
+  title = 'Show advanced metrics',
   children,
 }: {
   id: string;
@@ -76,18 +84,18 @@ export function Disclosure({
     }
   }
   return (
-    <section className="rounded-card border border-border bg-surface">
+    <section>
       <button
         type="button"
         aria-expanded={open}
         onClick={toggle}
-        className="flex w-full items-center justify-between p-4 text-left font-semibold text-text"
+        className="flex items-center gap-2 type-body text-text-2 hover:text-text"
       >
         {title}
         <ChevronDown size={18} className={cn('transition-transform', open && 'rotate-180')} />
       </button>
       {mounted && (
-        <div hidden={!open} className="border-t border-border p-4">
+        <div hidden={!open} className="mt-4">
           {children}
         </div>
       )}

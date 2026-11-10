@@ -58,7 +58,7 @@ test('button and segmented control retain accessible states', () => {
 test('disclosure mounts content when opened and remembers it', () => {
   render(<Disclosure id="test">Details</Disclosure>);
   expect(screen.queryByText('Details')).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Go deeper' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Show advanced metrics' }));
   expect(screen.getByText('Details')).toBeTruthy();
   expect(localStorage.getItem('og_disclosure_test')).toBe('open');
 });

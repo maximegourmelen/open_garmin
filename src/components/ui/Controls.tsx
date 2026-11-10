@@ -33,7 +33,7 @@ export function SegmentedControl<T extends string>({
         <ToggleGroup.Item
           key={option.value}
           value={option.value}
-          className="min-h-8 rounded-lg px-3 text-sm font-medium text-text-2 transition-colors data-[state=on]:bg-surface-3 data-[state=on]:text-text"
+          className="min-h-8 rounded-md px-3 type-label text-text-2 data-[state=on]:bg-surface data-[state=on]:text-text"
         >
           {option.label}
         </ToggleGroup.Item>
@@ -52,15 +52,15 @@ export function Switch({
   label: string;
 }) {
   return (
-    <label className="flex items-center justify-between gap-4 text-sm text-text">
+    <label className="flex items-center justify-between gap-4 type-body text-text">
       <span>{label}</span>
       <RadixSwitch.Root
         checked={checked}
         onCheckedChange={onChange}
         aria-label={label}
-        className="relative h-7 w-12 rounded-full bg-surface-3 transition-colors data-[state=checked]:bg-accent"
+        className="relative h-6 w-11 rounded-full bg-border-strong transition-colors data-[state=checked]:bg-accent"
       >
-        <RadixSwitch.Thumb className="block size-5 translate-x-1 rounded-full bg-white transition-transform data-[state=checked]:translate-x-6" />
+        <RadixSwitch.Thumb className="block size-4 translate-x-1 rounded-full bg-surface transition-transform data-[state=checked]:translate-x-6" />
       </RadixSwitch.Root>
     </label>
   );
@@ -81,7 +81,7 @@ export function Select({
     <RadixSelect.Root value={value} onValueChange={onChange}>
       <RadixSelect.Trigger
         aria-label={label}
-        className="inline-flex min-h-10 items-center justify-between gap-3 rounded-control border border-border-strong bg-surface-2 px-3 text-sm text-text"
+        className="inline-flex h-9 items-center justify-between gap-3 rounded-control border border-border-strong bg-surface px-3 type-body text-text"
       >
         <RadixSelect.Value />
         <RadixSelect.Icon>
@@ -90,7 +90,7 @@ export function Select({
       </RadixSelect.Trigger>
       <RadixSelect.Portal>
         <RadixSelect.Content
-          className="z-50 overflow-hidden rounded-control border border-border-strong bg-surface-2 p-1 text-text shadow-xl"
+          className="z-50 overflow-hidden rounded-control border border-border-strong bg-surface p-1 text-text shadow-lg dark:shadow-none"
           position="popper"
           sideOffset={4}
         >
@@ -99,7 +99,7 @@ export function Select({
               <RadixSelect.Item
                 key={option.value}
                 value={option.value}
-                className="relative flex min-h-9 cursor-pointer items-center rounded-lg px-3 pr-8 text-sm outline-none data-[highlighted]:bg-surface-3"
+                className="relative flex min-h-9 cursor-pointer items-center rounded-md px-3 pr-8 type-body outline-none data-[highlighted]:bg-surface-2"
               >
                 <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
                 <RadixSelect.ItemIndicator className="absolute right-2">
@@ -129,13 +129,13 @@ export function Tabs({
     <RadixTabs.Root value={value} onValueChange={onChange}>
       <RadixTabs.List
         aria-label={label}
-        className="flex gap-1 overflow-x-auto border-b border-border"
+        className="flex gap-4 overflow-x-auto border-b border-border"
       >
         {tabs.map((tab) => (
           <RadixTabs.Trigger
             key={tab.value}
             value={tab.value}
-            className="min-h-10 whitespace-nowrap border-b-2 border-transparent px-3 text-sm text-text-2 data-[state=active]:border-accent data-[state=active]:text-text"
+            className="min-h-10 whitespace-nowrap border-b-2 border-transparent px-1 type-body text-text-2 data-[state=active]:border-text data-[state=active]:text-text"
           >
             {tab.label}
           </RadixTabs.Trigger>
@@ -163,20 +163,16 @@ export function Dialog({
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" />
+        <RadixDialog.Overlay className="fixed inset-0 z-40 bg-black/40" />
         <RadixDialog.Content
           className={cn(
-            'fixed inset-x-0 bottom-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-card border border-border-strong bg-surface p-5 text-text shadow-2xl sm:inset-auto sm:left-1/2 sm:top-1/2 sm:w-[min(92vw,560px)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-card',
+            'fixed inset-x-4 top-1/2 z-50 max-h-[90vh] -translate-y-1/2 overflow-y-auto rounded-card border border-border-strong bg-surface p-6 text-text shadow-lg dark:shadow-none sm:left-1/2 sm:w-[min(92vw,480px)] sm:-translate-x-1/2',
             className,
           )}
         >
-          <div
-            className="mx-auto mb-4 h-1 w-10 rounded-full bg-border-strong sm:hidden"
-            aria-hidden="true"
-          />
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
-              <RadixDialog.Title className="text-xl font-bold">{title}</RadixDialog.Title>
+              <RadixDialog.Title className="type-heading">{title}</RadixDialog.Title>
               {description && (
                 <RadixDialog.Description className="mt-1 text-sm text-text-2">
                   {description}
