@@ -22,6 +22,7 @@ export default function AppShell() {
   const location = useLocation();
   const preferences = usePreferences();
   const welcome = location.pathname === '/welcome';
+  const gallery = import.meta.env.DEV && location.pathname === '/dev/components';
   useEffect(() => {
     if (preferences.data)
       document.documentElement.setAttribute(
@@ -51,11 +52,11 @@ export default function AppShell() {
       >
         Skip to content
       </a>
-      {!welcome && <SideNav />}
+      {!welcome && !gallery && <SideNav />}
       <div className="min-w-0 flex-1">
-        {!welcome && <TopBar onSearch={() => setSearchOpen(true)} />}
-        <main id="main-content" className="px-4 pb-24 pt-6 md:px-8 md:pb-8">
-          {preferences.data?.onboarded === false && !welcome ? (
+        {!welcome && !gallery && <TopBar onSearch={() => setSearchOpen(true)} />}
+        <main id="main-content" className={gallery ? '' : 'px-4 pb-24 pt-6 md:px-8 md:pb-8'}>
+          {preferences.data?.onboarded === false && !welcome && !gallery ? (
             <Navigate to="/welcome" replace />
           ) : (
             <Suspense fallback={<div role="status">Loading page…</div>}>
@@ -71,7 +72,7 @@ export default function AppShell() {
                 <Route path="/methods" element={<MethodsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/welcome" element={<OnboardingPage />} />
-                {import.meta.env.DEV && <Route path="/__gallery" element={<GalleryPage />} />}
+                {import.meta.env.DEV && <Route path="/dev/components" element={<GalleryPage />} />}
                 <Route path="/today" element={<Navigate to="/" replace />} />
                 <Route path="/dashboard" element={<Navigate to="/" replace />} />
                 <Route path="/training" element={<Navigate to="/progress" replace />} />
@@ -84,8 +85,10 @@ export default function AppShell() {
           )}
         </main>
       </div>
-      {!welcome && <BottomTabBar />}
-      {!welcome && <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />}
+      {!welcome && !gallery && <BottomTabBar />}
+      {!welcome && !gallery && (
+        <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+      )}
     </div>
   );
 }
