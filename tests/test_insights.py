@@ -34,3 +34,18 @@ def test_demo_insights_have_evidence_and_claims():
         assert all("cause and effect" in item["evidence"] for item in insights)
         assert all(item["method"].endswith("@1") for item in insights)
         assert client.get("/api/insights").status_code == 401
+
+
+def test_weekly_volume_uses_activity_time_not_active_minutes():
+    today = date(2026, 11, 8)
+    activities = [
+        {"id": "old", "date": "2026-11-01", "duration": 1800},
+        {"id": "new", "date": "2026-11-08", "duration": 3600},
+    ]
+    insight = next(
+        item for item in insights_for(activities, [], [], today) if item["id"] == "weekly-volume"
+    )
+    assert "activity time" in insight["title"]
+    assert "1\u202fh 00\u202fmin" in insight["body"]
+    assert "30\u202fmin" in insight["body"]
+    assert "active minutes" not in insight["body"]

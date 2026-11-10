@@ -5,6 +5,7 @@ from __future__ import annotations
 import statistics
 from datetime import date, timedelta
 
+from ..copy.format import duration_summary, plural
 from .activity_goals import weekly_active_minutes
 from .common import week_start
 from .fitness import fitness_signals
@@ -28,27 +29,30 @@ def weekly_recap(
     week_days = [item for item in daily if start.isoformat() <= item.get("date", "") <= end.isoformat()]
     progress = weekly_active_minutes(activities, daily, prefs, end)
     sessions = len(week_rows)
-    duration = round(sum((item.get("duration") or 0) for item in week_rows) / 60)
+    duration_seconds = sum((item.get("duration") or 0) for item in week_rows)
     active_dates = len({item["date"] for item in week_rows})
     slides = [
         {
             "kind": "headline",
             "title": "Your week",
-            "big": f"{sessions} sessions · {duration} min",
+            "big": (
+                f"{sessions} {plural(sessions, 'activity', 'activities')}"
+                f" · {duration_summary(duration_seconds)}"
+            ),
             "pose": "wave",
-            "text": f"You were active on {active_dates} days.",
+            "text": f"Activities were recorded on {active_dates} days.",
         }
     ]
-    if progress["goal"]:
+    if progress["goal"] and progress["active_minutes"] is not None:
         slides.append(
             {
                 "kind": "goal",
                 "pct": progress["pct"],
                 "minutes": progress["minutes"],
                 "goal": progress["goal"],
-                "text": "You reached your weekly goal! 🎉"
+                "text": "Your weekly active-minute goal was met."
                 if progress["pct"] >= 100
-                else f"You moved {round(progress['minutes'])} minutes this week.",
+                else progress["sentence"],
             }
         )
     if week_rows:
@@ -57,8 +61,8 @@ def weekly_recap(
             {
                 "kind": "highlight",
                 "activity_id": highlight.get("id"),
-                "text": f"Highlight: {highlight.get('name') or highlight.get('sport', 'activity')} — "
-                f"{round((highlight.get('duration') or 0) / 60)} minutes.",
+                "text": f"Longest activity: {highlight.get('name') or highlight.get('sport', 'activity')}, "
+                f"{duration_summary(highlight.get('duration'))}.",
             }
         )
     sleep = [item["sleep_seconds"] / 60 for item in week_days if item.get("sleep_seconds") is not None]
@@ -69,7 +73,7 @@ def weekly_recap(
                 "kind": "sleep",
                 "avg_minutes": average,
                 "vs_usual_min": None,
-                "text": f"You slept about {average // 60} h {average % 60:02} m on average.",
+                "text": f"Average recorded sleep: {duration_summary(average * 60)}.",
             }
         )
     improving = [
@@ -83,16 +87,16 @@ def weekly_recap(
             {
                 "kind": "milestones",
                 "ids": milestone_ids,
-                "text": f"You earned {len(milestone_ids)} new badge{'s' if len(milestone_ids) != 1 else ''}!",
+                "text": f"{len(milestone_ids)} new achievements were recorded.",
             }
         )
     if streak and streak.get("current", 0) >= 2:
-        slides[0]["text"] += f" That's {streak['current']} weeks in a row."
+        slides[0]["text"] += f" The weekly goal was met {streak['current']} weeks in a row."
     slides.append(
         {
             "kind": "next_week",
             "suggested_goal": progress["goal"],
-            "text": "Keep going in a way that feels good next week.",
+            "text": "Review your activity and sleep trends before setting next week's goal.",
         }
     )
     return {

@@ -11,6 +11,7 @@ from server.analytics.common import (
     rolling_median,
     safe_div,
     spearman,
+    usual_range,
     week_start,
 )
 
@@ -36,6 +37,16 @@ def test_spearman_ties_missing_and_constant():
     assert spearman([1, 2, 3], [1, 2, 3]) == pytest.approx(1)
     assert spearman([1, None, 3], [1, 2, 3]) is None
     assert spearman([1, 1, 1], [1, 2, 3]) is None
+
+
+def test_usual_range_requires_fourteen_readings_and_uses_recent_mad():
+    assert usual_range([56] * 13) is None
+    result = usual_range([999] + [54, 55, 56, 57] * 4)
+    assert result["median"] == 56
+    assert result["n"] == 17
+    assert result["low"] < 54 and result["high"] > 57
+    recent = usual_range([999] + [55] * 14, days=14)
+    assert recent == {"low": 55, "high": 55, "median": 55, "n": 14}
 
 
 def test_lttb_preserves_sine_extremes_and_endpoints():

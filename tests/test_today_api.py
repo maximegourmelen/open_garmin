@@ -14,9 +14,15 @@ def test_demo_today_has_single_request_view():
         data = result.json()
         assert data["greeting"]
         assert data["week"]["method"] == "active_minutes@1"
+        assert data["week"]["active_minutes"] is not None
+        assert data["week"]["activity_seconds"] >= 0
+        assert "active minutes" in data["week"]["sentence"]
         assert data["suggestion"]["method"] == "today_suggestion@1"
         assert data["suggestion"]["footnote"].endswith("not medical advice.")
         assert data["sleep"] and data["body_battery"] and data["resting_hr"]
+        assert data["resting_hr"]["status"] in {"below", "within", "above", "insufficient"}
+        assert data["resting_hr"]["sentence"] != "Close to your usual."
+        assert data["hrv"]["status"] != "BALANCED"
         assert "route_preview" in data["latest_activity"]
         if data["latest_activity"]["route_preview"]:
             assert data["latest_activity"]["has_route"]

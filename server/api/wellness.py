@@ -11,7 +11,15 @@ from sqlalchemy import select
 from ..analytics.activity_goals import steps_summary
 from ..analytics.common import daterange, local_today
 from ..analytics.energy import body_battery_day, stress_day
-from ..analytics.sleep import bedtime_rhythm, sleep_debt, sleep_minutes, sleep_sentence, stage_ranges
+from ..analytics.sleep import (
+    bedtime_rhythm,
+    minutes_from_noon,
+    sleep_debt,
+    sleep_minutes,
+    sleep_sentence,
+    stage_ranges,
+)
+from ..copy.labels import garmin_label
 from ..db.models import Activity, Daily, User
 from ..workspace import workspace
 from .schemas import HealthSeries
@@ -68,12 +76,14 @@ def health_series(request: Request, kind: str, range: Range) -> dict:
                 score=day.get("sleep_score"),
                 start=day.get("sleep_start"),
                 end=day.get("sleep_end"),
+                bedtime_minutes_from_noon=minutes_from_noon(day.get("sleep_start")),
+                wake_minutes_from_noon=minutes_from_noon(day.get("sleep_end")),
                 stages=stage_ranges(day),
                 awake_count=day.get("sleep_awake_count"),
                 avg_hr=day.get("sleep_avg_hr"),
                 respiration=day.get("sleep_respiration"),
                 spo2=day.get("sleep_spo2_avg"),
-                feedback=day.get("sleep_feedback"),
+                feedback=garmin_label(day.get("sleep_feedback"), "sleep_feedback"),
                 sentence=sleep_sentence(day),
             )
         elif kind == "heart":
@@ -83,7 +93,7 @@ def health_series(request: Request, kind: str, range: Range) -> dict:
                 hr_max=day.get("hr_max"),
                 hrv=day.get("hrv"),
                 hrv_weekly=day.get("hrv_weekly"),
-                hrv_status=day.get("hrv_status"),
+                hrv_status=garmin_label(day.get("hrv_status"), "hrv_status"),
                 balanced_low=day.get("hrv_balanced_low"),
                 balanced_high=day.get("hrv_balanced_high"),
             )

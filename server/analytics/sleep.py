@@ -5,12 +5,17 @@ from __future__ import annotations
 import statistics
 from datetime import UTC, date, datetime, timedelta
 
-from ..copy.sentences import sleep_summary
+from ..copy.sentences import bedtime_sentence, sleep_debt_sentence, sleep_summary
 
 
 def sleep_minutes(day: dict) -> float | None:
     seconds = day.get("sleep_seconds")
     return round(seconds / 60, 1) if seconds is not None else None
+
+
+def _sleep_need(day: dict) -> float | None:
+    need = day.get("sleep_need_minutes")
+    return need if need is not None else day.get("sleep_need")
 
 
 def sleep_sentence(day: dict) -> str:
@@ -23,22 +28,22 @@ def sleep_debt(days: list[dict], today: date) -> dict:
         for day in days
         if (today - timedelta(days=6)).isoformat() <= day.get("date", "") <= today.isoformat()
     ]
-    short = sum(
-        max(0, (day.get("sleep_need_minutes") or day.get("sleep_need") or 420) - minutes)
+    readings = [
+        (minutes, need)
         for day in recent
         if (minutes := sleep_minutes(day)) is not None
-    )
+        and (need := _sleep_need(day)) is not None
+    ]
+    short = sum(max(0, need - minutes) for minutes, need in readings) if readings else None
     return {
-        "minutes": round(short),
-        "n": sum(sleep_minutes(day) is not None for day in recent),
-        "sentence": f"About {short / 60:.1f} h short this week"
-        if short >= 60
-        else "You're well rested this week.",
+        "minutes": round(short) if short is not None else None,
+        "n": len(readings),
+        "sentence": sleep_debt_sentence(short),
         "method": "sleep_debt_7d@1",
     }
 
 
-def _bedtime_minutes(value: str | int | float | None) -> float | None:
+def minutes_from_noon(value: str | int | float | None) -> float | None:
     if value is None:
         return None
     try:
@@ -49,7 +54,7 @@ def _bedtime_minutes(value: str | int | float | None) -> float | None:
         )
     except (TypeError, ValueError, OverflowError):
         return None
-    return (timestamp.hour * 60 + timestamp.minute - 18 * 60) % 1440
+    return (timestamp.hour * 60 + timestamp.minute - 12 * 60) % 1440
 
 
 def bedtime_rhythm(days: list[dict], today: date) -> dict:
@@ -58,13 +63,15 @@ def bedtime_rhythm(days: list[dict], today: date) -> dict:
         for day in days
         if (today - timedelta(days=13)).isoformat() <= day.get("date", "") <= today.isoformat()
     ]
-    values = [minute for day in recent if (minute := _bedtime_minutes(day.get("sleep_start"))) is not None]
+    values = [minute for day in recent if (minute := minutes_from_noon(day.get("sleep_start"))) is not None]
     if len(values) < 7:
         return {
+            "usual_minutes_from_noon": None,
+            "usual_window_from_noon": None,
             "usual_minutes_after_18": None,
             "band_minutes": None,
             "within_7": None,
-            "sentence": "More nights of sleep data will show your bedtime rhythm.",
+            "sentence": bedtime_sentence(None),
             "method": "bedtime_rhythm@1",
         }
     usual = statistics.median(values)
@@ -74,15 +81,15 @@ def bedtime_rhythm(days: list[dict], today: date) -> dict:
     within = sum(
         abs(minute - usual) <= band
         for day in last_seven
-        if (minute := _bedtime_minutes(day.get("sleep_start"))) is not None
+        if (minute := minutes_from_noon(day.get("sleep_start"))) is not None
     )
     return {
-        "usual_minutes_after_18": round(usual),
+        "usual_minutes_from_noon": round(usual),
+        "usual_window_from_noon": [round(usual - band), round(usual + band)],
+        "usual_minutes_after_18": round((usual - 360) % 1440),
         "band_minutes": round(band),
         "within_7": within,
-        "sentence": "Your bedtime has been nice and regular."
-        if within >= 5
-        else "Your bedtimes moved around this week. A steadier rhythm often helps sleep.",
+        "sentence": bedtime_sentence(within),
         "method": "bedtime_rhythm@1",
     }
 
@@ -99,8 +106,16 @@ def stage_ranges(day: dict) -> dict:
         result[stage] = {
             "minutes": round(seconds / 60, 1) if seconds is not None else None,
             "pct": pct,
-            "optimal_start": low,
-            "optimal_end": high,
+            "optimal_range_pct": [low, high] if low is not None and high is not None else None,
+            "optimal_range_minutes": [round(total / 60 * low / 100, 1), round(total / 60 * high / 100, 1)]
+            if total and low is not None and high is not None
+            else None,
+            "optimal_start": round(total / 60 * low / 100, 1)
+            if total and low is not None
+            else None,
+            "optimal_end": round(total / 60 * high / 100, 1)
+            if total and high is not None
+            else None,
             "in_range": low <= pct <= high
             if pct is not None and low is not None and high is not None
             else None,

@@ -10,7 +10,10 @@ def test_weekly_minutes_prefers_garmin_then_activity_fallback():
     today = date(2026, 11, 8)
     activities = [
         {"id": "a", "date": "2026-11-02", "duration": 1800, "sport": "walking"},
-        {"id": "b", "date": "2026-11-03", "duration": 3600, "sport": "running"},
+        {
+            "id": "b", "date": "2026-11-03", "duration": 3600, "sport": "running",
+            "intensity_minutes_moderate": 30, "intensity_minutes_vigorous": 15,
+        },
     ]
     daily = [
         {"date": "2026-11-02", "intensity_moderate": 20, "intensity_vigorous": 10, "intensity_goal": 150}
@@ -20,11 +23,28 @@ def test_weekly_minutes_prefers_garmin_then_activity_fallback():
     )
     assert result["minutes"] == 100
     assert result["days_with_garmin_intensity"] == 1
-    assert result["days_fallback"] == 6
+    assert result["days_fallback"] == 1
+    assert result["days_missing"] == 5
+    assert result["active_minutes"] == 100
+    assert result["activity_seconds"] == 5400
+    assert result["activity_count"] == 2
+    assert result["daily_active_minutes"][:2] == [40, 60]
     assert result["sessions"] == 2
     assert result["goal"] == 120 and result["remaining_minutes"] == 20
     assert result["days_left"] == 0 and result["pct"] == 83
     assert result["method"] == "active_minutes@1"
+
+
+def test_activity_time_never_becomes_active_minutes_without_garmin_intensity():
+    result = weekly_active_minutes(
+        [{"id": "a", "date": "2026-11-08", "duration": 1800, "sport": "walking"}],
+        [],
+        {"week_start": "monday", "weekly_minutes": 150, "weekly_sessions": 3},
+        date(2026, 11, 8),
+    )
+    assert result["active_minutes"] is None
+    assert result["activity_seconds"] == 1800
+    assert result["sentence"] == "No active-minute reading is available for this week."
 
 
 def test_goal_suggestion_and_steps_summary():
@@ -59,6 +79,8 @@ def test_ramp_bands_and_insufficient_history():
     assert ramp_check([], today)["band"] == "building_history"
     early = ramp_check(previous + [{"date": "2026-11-02", "effort_points": 100}], date(2026, 11, 2))
     assert early["projected"] is None
+    assert early["status"] == "too_early" and early["ratio"] is None
+    assert "too early" in early["sentence"]
 
 
 def test_effort_trend_uses_seven_and_twenty_eight_day_means():

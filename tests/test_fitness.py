@@ -20,6 +20,9 @@ def test_efficiency_trend_uses_medians_for_same_sport():
     signal = efficiency_signal(activities, today)
     assert signal["before"] == 1.20
     assert signal["after"] == 1.26
+    assert signal["before_display"] == "1.20 m/beat"
+    assert signal["after_display"] == "1.26 m/beat"
+    assert "1.20 to 1.26 m/beat" in signal["sentence"]
     assert signal["status"] == "improving"
     assert signal["n_before"] == 3 and signal["n_after"] == 3
     assert signal["method"] == "efficiency_trend@1"
@@ -42,5 +45,9 @@ def test_rhr_signal_and_available_signals():
     ]
     signals = fitness_signals(activities, daily, today)
     assert {signal["id"] for signal in signals} >= {"resting_hr", "longest", "vo2max"}
+    longest = next(signal for signal in signals if signal["id"] == "longest")
+    assert longest["unit"] == "s"
+    assert "min" in longest["sentence"] and "1800" not in longest["sentence"]
+    assert longest["before_display"] == "30\u202fmin"
     assert len(signals) <= 4
     assert fitness_signals([], [], today)[0]["id"] == "consistency"

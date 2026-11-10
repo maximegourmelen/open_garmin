@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import statistics
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -10,6 +9,7 @@ from fastapi import Request
 from sqlalchemy import select
 
 from ..analytics.activity_goals import steps_summary, weekly_active_minutes
+from ..analytics.common import usual_range
 from ..analytics.energy import body_battery_day
 from ..analytics.insights import insights_for
 from ..analytics.sleep import sleep_minutes, sleep_sentence
@@ -19,7 +19,9 @@ from ..companion.messages import greeting, today_observation
 from ..companion.milestones import evaluate_milestones
 from ..companion.streaks import streak
 from ..copy.format import distance, duration_clock
+from ..copy.labels import garmin_label
 from ..copy.sentences import activity_summary as neutral_activity_summary
+from ..copy.sentences import usual_sentence
 from ..db.models import (
     Activity,
     ActivityDerived,
@@ -121,32 +123,44 @@ def today_view(request: Request):
         if item.get("resting_hr") is not None
         and (today - timedelta(days=28)).isoformat() <= item.get("date", "") < today.isoformat()
     ]
-    usual_rhr = statistics.median(previous_rhr) if len(previous_rhr) >= 14 else None
+    rhr_range = usual_range(previous_rhr)
     rhr = None
     if current.get("resting_hr") is not None:
         spark = [
             by_day.get((today - timedelta(days=offset)).isoformat(), {}).get("resting_hr")
             for offset in reversed(range(28))
         ]
+        rhr_status, rhr_sentence = usual_sentence("resting_hr", current["resting_hr"], rhr_range)
         rhr = {
             "value": current["resting_hr"],
-            "usual": usual_rhr,
+            "usual": rhr_range["median"] if rhr_range else None,
+            "usual_range": rhr_range,
+            "status": rhr_status,
             "spark": spark,
-            "sentence": "Close to your usual."
-            if usual_rhr is not None and abs(current["resting_hr"] - usual_rhr) < 3
-            else "A little different from your usual."
-            if usual_rhr is not None
-            else "More readings will show your usual.",
+            "sentence": rhr_sentence,
         }
+    hrv_bounds = (
+        {"low": current["hrv_balanced_low"], "high": current["hrv_balanced_high"]}
+        if current.get("hrv_balanced_low") is not None
+        and current.get("hrv_balanced_high") is not None
+        else usual_range(
+            [
+                item.get("hrv")
+                for item in daily
+                if (today - timedelta(days=30)).isoformat() <= item.get("date", "") < today.isoformat()
+            ]
+        )
+    )
+    hrv_state, hrv_sentence = usual_sentence("hrv", current.get("hrv"), hrv_bounds)
     hrv = (
         {
             "value": current.get("hrv"),
-            "status": current.get("hrv_status"),
+            "status": garmin_label(current.get("hrv_status"), "hrv_status"),
+            "range_status": hrv_state,
+            "usual_range": hrv_bounds,
             "balanced_low": current.get("hrv_balanced_low"),
             "balanced_high": current.get("hrv_balanced_high"),
-            "sentence": "Garmin reports your HRV is balanced."
-            if current.get("hrv_status") == "BALANCED"
-            else "Consider your HRV alongside how you feel.",
+            "sentence": hrv_sentence,
         }
         if current.get("hrv") is not None
         else None
@@ -224,7 +238,9 @@ def today_view(request: Request):
             "time": duration_clock(seconds),
             "activity_id": recent_best["activity_id"],
         }
-    cumulative_before = sum(item["minutes"] for item in week["by_day"] if item["date"] < today.isoformat())
+    cumulative_before = sum(
+        item["minutes"] or 0 for item in week["by_day"] if item["date"] < today.isoformat()
+    )
     goal_reached_today = bool(week["goal"] and cumulative_before < week["goal"] <= week["minutes"])
     observation = today_observation(
         ws.user_id,

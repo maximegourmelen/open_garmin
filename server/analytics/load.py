@@ -5,6 +5,7 @@ from __future__ import annotations
 import statistics
 from datetime import date, timedelta
 
+from ..copy.sentences import load_sentence
 from .common import daterange, week_start
 
 
@@ -28,14 +29,16 @@ def ramp_check(activities: list[dict], today: date, start: str = "monday") -> di
         dates = [day.isoformat() for day in daterange(first, first + timedelta(days=6))]
         if any(day in daily for day in dates):
             previous.append(sum(daily.get(day, 0) for day in dates))
-    if len(previous) < 3 or not statistics.mean(previous):
+    if elapsed < 4 or len(previous) < 3 or not statistics.mean(previous):
+        band = "too_early" if elapsed < 4 else "building_history"
         return {
-            "band": "building_history",
+            "band": band,
+            "status": band,
             "ratio": None,
             "this_week": round(this_week),
-            "average_four_weeks": None,
+            "average_four_weeks": round(statistics.mean(previous)) if previous else None,
             "projected": None,
-            "sentence": "I need about 3 weeks of activities to compare.",
+            "sentence": load_sentence(band),
             "n": len(previous),
             "source": "calculated",
             "method": "ramp_check@1",
@@ -46,23 +49,21 @@ def ramp_check(activities: list[dict], today: date, start: str = "monday") -> di
     comparable_average = average if projected is not None else average / 7 * elapsed
     ratio = comparable_current / comparable_average if comparable_average else None
     if ratio < 0.6:
-        band, sentence = "lighter", "A lighter week than usual — totally fine, especially if you needed rest."
+        band = "lighter"
     elif ratio <= 1.3:
-        band, sentence = "steady", "Right around your usual. Nice and steady."
+        band = "steady"
     elif ratio <= 1.6:
-        band, sentence = "building", "A bigger week than usual. Build gradually and keep some easy days."
+        band = "building"
     else:
-        band, sentence = (
-            "big_jump",
-            "Quite a jump from your usual! Your body likes gradual increases — consider an easy day.",
-        )
+        band = "big_jump"
     return {
         "band": band,
+        "status": band,
         "ratio": round(ratio, 2),
         "this_week": round(this_week),
         "average_four_weeks": round(average),
         "projected": round(projected) if projected is not None else None,
-        "sentence": sentence,
+        "sentence": load_sentence(band),
         "n": len(previous),
         "source": "calculated",
         "method": "ramp_check@1",

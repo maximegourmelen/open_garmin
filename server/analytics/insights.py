@@ -7,6 +7,9 @@ import statistics
 from datetime import date, timedelta
 from pathlib import Path
 
+from ..copy.format import duration_summary
+from ..copy.format import hrv as format_hrv
+from ..copy.labels import garmin_label
 from .common import spearman, week_start
 from .fitness import fitness_signals
 from .sleep import bedtime_rhythm, sleep_minutes
@@ -98,20 +101,20 @@ def insights_for(
         item for item in top if previous_start.isoformat() <= item["date"] <= prior_cutoff.isoformat()
     ]
     if current and previous:
-        current_minutes = sum((item.get("duration") or 0) / 60 for item in current)
-        previous_minutes = sum((item.get("duration") or 0) / 60 for item in previous)
-        if previous_minutes > 0:
-            direction = "More" if current_minutes >= previous_minutes else "A little less"
+        current_seconds = sum(item.get("duration") or 0 for item in current)
+        previous_seconds = sum(item.get("duration") or 0 for item in previous)
+        if previous_seconds > 0:
+            direction = "More" if current_seconds >= previous_seconds else "Less"
             results.append(
                 _insight(
                     "weekly-volume",
                     "Activity",
                     "neutral",
-                    f"{direction} active than this time last week",
-                    f"You have moved for {round(current_minutes)} minutes this week, "
-                    f"compared with {round(previous_minutes)} minutes by the same day last week.",
+                    f"{direction} activity time than this time last week",
+                    f"Recorded activity time: {duration_summary(current_seconds)} this week, "
+                    f"compared with {duration_summary(previous_seconds)} by the same day last week.",
                     f"Compared {len(current)} activities this week with {len(previous)} "
-                    f"last week through {prior_cutoff}. Method: same-weekday activity minutes.",
+                    f"last week through {prior_cutoff}. Method: same-weekday activity time.",
                     [
                         current_start.isoformat(),
                         today.isoformat(),
@@ -164,10 +167,10 @@ def insights_for(
         usual = statistics.median(day["sleep_seconds"] for day in prior) / 60
         difference = (latest["sleep_seconds"] / 60) - usual
         title = (
-            "Sleep close to your recent usual"
+            "Sleep within your usual range"
             if abs(difference) < 15
-            else f"{round(abs(difference) / 5) * 5} minutes "
-            f"{'more' if difference > 0 else 'less'} sleep than usual"
+            else f"{duration_summary(round(abs(difference) / 5) * 300)} "
+            f"{'more' if difference > 0 else 'less'} sleep than your recent median"
         )
         results.append(
             _insight(
@@ -175,8 +178,7 @@ def insights_for(
                 "Sleep",
                 "attention" if difference < -40 else "neutral",
                 title,
-                f"You slept about {round(latest['sleep_seconds'] / 300) * 5} minutes "
-                "on your latest recorded night.",
+                f"Your latest recorded sleep was {duration_summary(latest['sleep_seconds'])}.",
                 f"Compared with the median of {len(prior)} preceding nights; "
                 f"latest night {latest['date']}. Method: preceding-night median.",
                 [day["date"] for day in prior] + [latest["date"]],
@@ -192,10 +194,10 @@ def insights_for(
                 "Recovery",
                 "neutral",
                 "Your HRV in context",
-                f"Your latest overnight HRV was {round(latest['hrv'])} ms, "
-                f"compared with about {round(usual)} ms for your usual.",
+                f"Your latest overnight HRV was {format_hrv(latest['hrv'])}, "
+                f"compared with {format_hrv(usual)} for your recent median.",
                 f"{len(prior)} preceding readings; latest night {latest['date']}; "
-                f"Garmin status: {latest.get('hrv_status') or 'not reported'}. "
+                f"Garmin status: {garmin_label(latest.get('hrv_status'), 'hrv_status') or 'not reported'}. "
                 "Method: preceding-night median.",
                 [day["date"] for day in prior] + [latest["date"]],
             )
@@ -212,7 +214,7 @@ def insights_for(
                 "attention" if ramp["band"] == "big_jump" else "neutral",
                 "A big jump this week" if ramp["band"] == "big_jump" else "A bigger week than usual",
                 ramp["sentence"],
-                f"Current effort {ramp['this_week']} points; {ramp['n']} prior weeks; "
+                f"Current effort {ramp['this_week']} pts; {ramp['n']} prior weeks; "
                 f"ratio {ramp['ratio']}. Method: ramp_check@1.",
                 [current_start.isoformat(), today.isoformat()],
             )
@@ -223,8 +225,8 @@ def insights_for(
                 "goal-streak",
                 "Journey",
                 "positive",
-                f"{streak['current']} weeks in a row!",
-                "Your steady weeks are adding up.",
+                f"Weekly goal met {streak['current']} weeks in a row",
+                f"Your weekly goal was met {streak['current']} weeks in a row.",
                 f"{streak['current']} consecutive weeks met the current goal. Method: streak@1.",
                 [current_start.isoformat()],
             )
@@ -242,8 +244,8 @@ def insights_for(
                 "new-best",
                 "Progress",
                 "positive",
-                "A new personal best!",
-                "You have a new marker of your progress.",
+                "New record",
+                "A new personal record was recorded.",
                 f"{best['kind']} on {best['date']}. Method: bests@1.",
                 [best["date"]],
                 [best["activity_id"]] if best.get("activity_id") else [],

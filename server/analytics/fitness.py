@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
+from ..copy.format import duration_summary, heart_rate
+from ..copy.sentences import fitness_sentence
 from .common import rolling_median, safe_div
 
 
@@ -27,29 +29,23 @@ def resting_hr_signal(daily: list[dict], today: date) -> dict:
     before = rolling_median(before_days, 10)
     after = rolling_median(after_days, 10)
     if before is None or after is None:
-        status, sentence = (
-            "insufficient",
-            "A few more weeks of resting heart-rate readings will help show a trend.",
-        )
+        status = "insufficient"
     else:
         difference = after - before
         if difference <= -2:
             status = "improving"
-            sentence = (
-                f"Your resting heart rate is {abs(round(difference))} bpm lower than six weeks ago. "
-                "A lower resting heart rate often comes with better fitness."
-            )
         elif difference >= 2:
             status = "declining"
-            sentence = "A little higher than six weeks ago — sleep, stress, heat or a cold can do this too."
         else:
-            status, sentence = "steady", "Your resting heart rate is staying fairly steady."
+            status = "steady"
     return {
         "id": "resting_hr",
         "status": status,
-        "sentence": sentence,
+        "sentence": fitness_sentence("resting_hr", before, after),
         "before": before,
         "after": after,
+        "before_display": heart_rate(before),
+        "after_display": heart_rate(after),
         "unit": "bpm",
         "n_before": len(before_days),
         "n_after": len(after_days),
@@ -91,31 +87,23 @@ def efficiency_signal(activities: list[dict], today: date) -> dict:
     after = rolling_median(later, 3)
     pct = safe_div((after - before) * 100, before) if before is not None and after is not None else None
     if pct is None:
-        status, sentence = (
-            "insufficient",
-            "A few more walks or runs with heart-rate data will help show a trend.",
-        )
+        status = "insufficient"
     elif pct >= 3:
-        status, sentence = (
-            "improving",
-            (
-                f"You're covering {round(pct)}% more ground per heartbeat than a month ago — "
-                "your heart is getting more efficient."
-            ),
-        )
+        status = "improving"
     elif pct <= -3:
-        status, sentence = (
-            "declining",
-            "Distance per heartbeat is a little lower lately. Heat, hills and tired legs can affect it.",
-        )
+        status = "declining"
     else:
-        status, sentence = "steady", "Your distance per heartbeat is staying steady."
+        status = "steady"
+    before_value = round(before, 2) if before is not None else None
+    after_value = round(after, 2) if after is not None else None
     return {
         "id": "efficiency",
         "status": status,
-        "sentence": sentence,
-        "before": round(before, 3) if before is not None else None,
-        "after": round(after, 3) if after is not None else None,
+        "sentence": fitness_sentence("efficiency", before_value, after_value),
+        "before": before_value,
+        "after": after_value,
+        "before_display": f"{before_value:.2f} m/beat" if before_value is not None else "—",
+        "after_display": f"{after_value:.2f} m/beat" if after_value is not None else "—",
         "unit": "m/beat",
         "n_before": len(earlier),
         "n_after": len(later),
@@ -137,28 +125,21 @@ def longest_signal(activities: list[dict], today: date) -> dict:
     ]
     before_max, after_max = max(before) if before else None, max(after) if after else None
     if before_max is None or after_max is None or before_max <= 0:
-        status, sentence = (
-            "insufficient",
-            "Keep moving in ways you enjoy; your longer sessions will appear here.",
-        )
+        status = "insufficient"
     elif after_max >= before_max * 1.10:
-        status, sentence = (
-            "improving",
-            f"Your longest session grew from {round(before_max / 60)} to {round(after_max / 60)} minutes.",
-        )
+        status = "improving"
     elif after_max < before_max * 0.9:
-        status, sentence = (
-            "declining",
-            "Your longest session was shorter this month. Easier weeks are part of progress.",
-        )
+        status = "declining"
     else:
-        status, sentence = "steady", "Your longest sessions are holding steady."
+        status = "steady"
     return {
         "id": "longest",
         "status": status,
-        "sentence": sentence,
+        "sentence": fitness_sentence("longest", before_max, after_max),
         "before": before_max,
         "after": after_max,
+        "before_display": duration_summary(before_max),
+        "after_display": duration_summary(after_max),
         "unit": "s",
         "n_before": len(before),
         "n_after": len(after),
@@ -185,24 +166,25 @@ def vo2max_signal(activities: list[dict], today: date) -> dict:
     ]
     baseline = earlier[-1] if earlier else None
     if not latest or not baseline:
-        status, sentence = "insufficient", "Garmin has not reported enough VO₂ max readings for a trend."
+        status = "insufficient"
     else:
         difference = latest["vo2max"] - baseline["vo2max"]
         if difference >= 1:
-            status, sentence = "improving", "Garmin's VO₂ max estimate has risen since last month."
+            status = "improving"
         elif difference <= -1:
-            status, sentence = (
-                "declining",
-                "Garmin's VO₂ max estimate is a little lower lately. It can vary with conditions.",
-            )
+            status = "declining"
         else:
-            status, sentence = "steady", "Garmin's VO₂ max estimate is holding steady."
+            status = "steady"
+    before_value = baseline["vo2max"] if baseline else None
+    after_value = latest["vo2max"] if latest else None
     return {
         "id": "vo2max",
         "status": status,
-        "sentence": sentence,
-        "before": baseline["vo2max"] if baseline else None,
-        "after": latest["vo2max"] if latest else None,
+        "sentence": fitness_sentence("vo2max", before_value, after_value),
+        "before": before_value,
+        "after": after_value,
+        "before_display": f"{before_value:.1f} ml/kg/min" if before_value is not None else "—",
+        "after_display": f"{after_value:.1f} ml/kg/min" if after_value is not None else "—",
         "unit": "ml/kg/min",
         "n_before": len(earlier),
         "n_after": 1 if latest else 0,
@@ -219,7 +201,7 @@ def consistency_signal(activities: list[dict], today: date) -> dict:
     return {
         "id": "consistency",
         "status": status,
-        "sentence": f"You moved on {after} days in the last four weeks. Every day you chose to move counts.",
+        "sentence": fitness_sentence("consistency", before, after),
         "before": before,
         "after": after,
         "unit": "days",

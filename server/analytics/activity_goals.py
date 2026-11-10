@@ -26,29 +26,46 @@ def weekly_active_minutes(activities: list[dict], daily: list[dict], prefs: dict
     daily_by_date = {item["date"]: item for item in daily if item.get("date")}
     activities_by_date = _activities_by_day(activities)
     by_day = []
-    garmin_days = fallback_days = 0
+    garmin_days = fallback_days = missing_days = 0
     for day in daterange(start, end):
         key = day.isoformat()
         sources = activities_by_date.get(key, [])
         item = daily_by_date.get(key, {})
         if day > today:
-            minutes = 0
+            minutes = None
+            source = "future"
         elif item.get("intensity_moderate") is not None and item.get("intensity_vigorous") is not None:
             minutes = item["intensity_moderate"] + 2 * item["intensity_vigorous"]
             garmin_days += 1
-        else:
-            minutes = sum((activity.get("duration") or 0) / 60 for activity in sources)
+            source = "garmin_daily"
+        elif sources and all(
+            activity.get("intensity_minutes_moderate") is not None
+            and activity.get("intensity_minutes_vigorous") is not None
+            for activity in sources
+        ):
+            minutes = sum(
+                activity["intensity_minutes_moderate"] + 2 * activity["intensity_minutes_vigorous"]
+                for activity in sources
+            )
             fallback_days += 1
+            source = "garmin_activity"
+        else:
+            minutes = None
+            missing_days += 1
+            source = "missing"
         by_day.append(
             {
                 "date": key,
-                "minutes": round(minutes, 1),
+                "minutes": round(minutes, 1) if minutes is not None else None,
+                "source": source,
                 "sports": sorted({activity.get("sport", "other") for activity in sources}),
                 "is_today": day == today,
                 "is_future": day > today,
             }
         )
-    minutes = round(sum(item["minutes"] for item in by_day), 1)
+    known = [item["minutes"] for item in by_day if item["minutes"] is not None]
+    active_minutes = round(sum(known), 1) if known else None
+    minutes = active_minutes or 0
     recent_goals = [item["intensity_goal"] for item in daily if item.get("intensity_goal") is not None]
     goal = (
         prefs["weekly_minutes"]
@@ -58,11 +75,23 @@ def weekly_active_minutes(activities: list[dict], daily: list[dict], prefs: dict
         else 150
     )
     sessions = sum(len(activities_by_date.get(day.isoformat(), [])) for day in daterange(start, today))
+    activity_seconds = sum(
+        item.get("duration") or 0
+        for day in daterange(start, today)
+        for item in activities_by_date.get(day.isoformat(), [])
+    )
     sessions_goal = prefs.get("weekly_sessions", 3)
     return {
         "minutes": minutes,
+        "active_minutes": active_minutes,
+        "activity_seconds": activity_seconds,
+        "activity_count": sessions,
+        "goal_minutes": goal,
+        "goal_activities": sessions_goal,
+        "daily_active_minutes": [item["minutes"] for item in by_day],
+        "has_partial_data": missing_days > 0,
         "goal": goal,
-        "pct": round(minutes / goal * 100) if goal else None,
+        "pct": round(active_minutes / goal * 100) if goal and active_minutes is not None else None,
         "sessions": sessions,
         "sessions_goal": sessions_goal,
         "remaining_minutes": max(0, round(goal - minutes, 1)),
@@ -70,7 +99,8 @@ def weekly_active_minutes(activities: list[dict], daily: list[dict], prefs: dict
         "by_day": by_day,
         "days_with_garmin_intensity": garmin_days,
         "days_fallback": fallback_days,
-        "sentence": week_progress(minutes, goal),
+        "days_missing": missing_days,
+        "sentence": week_progress(active_minutes, goal, activity_seconds),
         "window": {"from": start.isoformat(), "to": end.isoformat()},
         "source": "calculated",
         "method": "active_minutes@1",

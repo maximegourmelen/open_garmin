@@ -35,6 +35,18 @@ def rolling_median(values: Iterable[float | None], min_n: int = 1) -> float | No
     return float(statistics.median(observed)) if len(observed) >= min_n else None
 
 
+def usual_range(values: Iterable[float | None], days: int = 30) -> dict | None:
+    """A personal range from recent readings, using the median and median absolute deviation."""
+    recent = list(values)[-days:]
+    observed = [float(value) for value in recent if value is not None and math.isfinite(value)]
+    if len(observed) < 14:
+        return None
+    median = float(statistics.median(observed))
+    mad = float(statistics.median(abs(value - median) for value in observed))
+    spread = 1.5 * 1.4826 * mad
+    return {"low": median - spread, "high": median + spread, "median": median, "n": len(observed)}
+
+
 def safe_div(numerator: float | None, denominator: float | None) -> float | None:
     if numerator is None or denominator is None or denominator == 0:
         return None

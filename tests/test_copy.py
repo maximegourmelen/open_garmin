@@ -6,7 +6,14 @@ import pytest
 
 from server.copy import format as display
 from server.copy.labels import garmin_label
-from server.copy.sentences import MESSAGES, activity_summary, record_distance, sleep_summary, week_progress
+from server.copy.sentences import (
+    MESSAGES,
+    activity_summary,
+    record_distance,
+    sleep_summary,
+    usual_sentence,
+    week_progress,
+)
 
 CASES = json.loads((Path(__file__).parent / "fixtures" / "format_cases.json").read_text())
 
@@ -34,3 +41,8 @@ def test_copy_is_neutral_deterministic_and_grounded_in_data():
     assert garmin_label("BALANCED", "hrv_status") == "Within your usual range"
     assert garmin_label("AEROBIC_BASE", "training_effect") == "Aerobic base"
     assert garmin_label(None, "hrv_status") is None
+    assert usual_sentence("resting_hr", 56, {"low": 52, "high": 58}) == (
+        "within", "Resting heart rate is within your usual range (52–58\u202fbpm)."
+    )
+    assert usual_sentence("hrv", 39, {"low": 42, "high": 60})[0] == "below"
+    assert usual_sentence("hrv", None, None)[0] == "missing"

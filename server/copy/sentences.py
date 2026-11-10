@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from .format import count, date_title, distance, duration_summary, percent
+from .format import SPACE, count, date_title, distance, duration_summary, heart_rate, percent
 
 MESSAGES = {
     "milestone": "Your history includes a new achievement: {title}.",
@@ -55,6 +55,63 @@ def today_suggestion(kind: str) -> tuple[str, str]:
 def goal_suggestion(suggested: int, current_goal: int) -> str:
     direction = "above" if suggested > current_goal else "below"
     return f"A weekly goal of {count(suggested)} active minutes is {direction} your current goal."
+
+
+LOAD_SENTENCES = {
+    "too_early": "It is too early in the week to compare load with your usual weeks.",
+    "building_history": "At least three prior weeks of effort are needed for a load comparison.",
+    "lighter": "This week's effort is below your recent weeks.",
+    "steady": "This week's effort is within your recent range.",
+    "building": "This week's effort is above your recent weeks. Build gradually.",
+    "big_jump": "This week's effort is well above your recent weeks. Consider an easier day.",
+}
+
+
+def load_sentence(status: str) -> str:
+    return LOAD_SENTENCES[status]
+
+
+def fitness_sentence(signal: str, before: float | None, after: float | None) -> str:
+    if signal == "resting_hr":
+        return (
+            f"Resting heart rate changed from {heart_rate(before)} to {heart_rate(after)} over six weeks."
+            if before is not None and after is not None
+            else "More resting heart-rate readings are needed to show a trend."
+        )
+    if signal == "efficiency":
+        return (
+            f"Distance per heartbeat changed from {before:.2f} to {after:.2f} m/beat."
+            if before is not None and after is not None
+            else "More walks or runs with heart-rate readings are needed to show a trend."
+        )
+    if signal == "longest":
+        return (
+            f"Longest activity time changed from {duration_summary(before)} to {duration_summary(after)}."
+            if before is not None and after is not None
+            else "More activity history is needed to compare your longest activities."
+        )
+    if signal == "vo2max":
+        return (
+            f"Garmin's VO₂ max estimate changed from {before:.1f} to {after:.1f} ml/kg/min."
+            if before is not None and after is not None
+            else "Garmin has not reported enough VO₂ max readings for a trend."
+        )
+    if signal == "consistency":
+        return f"Activities were recorded on {count(after)} days in the last four weeks."
+    raise ValueError(f"Unknown fitness signal: {signal}")
+
+
+def usual_sentence(metric: str, value: float | None, bounds: dict | None) -> tuple[str, str]:
+    label = "Resting heart rate" if metric == "resting_hr" else "HRV"
+    unit = "bpm" if metric == "resting_hr" else "ms"
+    if value is None:
+        return "missing", f"No {label.lower()} reading is available."
+    if bounds is None:
+        return "insufficient", f"More readings are needed to show your usual {label.lower()} range."
+    low, high = bounds["low"], bounds["high"]
+    status = "below" if value < low else "above" if value > high else "within"
+    relation = f"{status} your usual range" if status != "within" else "within your usual range"
+    return status, f"{label} is {relation} ({round(low)}–{round(high)}{SPACE}{unit})."
 
 
 def render_message(
@@ -152,7 +209,25 @@ def sleep_summary(day: dict) -> str:
     return f"{duration} of sleep. {duration_summary(abs(difference) * 60)} {comparison} than you needed."
 
 
-def week_progress(minutes: float, goal: float | None, activity_seconds: float | None = None) -> str:
+def sleep_debt_sentence(minutes_short: float | None) -> str:
+    if minutes_short is None:
+        return "Garmin has not reported enough sleep need data for a weekly comparison."
+    if minutes_short < 60:
+        return "Recorded sleep was close to your reported need this week."
+    return f"Recorded sleep was {duration_summary(minutes_short * 60)} below your reported need this week."
+
+
+def bedtime_sentence(within_seven: int | None) -> str:
+    if within_seven is None:
+        return "At least seven recorded bedtimes are needed to show your usual range."
+    if within_seven >= 5:
+        return "Most recorded bedtimes were within your usual range this week."
+    return "Recorded bedtimes varied more than your usual range this week."
+
+
+def week_progress(minutes: float | None, goal: float | None, activity_seconds: float | None = None) -> str:
+    if minutes is None:
+        return "No active-minute reading is available for this week."
     sentence = f"{count(minutes)} active minutes this week"
     if goal:
         sentence += f", {percent(minutes / goal * 100)} of your goal"
