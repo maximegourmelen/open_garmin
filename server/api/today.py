@@ -18,6 +18,8 @@ from ..companion.journeys import journey_progress
 from ..companion.messages import greeting, today_observation
 from ..companion.milestones import evaluate_milestones
 from ..companion.streaks import streak
+from ..copy.format import distance, duration_clock
+from ..copy.sentences import activity_summary as neutral_activity_summary
 from ..db.models import (
     Activity,
     ActivityDerived,
@@ -166,7 +168,7 @@ def today_view(request: Request):
         summary_text = (
             derived.get(latest_activity_row.id, {})
             .get("summary", {})
-            .get("text", "Nice work getting out there.")
+            .get("text", neutral_activity_summary(item, None)["text"])
         )
         latest_activity["summary"] = {
             "id": "activity_summary",
@@ -218,8 +220,8 @@ def today_view(request: Request):
     if recent_best:
         seconds = round(recent_best["value"])
         pb = {
-            "distance": f"{round(float(recent_best['kind'].split(':')[1]) / 1000, 1)} km",
-            "time": f"{seconds // 60}:{seconds % 60:02}",
+            "distance": distance(float(recent_best["kind"].split(":")[1]), prefs.get("units", "metric")),
+            "time": duration_clock(seconds),
             "activity_id": recent_best["activity_id"],
         }
     cumulative_before = sum(item["minutes"] for item in week["by_day"] if item["date"] < today.isoformat())

@@ -5,6 +5,10 @@ from __future__ import annotations
 import statistics
 from datetime import date, timedelta
 
+from ..copy.format import duration_summary
+from ..copy.labels import garmin_label
+from ..copy.sentences import today_suggestion
+
 
 def suggestion(daily: list[dict], activities: list[dict], checkin: dict | None, today: date) -> dict:
     by_day = {item["date"]: item for item in daily if item.get("date")}
@@ -23,11 +27,11 @@ def suggestion(daily: list[dict], activities: list[dict], checkin: dict | None, 
         else:
             diff = minutes - need
             state = "good" if diff >= -15 else "low" if diff < -60 else "ok"
-        add("sleep", "Sleep", state, f"{round(minutes / 5) * 5} min", "garmin")
+        add("sleep", "Sleep", state, duration_summary(seconds), "garmin")
     hrv_status = (current.get("hrv_status") or "").upper()
     if hrv_status in ("BALANCED", "UNBALANCED", "LOW", "POOR"):
         state = "good" if hrv_status == "BALANCED" else "ok" if hrv_status == "UNBALANCED" else "low"
-        add("hrv", "HRV", state, hrv_status.title(), "garmin")
+        add("hrv", "HRV", state, garmin_label(hrv_status, "hrv_status"), "garmin")
     battery = current.get("bb_at_wake")
     if battery is None:
         battery = current.get("bb_max")
@@ -73,44 +77,23 @@ def suggestion(daily: list[dict], activities: list[dict], checkin: dict | None, 
         p75 = values[20] * 0.75 + values[21] * 0.25
         yesterday = recent_effort.get((today - timedelta(days=1)).isoformat(), 0)
         state = "low" if p75 > 0 and yesterday > p75 * 1.5 else "good" if yesterday <= p75 else "ok"
-        add("yesterday_effort", "Yesterday's effort", state, f"{round(yesterday)} points", "calculated")
+        add("yesterday_effort", "Yesterday's effort", state, f"{round(yesterday)} pts", "calculated")
     low = sum(item["state"] == "low" for item in signals)
     ok = sum(item["state"] == "ok" for item in signals)
-    if checkin and checkin.get("soreness") == 2 or low >= 2:
-        kind, title, text, pose = (
-            "rest",
-            "Rest-friendly day",
-            "Your body's asking for a break. A gentle walk or stretching is plenty — "
-            "rest is when you get fitter.",
-            "sleepy",
-        )
+    if (checkin and checkin.get("soreness") == 2) or low >= 2:
+        kind = "rest"
     elif low == 1 or ok >= 3:
-        kind, title, text, pose = (
-            "easy",
-            "Easy day",
-            "Keep it light today: an easy walk, ride or a relaxed jog where you can still chat.",
-            "stretch",
-        )
+        kind = "easy"
     elif len(signals) >= 2:
-        kind, title, text, pose = (
-            "go",
-            "Good day to move",
-            "You look ready. If you feel like it, today's a nice day for your planned session — "
-            "or try a little longer than usual.",
-            "cheer",
-        )
+        kind = "go"
     else:
-        kind, title, text, pose = (
-            "unknown",
-            "No strong signals today",
-            "Go with how you feel. Wearing your watch overnight helps me give better suggestions.",
-            "thinking",
-        )
+        kind = "unknown"
+    title, text = today_suggestion(kind)
     return {
         "kind": kind,
         "title": title,
         "text": text,
-        "pose": pose,
+        "pose": "calm",
         "signals": signals,
         "footnote": "A suggestion based on your data, not medical advice.",
         "rules_version": 1,

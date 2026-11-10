@@ -1,0 +1,58 @@
+[
+  { "kind": "duration_summary", "value": 26100, "expected": "7\u202fh 15\u202fmin" },
+  { "kind": "duration_summary", "value": 2220, "expected": "37\u202fmin" },
+  { "kind": "duration_summary", "value": null, "expected": "—" },
+  { "kind": "duration_clock", "value": 2232, "expected": "37:12" },
+  { "kind": "duration_clock", "value": 3852, "expected": "1:04:12" },
+  { "kind": "pace", "value": 2.577319587628866, "units": "metric", "expected": "6:28 /km" },
+  { "kind": "pace", "value": 3.3528, "units": "imperial", "expected": "8:00 /mi" },
+  { "kind": "speed", "value": 4.7777777778, "units": "metric", "expected": "17.2\u202fkm/h" },
+  { "kind": "speed", "value": 5, "units": "imperial", "expected": "11.2\u202fmph" },
+  { "kind": "distance", "value": 5400, "units": "metric", "expected": "5.4\u202fkm" },
+  {
+    "kind": "distance",
+    "value": 850,
+    "units": "metric",
+    "table": true,
+    "expected": "0.85\u202fkm"
+  },
+  { "kind": "distance", "value": 1609.344, "units": "imperial", "expected": "1.0\u202fmi" },
+  { "kind": "heart_rate", "value": 142.4, "expected": "142\u202fbpm" },
+  { "kind": "hrv", "value": 48.2, "expected": "48\u202fms" },
+  { "kind": "count", "value": 9427, "unit": "steps", "expected": "9,427\u202fsteps" },
+  { "kind": "count", "value": 1318, "unit": "pts", "expected": "1,318\u202fpts" },
+  { "kind": "percent", "value": 13.3, "expected": "13%" },
+  {
+    "kind": "date_list",
+    "value": "2026-11-09",
+    "today": "2026-11-09",
+    "time": "10:12",
+    "expected": "Today, 10:12"
+  },
+  {
+    "kind": "date_list",
+    "value": "2026-11-08",
+    "today": "2026-11-09",
+    "time": "09:50",
+    "expected": "Sun, 09:50"
+  },
+  { "kind": "date_list", "value": "2025-11-07", "today": "2026-11-09", "expected": "7 Nov 2025" },
+  { "kind": "date_title", "value": "2026-11-09", "expected": "Monday, 9 November" },
+  { "kind": "week", "value": "2026-11-02", "expected": "Week of 2 Nov" },
+  { "kind": "clock_time", "value": "22:56", "expected": "22:56" },
+  { "kind": "clock_time", "value": "22:56", "hour12": true, "expected": "10:56 pm" },
+  {
+    "kind": "plural",
+    "value": 1,
+    "singular": "activity",
+    "plural_form": "activities",
+    "expected": "activity"
+  },
+  {
+    "kind": "plural",
+    "value": 2,
+    "singular": "activity",
+    "plural_form": "activities",
+    "expected": "activities"
+  }
+]

@@ -19,7 +19,7 @@ def test_sleep_need_debt_and_ranges():
         "rem_seconds": 85 * 60,
         "sleep_subscores": {"deepPercentage": {"optimal_start": 15, "optimal_end": 25}},
     }
-    assert "little less" in sleep_sentence(day)
+    assert "less than you needed" in sleep_sentence(day)
     assert sleep_debt([day], today)["minutes"] == 60
     assert stage_ranges(day)["deep"]["in_range"] is True
     assert stage_ranges(day)["light"]["in_range"] is None

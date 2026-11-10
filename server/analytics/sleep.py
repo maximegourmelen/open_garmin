@@ -5,6 +5,8 @@ from __future__ import annotations
 import statistics
 from datetime import UTC, date, datetime, timedelta
 
+from ..copy.sentences import sleep_summary
+
 
 def sleep_minutes(day: dict) -> float | None:
     seconds = day.get("sleep_seconds")
@@ -12,20 +14,7 @@ def sleep_minutes(day: dict) -> float | None:
 
 
 def sleep_sentence(day: dict) -> str:
-    minutes = sleep_minutes(day)
-    if minutes is None:
-        return "No sleep reading for this night."
-    need = day.get("sleep_need_minutes") or day.get("sleep_need")
-    if need is None:
-        need = 420
-    difference = minutes - need
-    if difference > 15:
-        return "You got a bit more than you needed."
-    if difference >= -15:
-        return "You got about what you needed."
-    if difference >= -60:
-        return "You got a little less than you needed."
-    return "You got quite a bit less than you needed — an early night could help."
+    return sleep_summary(day)
 
 
 def sleep_debt(days: list[dict], today: date) -> dict:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import statistics
 
+from ..copy.sentences import activity_summary
 from .common import safe_div
 
 EFFORT_DISTANCES = (1000.0, 1609.344, 5000.0, 10000.0, 21097.5)
@@ -164,25 +165,7 @@ def efficiency(activity: dict, samples: list[dict], intensity: str | None) -> di
 def summary_sentence(
     activity: dict, intensity: str | None, is_longest: bool = False, new_best: str | None = None
 ) -> dict:
-    if new_best:
-        text = f"Your fastest {new_best} yet! 🎉"
-        tags = ["best_effort"]
-    elif is_longest:
-        text = f"Your longest {activity.get('sport', 'session')} yet!"
-        tags = ["longest_session"]
-    elif intensity == "easy":
-        text = "Mostly easy effort — great for building your base."
-        tags = ["easy"]
-    elif intensity == "moderate":
-        text = "A steady, moderate session."
-        tags = ["moderate"]
-    elif intensity == "hard":
-        text = "A tough one! Plan an easy day next."
-        tags = ["hard"]
-    else:
-        text = "Nice work getting out there."
-        tags = []
-    return {"text": text, "tags": tags, "source": "calculated", "method": "activity_summary@1"}
+    return activity_summary(activity, intensity, is_longest, new_best)
 
 
 def derive_activity(activity: dict, samples: list[dict], intensity: str | None) -> dict:

@@ -1,23 +1,19 @@
 import re
 from datetime import date
 
-from server.companion.messages import TEMPLATES, greeting, render_message, today_observation
+from server.companion.messages import MESSAGES, greeting, render_message, today_observation
 
 
-def test_templates_are_stable_and_kind():
-    banned = re.compile(r"\b(failed|missed|only|just|behind|lazy|bad|unhealthy|dangerous)\b", re.I)
-    for message_id, tones in TEMPLATES.items():
-        assert set(tones) == {"cheerful", "calm"}, message_id
-        for tone, variants in tones.items():
-            assert 2 <= len(variants) <= 4
-            assert all(not banned.search(variant) for variant in variants), message_id
-            if tone == "calm":
-                assert all(not re.search(r"[🎉💪🌙🔥👏🌱⭐]", variant) for variant in variants)
+def test_templates_are_stable_and_neutral():
+    banned = re.compile(r"\b(failed|missed|lazy|bad|unhealthy|dangerous)\b", re.I)
+    for message_id, template in MESSAGES.items():
+        assert not banned.search(template), message_id
+        assert "!" not in template
     day = date(2026, 11, 8)
     first = render_message("milestone", "u1", day, title="Hello there")
     assert first == render_message("milestone", "u1", day, title="Hello there")
-    assert first["pose"] == "cheer"
-    assert greeting(9, "Alex", "u1", day).startswith(("Good morning", "Morning"))
+    assert first["pose"] == "calm"
+    assert greeting(9, "Alex", "u1", day) == "Sunday, 8 November"
 
 
 def test_observation_priority():

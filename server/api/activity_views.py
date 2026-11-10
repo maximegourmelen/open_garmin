@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from ..analytics.common import downsample_samples
+from ..copy.sentences import activity_summary
 
 STREAM_CHANNELS = ("time", "distance", "hr", "speed", "elevation", "cadence_spm", "power", "lat", "lon")
 
@@ -62,7 +63,7 @@ def detail(
     derived = derived or {}
     base = summary(data, derived)
     zone_minutes = derived.get("zone_minutes")
-    companion = derived.get("summary") or {"text": "Nice work getting out there.", "tags": []}
+    companion = derived.get("summary") or activity_summary(data, None)
     result = {
         **data,
         **base,

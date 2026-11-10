@@ -6,6 +6,8 @@ import statistics
 from datetime import date, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 
+from ..copy.sentences import goal_suggestion as goal_suggestion_sentence
+from ..copy.sentences import week_progress
 from .common import daterange, week_start
 
 
@@ -68,11 +70,7 @@ def weekly_active_minutes(activities: list[dict], daily: list[dict], prefs: dict
         "by_day": by_day,
         "days_with_garmin_intensity": garmin_days,
         "days_fallback": fallback_days,
-        "sentence": (
-            f"You moved {round(minutes)} minutes this week — {round(minutes / goal * 100)}% of your goal."
-        )
-        if goal
-        else f"You moved {round(minutes)} minutes this week.",
+        "sentence": week_progress(minutes, goal),
         "window": {"from": start.isoformat(), "to": end.isoformat()},
         "source": "calculated",
         "method": "active_minutes@1",
@@ -91,11 +89,7 @@ def goal_suggestion(complete_weeks: list[float], current_goal: int, focus: str =
     should_show = abs(suggested - current_goal) >= 10 and (met >= 3 or met <= 1)
     if not should_show:
         return None
-    sentence = (
-        f"You have built a steady rhythm. Want to try {suggested} minutes a week?"
-        if suggested > current_goal
-        else f"Want a goal that fits your weeks better? Try {suggested} minutes."
-    )
+    sentence = goal_suggestion_sentence(suggested, current_goal)
     return {
         "minutes": suggested,
         "current_goal": current_goal,
