@@ -68,10 +68,11 @@ export function SideNav({
         <span className="lg:hidden">O</span>
         <span className="hidden lg:inline">Open Garmin</span>
       </Link>
-      <nav aria-label="Primary navigation" className="space-y-1">
+      <nav data-tour="sidebar" aria-label="Primary navigation" className="space-y-1">
         {links(primaryNav)}
       </nav>
       <button
+        data-tour="search"
         type="button"
         onClick={onSearch}
         title="Search"

@@ -20,7 +20,7 @@ export function MobileTopBar({
         {sample && <span className="type-caption text-text-3">Sample data</span>}
       </div>
       <div className="flex items-center gap-1">
-        <IconButton label="Search" onClick={onSearch}>
+        <IconButton data-tour="search" label="Search" onClick={onSearch}>
           <Search size={16} strokeWidth={1.5} />
         </IconButton>
         <IconButton label="Help" onClick={onHelp}>

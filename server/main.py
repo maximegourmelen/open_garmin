@@ -105,6 +105,7 @@ class Preferences(BaseModel):
     theme: Literal["dark", "light", "system"] = "system"
     reduce_motion: bool = False
     onboarded: bool = False
+    tour_completed: list[Literal["overview", "activity"]] = Field(default_factory=list)
     goal_focus: Literal["move_more", "start_running", "build_habit", "sleep_better", "curious"] = "move_more"
     companion_enabled: bool = True
     companion_name: str = Field(default="Pip", min_length=1, max_length=20)

@@ -89,13 +89,25 @@ export default function TodayPage() {
                   : 'md:col-span-3 lg:col-span-3'
             }
           >
-            <TodayCard
-              id={id}
-              data={data}
-              prefs={preferences.data}
-              onCheckin={(value) => checkin.mutate(value)}
-              checkinSaving={checkin.isPending}
-            />
+            <div
+              data-tour={
+                id === 'week'
+                  ? 'week'
+                  : id === 'sleep'
+                    ? 'metric-strip'
+                    : id === 'suggestion'
+                      ? 'guidance'
+                      : undefined
+              }
+            >
+              <TodayCard
+                id={id}
+                data={data}
+                prefs={preferences.data}
+                onCheckin={(value) => checkin.mutate(value)}
+                checkinSaving={checkin.isPending}
+              />
+            </div>
           </div>
         ))}
       </div>

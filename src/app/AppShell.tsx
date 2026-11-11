@@ -12,6 +12,7 @@ import { useWorkspace } from './workspace-context';
 import { useDemoBannerVisibility } from './useDemoBannerVisibility';
 import { Banner, Tag } from '../components/ui/Structure';
 import { MetricDrawerProvider } from '../features/metric-drawer/MetricDrawerProvider';
+import { TourLauncher } from '../features/tour/TourLauncher';
 
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
@@ -171,6 +172,7 @@ export default function AppShell() {
         {!welcome && !gallery && (
           <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
         )}
+        {!welcome && !gallery && <TourLauncher />}
       </div>
     </MetricDrawerProvider>
   );

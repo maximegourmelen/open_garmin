@@ -29,6 +29,7 @@ const prefs: Preferences = {
   theme: 'dark',
   reduce_motion: false,
   onboarded: true,
+  tour_completed: [],
   goal_focus: 'move_more',
   companion_enabled: true,
   companion_name: 'Legacy',

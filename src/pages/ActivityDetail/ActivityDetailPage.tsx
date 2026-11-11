@@ -181,7 +181,7 @@ export default function ActivityDetailPage() {
         <p className="type-body text-text-2">{data.summary.text}</p>
       </section>
       <div className="grid gap-4 lg:grid-cols-2">
-        <div>
+        <div data-tour="activity-map">
           {data.sport !== 'strength' && data.detail_state !== 'ready' ? (
             <Card title="See the full picture">
               <p className="text-sm text-text-2">
@@ -226,20 +226,22 @@ export default function ActivityDetailPage() {
       </div>
       <EffortSection activity={data} />
       {data.sport !== 'strength' && hasChannels && (
-        <Card title="Inside the activity">
-          <div className="mb-3">
-            <SegmentedControl
-              label="Chart distance or time"
-              value={xAxis}
-              onChange={setXAxis}
-              options={[
-                { value: 'time', label: 'Time' },
-                { value: 'distance', label: 'Distance' },
-              ]}
-            />
-          </div>
-          <StreamCharts streams={streams!} xAxis={xAxis} onHover={setHoverIndex} />
-        </Card>
+        <div data-tour="activity-chart">
+          <Card title="Inside the activity">
+            <div className="mb-3">
+              <SegmentedControl
+                label="Chart distance or time"
+                value={xAxis}
+                onChange={setXAxis}
+                options={[
+                  { value: 'time', label: 'Time' },
+                  { value: 'distance', label: 'Distance' },
+                ]}
+              />
+            </div>
+            <StreamCharts streams={streams!} xAxis={xAxis} onHover={setHoverIndex} />
+          </Card>
+        </div>
       )}
       <SplitTabs activity={data} units={preferences.data?.units ?? 'metric'} />
       <NoteEditor key={data.id} activity={data} onSave={onNoteSave} />

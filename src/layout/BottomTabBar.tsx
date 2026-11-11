@@ -21,6 +21,7 @@ export function BottomTabBar({ onShortcuts }: { onShortcuts: () => void }) {
   return (
     <>
       <nav
+        data-tour="sidebar"
         aria-label="Mobile navigation"
         className="fixed inset-x-0 bottom-0 z-30 flex h-[calc(56px+env(safe-area-inset-bottom))] border-t border-border bg-bg pb-[env(safe-area-inset-bottom)] md:hidden"
       >

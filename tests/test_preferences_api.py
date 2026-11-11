@@ -27,6 +27,17 @@ def test_demo_preferences_validate_card_ids():
         assert client.put("/api/demo/preferences", json=prefs).status_code == 422
 
 
+def test_tour_completion_is_persisted_and_validated_in_sample_workspace():
+    app = create_app(Store(in_memory=True), start_worker=False)
+    with TestClient(app) as client:
+        prefs = client.get("/api/demo/preferences").json()
+        prefs["tour_completed"] = ["overview", "activity"]
+        assert client.put("/api/demo/preferences", json=prefs).status_code == 200
+        assert client.get("/api/demo/preferences").json()["tour_completed"] == ["overview", "activity"]
+        prefs["tour_completed"] = ["unknown"]
+        assert client.put("/api/demo/preferences", json=prefs).status_code == 422
+
+
 def test_finishing_onboarding_persists_preference():
     app = create_app(Store(in_memory=True), start_worker=False)
     with TestClient(app) as client:
