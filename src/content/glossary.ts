@@ -14,6 +14,11 @@ export const metricIds = [
   'activity_count',
   'activity_time',
   'activity_distance',
+  'activity_avg_pace',
+  'activity_swim_pace',
+  'activity_avg_speed',
+  'activity_avg_hr',
+  'activity_elevation',
   'effort',
   'hr_zones',
   'training_effect',
@@ -136,6 +141,37 @@ export const glossary = {
     howToRead:
       'Includes activities with usable distance data. It may differ from Garmin Connect when an activity has not finished syncing.',
     source: 'Calculated',
+  },
+  activity_avg_pace: {
+    title: 'Average pace',
+    what: 'Time per kilometre or mile across a recorded run, walk or hike.',
+    howToRead: 'A lower time means a faster pace. Hills and pauses can change it.',
+    source: 'Garmin',
+  },
+  activity_swim_pace: {
+    title: 'Swim pace',
+    what: 'Time per 100 metres or yards during a swim.',
+    howToRead: 'A lower time means a faster swim. Pool length and turns affect it.',
+    source: 'Garmin',
+  },
+  activity_avg_speed: {
+    title: 'Average speed',
+    what: 'Distance covered per hour during a recorded activity.',
+    howToRead: 'Useful for rides and other activities where speed is easier to read than pace.',
+    source: 'Garmin',
+  },
+  activity_avg_hr: {
+    title: 'Average heart rate',
+    what: 'Your average measured heart rate during a recorded activity.',
+    howToRead:
+      'Compare it with similar activities; temperature, recovery and effort all affect it.',
+    source: 'Garmin',
+  },
+  activity_elevation: {
+    title: 'Elevation gain',
+    what: 'Total uphill distance during a recorded activity.',
+    howToRead: 'A route with more climbing can feel harder at the same pace.',
+    source: 'Garmin',
   },
   effort: {
     title: 'Effort',

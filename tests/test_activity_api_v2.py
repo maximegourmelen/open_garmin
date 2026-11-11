@@ -17,6 +17,11 @@ def test_demo_list_detail_gpx_and_note(tmp_path):
         assert data["next_cursor"] == "3"
         assert data["totals"]["sessions"] >= 250
         item = data["items"][0]
+        neighbors = client.get(f"/api/demo/activities/{item['id']}/neighbors").json()
+        assert neighbors["next"] is None
+        assert neighbors["previous"] == data["items"][1]["id"]
+        assert client.get("/api/demo/activities/missing/neighbors").status_code == 404
+        assert client.get(f"/api/activities/{item['id']}/neighbors").status_code == 401
         assert item["effort_points"] is not None
         assert item["source"] == "demo"
         assert client.get("/api/demo/activities?q=nonexistent").json()["items"] == []

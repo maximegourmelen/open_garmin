@@ -19,6 +19,7 @@ import {
 import { useState } from 'react';
 import { DataTable } from '../ui/DataTable';
 import { chartColor, chartTheme, chartTooltipStyle } from './chartTheme';
+import { paceTick } from './axis';
 import type { StreamData } from '../../lib/types';
 
 export function ChartFrame({
@@ -341,7 +342,18 @@ export function StreamCharts({
               margin={{ top: 5, right: 10, left: -25, bottom: 0 }}
             >
               <XAxis dataKey="x" hide />
-              <YAxis tick={axis} tickLine={false} axisLine={false} />
+              <YAxis
+                tick={axis}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={channel.label.startsWith('Pace') ? paceTick : undefined}
+                reversed={channel.label.startsWith('Pace')}
+                domain={
+                  channel.label.startsWith('Pace')
+                    ? [(min: number) => Math.max(0, min - 20), (max: number) => max + 20]
+                    : undefined
+                }
+              />
               <Tooltip contentStyle={chartTooltipStyle()} />
               {channel.key === 'hr' &&
                 zones?.map((zone, i) => (
@@ -356,6 +368,7 @@ export function StreamCharts({
               <Area
                 type="linear"
                 dataKey={channel.key}
+                isAnimationActive={false}
                 stroke={chartColor(channel.color)}
                 fill={chartColor(channel.color)}
                 fillOpacity={0.12}

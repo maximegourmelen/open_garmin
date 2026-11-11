@@ -139,9 +139,9 @@ export default function AppShell() {
               <div className="mb-5 space-y-3">
                 {location.pathname === '/' && <WelcomeTourOffer />}
                 {pageId(location.pathname) &&
-                  !['guide', 'overview', 'activities'].includes(pageId(location.pathname)!) && (
-                    <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
-                  )}
+                  !['guide', 'overview', 'activities', 'activity'].includes(
+                    pageId(location.pathname)!,
+                  ) && <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />}
               </div>
             )}
             {preferences.data?.onboarded === false && !welcome && !gallery ? (

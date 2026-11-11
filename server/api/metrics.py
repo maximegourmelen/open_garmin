@@ -33,6 +33,11 @@ SPECS = {
     "activity_count": ("activities", "calculated", None, "Recorded activities"),
     "activity_time": ("min", "garmin", None, None),
     "activity_distance": ("km", "calculated", None, "Recorded distance"),
+    "activity_avg_pace": ("s/km", "garmin", None, "Average pace"),
+    "activity_swim_pace": ("s/100m", "garmin", None, "Swim pace"),
+    "activity_avg_speed": ("km/h", "garmin", None, "Average speed"),
+    "activity_avg_hr": ("bpm", "garmin", None, "Average activity heart rate"),
+    "activity_elevation": ("m", "garmin", None, "Elevation gain"),
     "effort": ("points", "calculated", "effort_points@1", None),
     "hr_zones": ("min", "calculated", "zones_from_samples@1", "Time in zone 2"),
     "training_effect": ("score", "garmin", None, "Aerobic training effect"),
@@ -46,6 +51,11 @@ ACTIVITY_METRICS = {
     "activity_count",
     "activity_time",
     "activity_distance",
+    "activity_avg_pace",
+    "activity_swim_pace",
+    "activity_avg_speed",
+    "activity_avg_hr",
+    "activity_elevation",
     "effort",
     "hr_zones",
     "training_effect",
@@ -103,6 +113,38 @@ def activity_value(metric_id: str, items: list[tuple[dict, dict]]):
         return round(sum(number(data.get("distance")) or 0 for data, _ in items), 1)
     if metric_id == "activity_time":
         return round(sum(number(data.get("duration")) or 0 for data, _ in items) / 60, 1)
+    if metric_id in {
+        "activity_avg_pace",
+        "activity_swim_pace",
+        "activity_avg_speed",
+        "activity_avg_hr",
+        "activity_elevation",
+    }:
+        if metric_id == "activity_avg_pace":
+            values = [
+                1000 / speed
+                for data, _ in items
+                if data.get("sport") in {"running", "walking", "hiking"}
+                if (speed := number(data.get("average_speed"))) and speed > 0
+            ]
+        elif metric_id == "activity_avg_speed":
+            values = [
+                speed * 3.6
+                for data, _ in items
+                if data.get("sport") not in {"running", "walking", "hiking", "swimming"}
+                if (speed := number(data.get("average_speed"))) and speed > 0
+            ]
+        elif metric_id == "activity_swim_pace":
+            values = [
+                100 / speed
+                for data, _ in items
+                if data.get("sport") == "swimming"
+                if (speed := number(data.get("average_speed"))) and speed > 0
+            ]
+        else:
+            key = "average_hr" if metric_id == "activity_avg_hr" else "elevation"
+            values = [value for data, _ in items if (value := number(data.get(key))) is not None]
+        return round(statistics.mean(values), 1) if values else None
     if metric_id == "record":
         return float(sum(bool(derived.get("is_best")) for _, derived in items))
     if metric_id == "effort":
@@ -194,6 +236,15 @@ def metric_summary(request: Request, metric_id: str, days: int = Query(default=3
             if metric_id == "activity_distance" and value is not None:
                 divisor = 1609.344 if (user.preferences or {}).get("units") == "imperial" else 1000
                 value = round(value / divisor, 2)
+            if value is not None and (user.preferences or {}).get("units") == "imperial":
+                if metric_id == "activity_avg_pace":
+                    value = round(value * 1.609344, 1)
+                elif metric_id == "activity_swim_pace":
+                    value = round(value * 0.9144, 1)
+                elif metric_id == "activity_avg_speed":
+                    value = round(value / 1.609344, 1)
+                elif metric_id == "activity_elevation":
+                    value = round(value * 3.28084, 1)
         else:
             value = daily_value(metric_id, daily.get(date, {}), bedtime_usual)
             if metric_id == "active_minutes" and value is None:
@@ -211,6 +262,13 @@ def metric_summary(request: Request, metric_id: str, days: int = Query(default=3
     unit, source, method_id, value_label = SPECS[metric_id]
     if metric_id == "activity_distance" and (user.preferences or {}).get("units") == "imperial":
         unit = "mi"
+    if (user.preferences or {}).get("units") == "imperial":
+        unit = {
+            "activity_avg_pace": "s/mi",
+            "activity_swim_pace": "s/100yd",
+            "activity_avg_speed": "mph",
+            "activity_elevation": "ft",
+        }.get(metric_id, unit)
     return {
         "id": metric_id,
         "latest": latest,

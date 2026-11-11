@@ -121,6 +121,33 @@ def register(app, store, worker, current_user, limit):
         ws = workspace(request)
         return read_activity(ws.store, ws.user_id, activity_id)
 
+    def read_neighbors(source_store, user_id, activity_id):
+        with source_store.sessions() as db:
+            rows = list(
+                db.scalars(
+                    select(Activity)
+                    .where(Activity.user_id == user_id)
+                    .order_by(Activity.date.desc(), Activity.id.desc())
+                )
+            )
+        ids = [row.id for row in rows if not row.data.get("parent_id")]
+        if activity_id not in ids:
+            raise HTTPException(404, "This activity is not in your workspace.")
+        index = ids.index(activity_id)
+        return {
+            "previous": ids[index + 1] if index + 1 < len(ids) else None,
+            "next": ids[index - 1] if index > 0 else None,
+        }
+
+    @app.get("/api/activities/{activity_id}/neighbors")
+    def activity_neighbors(activity_id: str, user=Depends(current_user)):  # noqa: B008
+        return read_neighbors(store, user.id, activity_id)
+
+    @app.get("/api/demo/activities/{activity_id}/neighbors")
+    def demo_activity_neighbors(activity_id: str, request: Request):
+        ws = workspace(request)
+        return read_neighbors(ws.store, ws.user_id, activity_id)
+
     def read_gpx(source_store, user_id, activity_id):
         with source_store.sessions() as db:
             row = db.get(Activity, (user_id, activity_id))

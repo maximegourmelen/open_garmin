@@ -50,3 +50,9 @@ def test_activity_distance_summary_uses_selected_units():
         imperial = client.get("/api/demo/metrics/activity_distance/summary").json()
         assert imperial["unit"] == "mi"
         assert imperial["latest"]["value"] < metric["latest"]["value"]
+        pace = client.get("/api/demo/metrics/activity_avg_pace/summary").json()
+        speed = client.get("/api/demo/metrics/activity_avg_speed/summary").json()
+        swim = client.get("/api/demo/metrics/activity_swim_pace/summary").json()
+        assert pace["unit"] == "s/mi"
+        assert speed["unit"] == "mph"
+        assert swim["unit"] == "s/100yd"

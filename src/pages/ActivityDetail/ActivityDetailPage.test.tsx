@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { WorkspaceContext } from '../../app/workspace-context';
 import { ToastProvider } from '../../components/ui';
-import type { ActivityDetail } from '../../lib/types';
+import { sample } from './activityFixture';
 import ActivityDetailPage from './ActivityDetailPage';
 
 const mocks = vi.hoisted(() => ({ useActivity: vi.fn(), request: vi.fn() }));
@@ -16,87 +16,6 @@ vi.mock('../../lib/api', () => ({
   apiPath: (_mode: string, path: string) => `/api/demo${path}`,
   workspaceRequest: mocks.request,
 }));
-
-const sample = {
-  id: 'a1',
-  name: 'Morning run',
-  sport: 'running',
-  type: 'running',
-  date: '2026-11-09',
-  start: '2026-11-09T07:00:00',
-  distance: 5000,
-  duration: 1800,
-  average_speed: 2.78,
-  gap_speed: null,
-  average_hr: 140,
-  elevation: 42,
-  effort_points: 63,
-  zone_minutes: [5, 10, 10, 5, 0],
-  has_route: true,
-  detail_state: 'ready',
-  location_name: 'The park',
-  is_best: true,
-  device: 'Watch',
-  source: 'demo',
-  elapsed: 1810,
-  moving: 1800,
-  max_hr: 165,
-  max_speed: 4,
-  calories: 310,
-  steps: 5900,
-  cadence_spm: 168,
-  cadence_rpm: null,
-  power: null,
-  normalized_power: null,
-  max_power: null,
-  elevation_loss: 42,
-  temperature_min: null,
-  temperature_max: null,
-  aerobic_te: 2.4,
-  anaerobic_te: 0.3,
-  te_label: 'AEROBIC_BASE',
-  body_battery_impact: -8,
-  vo2max: null,
-  running_form: null,
-  zone_details: { minutes: [5, 10, 10, 5, 0], source: 'calculated' },
-  power_zones: null,
-  streams: {
-    index: [0, 1, 2],
-    time: [0, 1, 2],
-    distance: [0, 100, 200],
-    hr: [100, 130, 140],
-    speed: [2, 3, 3],
-    elevation: [1, 2, 3],
-    cadence_spm: [160, 165, 170],
-    power: [null, null, null],
-    lat: [45.5, 45.501, 45.502],
-    lon: [-73.5, -73.501, -73.502],
-  },
-  splits_km: [
-    {
-      index: 1,
-      distance_m: 1000,
-      time_s: 350,
-      pace_s: 350,
-      avg_hr: 140,
-      elev_gain_m: 10,
-      elev_loss_m: 5,
-      cadence_spm: 165,
-      partial: false,
-    },
-  ],
-  splits_mi: [],
-  laps: [{ duration: 350, speed: 2.86, hr: 140 }],
-  sets: [],
-  best_efforts: [],
-  efficiency: { ef: 1.8, decoupling_pct: 2 },
-  summary: { id: 'run', text: 'A steady run.', pose: 'proud', data_refs: [] },
-  milestones: [{ id: 'first_run', title: 'First run' }],
-  note: { text: '', rpe: null, feel: null, tags: [] },
-  watch_feel: null,
-  watch_rpe: null,
-  session_metrics: [],
-} as ActivityDetail;
 
 function mount(mode: 'demo' | 'live' = 'demo') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -119,7 +38,9 @@ function mount(mode: 'demo' | 'live' = 'demo') {
 
 beforeEach(() => {
   mocks.useActivity.mockReturnValue({ data: sample, isPending: false, isError: false });
-  mocks.request.mockResolvedValue({ ok: true });
+  mocks.request.mockImplementation((_mode: string, path: string) =>
+    Promise.resolve(path.endsWith('/neighbors') ? { previous: 'a0', next: 'a2' } : { ok: true }),
+  );
 });
 afterEach(() => {
   cleanup();
@@ -132,7 +53,66 @@ test('renders route, synchronized streams, zones, and watch laps', () => {
   expect(screen.getByRole('img', { name: /Heart rate over activity/ })).toBeTruthy();
   expect(screen.getByLabelText('Heart rate zones').textContent).toMatch(/^Z5.*Z4.*Z3.*Z2.*Z1/);
   fireEvent.click(screen.getByRole('tab', { name: 'Watch laps' }));
-  expect(screen.getAllByText('140').length).toBeGreaterThan(1);
+  expect(screen.getByRole('table').textContent).toContain('140');
+});
+
+test('shows six explained metrics and navigation to adjacent activities', async () => {
+  mount();
+  expect(screen.getByRole('group', { name: 'Key metrics' }).textContent).toContain(
+    'Elevation gain',
+  );
+  expect(
+    screen.getByRole('group', { name: 'Key metrics' }).querySelectorAll('[data-metric-id]'),
+  ).toHaveLength(6);
+  expect(
+    (await screen.findByRole('link', { name: 'Previous activity' })).getAttribute('href'),
+  ).toBe('/activities/a0');
+  expect(screen.getByRole('link', { name: 'Next activity' }).getAttribute('href')).toBe(
+    '/activities/a2',
+  );
+});
+
+test('renders loading, error, empty, and strength states', () => {
+  mocks.useActivity.mockReturnValue({ isPending: true });
+  mount();
+  expect(screen.getByLabelText('Loading activity')).toBeTruthy();
+  cleanup();
+  mocks.useActivity.mockReturnValue({
+    isPending: false,
+    isError: true,
+    error: new Error('Unavailable'),
+    refetch: vi.fn(),
+  });
+  mount();
+  expect(screen.getByText('Unavailable')).toBeTruthy();
+  cleanup();
+  mocks.useActivity.mockReturnValue({ isPending: false, isError: false, data: null });
+  mount();
+  expect(screen.getByText('Activity not found')).toBeTruthy();
+  cleanup();
+  mocks.useActivity.mockReturnValue({
+    isPending: false,
+    isError: false,
+    data: {
+      ...sample,
+      sport: 'strength',
+      sets: [{ exercise: 'Squat', reps: 8, weight: 60, duration: 120 }],
+    },
+  });
+  mount();
+  expect(screen.getByRole('heading', { name: 'Exercises' })).toBeTruthy();
+  expect(screen.getByRole('table').textContent).toContain('Squat');
+  expect(screen.queryByRole('heading', { name: 'Route' })).toBeNull();
+});
+
+test('swimming shows pace per 100 metres', () => {
+  mocks.useActivity.mockReturnValue({
+    isPending: false,
+    isError: false,
+    data: { ...sample, sport: 'swimming', average_speed: 1.5 },
+  });
+  mount();
+  expect(screen.getByRole('group', { name: 'Key metrics' }).textContent).toContain('1:07 /100m');
 });
 
 test('notes save after editing and detailed files can be requested', async () => {
@@ -157,7 +137,7 @@ test('notes save after editing and detailed files can be requested', async () =>
     isError: false,
   });
   mount('live');
-  fireEvent.click(screen.getByRole('button', { name: 'Fetch details' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download details' }));
   await waitFor(() =>
     expect(mocks.request).toHaveBeenCalledWith(
       'live',
