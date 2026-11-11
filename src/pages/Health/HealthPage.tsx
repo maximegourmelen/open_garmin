@@ -505,7 +505,12 @@ export default function HealthPage() {
   const location = useLocation();
   const [params, setParams] = useSearchParams();
   const segment = location.pathname.split('/')[2];
-  const active: Tab = tabs.some((tab) => tab.id === segment) ? (segment as Tab) : 'overview';
+  const active: Tab =
+    segment === 'body-battery'
+      ? 'energy'
+      : tabs.some((tab) => tab.id === segment)
+        ? (segment as Tab)
+        : 'sleep';
   const range: Range = ranges.some((item) => item.value === params.get('range'))
     ? (params.get('range') as Range)
     : '4W';
@@ -541,7 +546,7 @@ export default function HealthPage() {
         {tabs.map(({ id, label, icon: Icon }) => (
           <Link
             key={id}
-            to={`/health${id === 'overview' ? '' : `/${id}`}?range=${range}`}
+            to={`/health/${id === 'energy' ? 'body-battery' : id}?range=${range}`}
             aria-current={active === id ? 'page' : undefined}
             className={`flex min-h-10 shrink-0 items-center gap-1.5 rounded-control px-3 text-sm font-medium ${active === id ? 'bg-accent-soft text-accent' : 'text-text-2 hover:bg-surface-2'}`}
           >

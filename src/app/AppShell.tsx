@@ -5,18 +5,24 @@ import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
 import { MobileTopBar } from '../layout/MobileTopBar';
 import { Dialog } from '../components/ui/Controls';
+import { useToast } from '../components/ui/toast-context';
 import { usePreferences } from '../lib/queries';
 
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
 const ActivitiesPage = lazy(() => import('../pages/Activities/ActivitiesPage'));
 const ActivityDetailPage = lazy(() => import('../pages/ActivityDetail/ActivityDetailPage'));
-const JourneyPage = lazy(() => import('../pages/Journey/JourneyPage'));
 const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
 const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
 const OnboardingPage = lazy(() => import('../pages/Onboarding/OnboardingPage'));
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'));
 const MethodsPage = lazy(() => import('../pages/Methods/MethodsPage'));
+
+function NotFoundRedirect() {
+  const showToast = useToast();
+  useEffect(() => showToast({ message: 'Page not found' }), [showToast]);
+  return <Navigate to="/" replace />;
+}
 
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,11 +83,9 @@ export default function AppShell() {
                 <Route path="/activities" element={<ActivitiesPage />} />
                 <Route path="/activities/compare" element={<ActivitiesPage />} />
                 <Route path="/activities/:id" element={<ActivityDetailPage />} />
-                <Route path="/journey" element={<JourneyPage />} />
-                <Route path="/health" element={<HealthPage />} />
-                <Route path="/health/:tab" element={<HealthPage />} />
-                <Route path="/progress" element={<ProgressPage />} />
-                <Route path="/methods" element={<MethodsPage />} />
+                {['sleep', 'heart', 'body-battery', 'stress', 'steps'].map((tab) => (
+                  <Route key={tab} path={`/health/${tab}`} element={<HealthPage />} />
+                ))}
                 <Route path="/trends" element={<ProgressPage />} />
                 <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
                 <Route path="/guide" element={<MethodsPage />} />
@@ -91,11 +95,20 @@ export default function AppShell() {
                 {import.meta.env.DEV && <Route path="/dev/components" element={<GalleryPage />} />}
                 <Route path="/today" element={<Navigate to="/" replace />} />
                 <Route path="/dashboard" element={<Navigate to="/" replace />} />
-                <Route path="/training" element={<Navigate to="/progress" replace />} />
-                <Route path="/recovery" element={<Navigate to="/health" replace />} />
-                <Route path="/insights" element={<Navigate to="/progress" replace />} />
-                <Route path="/research" element={<Navigate to="/methods" replace />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="/journey" element={<Navigate to="/trends" replace />} />
+                {['progress', 'training', 'insights'].map((path) => (
+                  <Route key={path} path={`/${path}`} element={<Navigate to="/trends" replace />} />
+                ))}
+                <Route path="/health" element={<Navigate to="/health/sleep" replace />} />
+                <Route path="/health/overview" element={<Navigate to="/health/sleep" replace />} />
+                <Route
+                  path="/health/energy"
+                  element={<Navigate to="/health/body-battery" replace />}
+                />
+                <Route path="/recovery" element={<Navigate to="/health/heart" replace />} />
+                <Route path="/methods" element={<Navigate to="/guide/methods" replace />} />
+                <Route path="/research" element={<Navigate to="/guide/methods" replace />} />
+                <Route path="*" element={<NotFoundRedirect />} />
               </Routes>
             </Suspense>
           )}
