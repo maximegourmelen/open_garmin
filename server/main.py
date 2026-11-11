@@ -190,6 +190,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     from .api import insights as insights_api
     from .api import journey as journey_api
     from .api import methods as methods_api
+    from .api import metrics as metrics_api
     from .api import progress as progress_api
     from .api import relationships as relationships_api
     from .api import settings as settings_api
@@ -202,6 +203,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     settings_api.register(app, store, worker, current_user, limit, client_factory)
     activities_api.register(app, store, worker, current_user, limit)
     wellness_api.register(app)
+    metrics_api.register(app)
     relationships_api.register(app)
     insights_api.register(app)
     journey_api.register(app)

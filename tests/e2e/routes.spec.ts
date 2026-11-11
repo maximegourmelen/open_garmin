@@ -103,12 +103,27 @@ test('check-in and command palette respond', async ({ page }) => {
   expect((await saved).status()).toBe(200);
   await page.keyboard.press('ControlOrMeta+K');
   await expect(page.getByRole('dialog', { name: 'Search and jump' })).toBeVisible();
-  await page.getByRole('textbox', { name: 'Search activities or pages' }).fill('Trends');
+  await page.getByRole('textbox', { name: 'Search activities, pages or metrics' }).fill('Trends');
   await page
     .getByRole('dialog', { name: 'Search and jump' })
     .getByRole('button', { name: 'Trends' })
     .click();
   await expect(page).toHaveURL(/\/trends$/);
+});
+
+test('metric search opens a personal explanation and returns focus', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('ControlOrMeta+K');
+  await page.getByRole('textbox', { name: 'Search activities, pages or metrics' }).fill('Resting');
+  await page.getByRole('button', { name: 'About Resting heart rate' }).click();
+  const drawer = page.getByRole('dialog', { name: 'Resting heart rate' });
+  await expect(drawer.getByText('Your number')).toBeVisible();
+  await expect(drawer.getByText('Your usual range')).toBeVisible();
+  await expect(drawer.getByRole('img', { name: /30 days/ })).toBeVisible();
+  await drawer.getByRole('button', { name: 'View as table' }).click();
+  await expect(drawer.getByRole('table')).toBeVisible();
+  await drawer.getByRole('button', { name: 'Close drawer' }).click();
+  await expect(drawer).toHaveCount(0);
 });
 
 test('health charts offer a data table', async ({ page }) => {

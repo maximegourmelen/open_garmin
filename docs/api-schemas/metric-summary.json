@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "MetricPoint": {
+      "additionalProperties": true,
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "date",
+        "value"
+      ],
+      "title": "MetricPoint",
+      "type": "object"
+    },
+    "MetricUsualRange": {
+      "additionalProperties": true,
+      "properties": {
+        "high": {
+          "title": "High",
+          "type": "number"
+        },
+        "low": {
+          "title": "Low",
+          "type": "number"
+        },
+        "median": {
+          "title": "Median",
+          "type": "number"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "low",
+        "high",
+        "median",
+        "n"
+      ],
+      "title": "MetricUsualRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "latest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MetricPoint"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "method_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Method Id"
+    },
+    "series": {
+      "items": {
+        "$ref": "#/$defs/MetricPoint"
+      },
+      "title": "Series",
+      "type": "array"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    },
+    "unit": {
+      "title": "Unit",
+      "type": "string"
+    },
+    "usual_range": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MetricUsualRange"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "value_label": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value Label"
+    }
+  },
+  "required": [
+    "id",
+    "latest",
+    "unit",
+    "usual_range",
+    "series",
+    "source",
+    "method_id",
+    "value_label"
+  ],
+  "title": "MetricSummary",
+  "type": "object"
+}

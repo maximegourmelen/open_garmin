@@ -11,6 +11,7 @@ import { usePreferences } from '../lib/queries';
 import { useWorkspace } from './workspace-context';
 import { useDemoBannerVisibility } from './useDemoBannerVisibility';
 import { Banner, Tag } from '../components/ui/Structure';
+import { MetricDrawerProvider } from '../features/metric-drawer/MetricDrawerProvider';
 
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
@@ -54,109 +55,123 @@ export default function AppShell() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
   return (
-    <div className="flex min-h-screen bg-bg text-text">
-      <a
-        href="#main-content"
-        className="sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:not-sr-only focus:rounded focus:bg-surface focus:p-3"
-      >
-        Skip to content
-      </a>
-      {!welcome && !gallery && (
-        <SideNav onSearch={() => setSearchOpen(true)} onShortcuts={() => setShortcutsOpen(true)} />
-      )}
-      <div className="min-w-0 flex-1">
+    <MetricDrawerProvider>
+      <div className="flex min-h-screen bg-bg text-text">
+        <a
+          href="#main-content"
+          className="sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:not-sr-only focus:rounded focus:bg-surface focus:p-3"
+        >
+          Skip to content
+        </a>
         {!welcome && !gallery && (
-          <MobileTopBar
+          <SideNav
             onSearch={() => setSearchOpen(true)}
-            onHelp={() => navigate('/guide')}
-            sample={mode === 'demo' && demoBannerHidden}
+            onShortcuts={() => setShortcutsOpen(true)}
           />
         )}
-        <main
-          id="main-content"
-          className={
-            gallery ? '' : 'mx-auto max-w-[1120px] px-4 pb-24 pt-5 md:px-10 md:pb-12 md:pt-12'
-          }
-        >
-          {mode === 'demo' &&
-            !welcome &&
-            !gallery &&
-            (demoBannerHidden ? (
-              <div className="mb-4 hidden justify-end md:flex">
-                <Tag>Sample data</Tag>
-              </div>
-            ) : (
-              <div className="mb-6">
-                <Banner
-                  action={
-                    <div className="flex shrink-0 items-center gap-3">
-                      <Link
-                        to="/settings?section=connection"
-                        className="font-medium text-accent hover:underline"
-                      >
-                        Connect
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={hideDemoBanner}
-                        className="text-text-2 hover:text-text"
-                      >
-                        Hide
-                      </button>
-                    </div>
-                  }
-                >
-                  You’re viewing sample data. Connect your Garmin to see your own.
-                </Banner>
-              </div>
-            ))}
-          {preferences.data?.onboarded === false && !welcome && !gallery ? (
-            <Navigate to="/welcome" replace />
-          ) : (
-            <Suspense fallback={<div role="status">Loading page…</div>}>
-              <Routes>
-                <Route path="/" element={<TodayPage />} />
-                <Route path="/activities" element={<ActivitiesPage />} />
-                <Route path="/activities/compare" element={<ActivitiesPage />} />
-                <Route path="/activities/:id" element={<ActivityDetailPage />} />
-                {['sleep', 'heart', 'body-battery', 'stress', 'steps'].map((tab) => (
-                  <Route key={tab} path={`/health/${tab}`} element={<HealthPage />} />
-                ))}
-                <Route path="/trends" element={<ProgressPage />} />
-                <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
-                <Route path="/guide" element={<MethodsPage />} />
-                <Route path="/guide/:topic" element={<MethodsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/welcome" element={<OnboardingPage />} />
-                {import.meta.env.DEV && <Route path="/dev/components" element={<GalleryPage />} />}
-                <Route path="/today" element={<Navigate to="/" replace />} />
-                <Route path="/dashboard" element={<Navigate to="/" replace />} />
-                <Route path="/journey" element={<Navigate to="/trends" replace />} />
-                {['progress', 'training', 'insights'].map((path) => (
-                  <Route key={path} path={`/${path}`} element={<Navigate to="/trends" replace />} />
-                ))}
-                <Route path="/health" element={<Navigate to="/health/sleep" replace />} />
-                <Route path="/health/overview" element={<Navigate to="/health/sleep" replace />} />
-                <Route
-                  path="/health/energy"
-                  element={<Navigate to="/health/body-battery" replace />}
-                />
-                <Route path="/recovery" element={<Navigate to="/health/heart" replace />} />
-                <Route path="/methods" element={<Navigate to="/guide/methods" replace />} />
-                <Route path="/research" element={<Navigate to="/guide/methods" replace />} />
-                <Route path="*" element={<NotFoundRedirect />} />
-              </Routes>
-            </Suspense>
+        <div className="min-w-0 flex-1">
+          {!welcome && !gallery && (
+            <MobileTopBar
+              onSearch={() => setSearchOpen(true)}
+              onHelp={() => navigate('/guide')}
+              sample={mode === 'demo' && demoBannerHidden}
+            />
           )}
-        </main>
+          <main
+            id="main-content"
+            className={
+              gallery ? '' : 'mx-auto max-w-[1120px] px-4 pb-24 pt-5 md:px-10 md:pb-12 md:pt-12'
+            }
+          >
+            {mode === 'demo' &&
+              !welcome &&
+              !gallery &&
+              (demoBannerHidden ? (
+                <div className="mb-4 hidden justify-end md:flex">
+                  <Tag>Sample data</Tag>
+                </div>
+              ) : (
+                <div className="mb-6">
+                  <Banner
+                    action={
+                      <div className="flex shrink-0 items-center gap-3">
+                        <Link
+                          to="/settings?section=connection"
+                          className="font-medium text-accent hover:underline"
+                        >
+                          Connect
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={hideDemoBanner}
+                          className="text-text-2 hover:text-text"
+                        >
+                          Hide
+                        </button>
+                      </div>
+                    }
+                  >
+                    You’re viewing sample data. Connect your Garmin to see your own.
+                  </Banner>
+                </div>
+              ))}
+            {preferences.data?.onboarded === false && !welcome && !gallery ? (
+              <Navigate to="/welcome" replace />
+            ) : (
+              <Suspense fallback={<div role="status">Loading page…</div>}>
+                <Routes>
+                  <Route path="/" element={<TodayPage />} />
+                  <Route path="/activities" element={<ActivitiesPage />} />
+                  <Route path="/activities/compare" element={<ActivitiesPage />} />
+                  <Route path="/activities/:id" element={<ActivityDetailPage />} />
+                  {['sleep', 'heart', 'body-battery', 'stress', 'steps'].map((tab) => (
+                    <Route key={tab} path={`/health/${tab}`} element={<HealthPage />} />
+                  ))}
+                  <Route path="/trends" element={<ProgressPage />} />
+                  <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
+                  <Route path="/guide" element={<MethodsPage />} />
+                  <Route path="/guide/:topic" element={<MethodsPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/welcome" element={<OnboardingPage />} />
+                  {import.meta.env.DEV && (
+                    <Route path="/dev/components" element={<GalleryPage />} />
+                  )}
+                  <Route path="/today" element={<Navigate to="/" replace />} />
+                  <Route path="/dashboard" element={<Navigate to="/" replace />} />
+                  <Route path="/journey" element={<Navigate to="/trends" replace />} />
+                  {['progress', 'training', 'insights'].map((path) => (
+                    <Route
+                      key={path}
+                      path={`/${path}`}
+                      element={<Navigate to="/trends" replace />}
+                    />
+                  ))}
+                  <Route path="/health" element={<Navigate to="/health/sleep" replace />} />
+                  <Route
+                    path="/health/overview"
+                    element={<Navigate to="/health/sleep" replace />}
+                  />
+                  <Route
+                    path="/health/energy"
+                    element={<Navigate to="/health/body-battery" replace />}
+                  />
+                  <Route path="/recovery" element={<Navigate to="/health/heart" replace />} />
+                  <Route path="/methods" element={<Navigate to="/guide/methods" replace />} />
+                  <Route path="/research" element={<Navigate to="/guide/methods" replace />} />
+                  <Route path="*" element={<NotFoundRedirect />} />
+                </Routes>
+              </Suspense>
+            )}
+          </main>
+        </div>
+        {!welcome && !gallery && <BottomTabBar onShortcuts={() => setShortcutsOpen(true)} />}
+        {!welcome && !gallery && (
+          <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+        )}
+        {!welcome && !gallery && (
+          <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+        )}
       </div>
-      {!welcome && !gallery && <BottomTabBar onShortcuts={() => setShortcutsOpen(true)} />}
-      {!welcome && !gallery && (
-        <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
-      )}
-      {!welcome && !gallery && (
-        <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-      )}
-    </div>
+    </MetricDrawerProvider>
   );
 }

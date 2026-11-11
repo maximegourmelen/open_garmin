@@ -188,6 +188,29 @@ class HealthSeries(ResponseShape):
     method: str
 
 
+class MetricPoint(ResponseShape):
+    date: str
+    value: float | None
+
+
+class MetricUsualRange(ResponseShape):
+    low: float
+    high: float
+    median: float
+    n: int
+
+
+class MetricSummary(ResponseShape):
+    id: str
+    latest: MetricPoint | None
+    unit: str
+    usual_range: MetricUsualRange | None
+    series: list[MetricPoint]
+    source: str
+    method_id: str | None
+    value_label: str | None
+
+
 class RelationshipResponse(ResponseShape):
     x: str
     y: str
@@ -249,6 +272,7 @@ EXPORTED_SCHEMAS = {
     "activity-list": ActivityList,
     "deeper": DeeperResponse,
     "health-series": HealthSeries,
+    "metric-summary": MetricSummary,
     "insights": list[Insight],
     "journey": JourneyResponse,
     "methods": list[Method],

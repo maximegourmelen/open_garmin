@@ -8,6 +8,8 @@ import { useTheme } from '../app/theme-context';
 import { request, workspaceRequest } from '../lib/api';
 import type { ActivityList } from '../lib/types';
 import { primaryNav, secondaryNav } from './navigation';
+import { glossary, type MetricId } from '../content/glossary';
+import { useMetricDrawer } from '../features/metric-drawer/metric-drawer-context';
 
 export function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [term, setTerm] = useState('');
@@ -17,6 +19,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const toast = useToast();
   const { mode, session } = useWorkspace();
   const theme = useTheme();
+  const openMetric = useMetricDrawer();
   useEffect(() => {
     if (!open || term.trim().length < 2) return;
     let cancelled = false;
@@ -49,6 +52,16 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const pages = [...primaryNav, ...secondaryNav].filter((item) =>
     item.label.toLowerCase().includes(term.toLowerCase()),
   );
+  const metricMatches =
+    term.trim().length >= 2
+      ? (Object.keys(glossary) as MetricId[])
+          .filter((id) =>
+            `${glossary[id].title} ${id.replaceAll('_', ' ')}`
+              .toLowerCase()
+              .includes(term.trim().toLowerCase()),
+          )
+          .slice(0, 6)
+      : [];
   const actions = [
     {
       label: 'Connect Garmin',
@@ -93,8 +106,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           setTerm(event.target.value);
           if (event.target.value.trim().length < 2) setResults([]);
         }}
-        placeholder="Search activities or pages"
-        aria-label="Search activities or pages"
+        placeholder="Search activities, pages or metrics"
+        aria-label="Search activities, pages or metrics"
         className="mb-4 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 text-text outline-none focus:border-accent"
       />
       <div className="max-h-[min(55vh,420px)] space-y-4 overflow-y-auto">
@@ -130,6 +143,24 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             ))}
           </div>
         )}
+        {metricMatches.length > 0 && (
+          <div role="group" aria-label="Metrics">
+            <p className="mb-1 px-3 type-caption text-text-3">Metrics</p>
+            {metricMatches.map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  close();
+                  openMetric?.(id);
+                }}
+                className="block w-full rounded-control px-3 py-2 text-left type-body hover:bg-surface-2"
+              >
+                About {glossary[id].title}
+              </button>
+            ))}
+          </div>
+        )}
         {actions.length > 0 && (
           <div role="group" aria-label="Actions">
             <p className="mb-1 px-3 type-caption text-text-3">Actions</p>
@@ -145,7 +176,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             ))}
           </div>
         )}
-        {term && !pages.length && !results.length && !actions.length && (
+        {term && !pages.length && !results.length && !metricMatches.length && !actions.length && (
           <p className="px-3 py-2 type-body text-text-3">No matches yet</p>
         )}
       </div>

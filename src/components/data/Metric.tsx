@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { Panel } from '../ui/Structure';
 import type { MetricId } from '../../content/glossary';
+import { useMetricDrawer } from '../../features/metric-drawer/metric-drawer-context';
 
 export function MetricLabel({
   id,
@@ -12,10 +13,12 @@ export function MetricLabel({
   label: string;
   onAbout?: () => void;
 }) {
-  return onAbout ? (
+  const openMetric = useMetricDrawer();
+  const action = openMetric ? () => openMetric(id) : onAbout;
+  return action ? (
     <button
       type="button"
-      onClick={onAbout}
+      onClick={action}
       aria-label={`About ${label}`}
       data-metric-id={id}
       className="inline-flex items-center gap-1 type-label text-text-2 hover:text-text"

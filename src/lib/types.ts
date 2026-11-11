@@ -90,6 +90,17 @@ export interface ActivityList {
   totals: { sessions: number; duration: number; distance: number; effort_points: number };
 }
 
+export interface MetricSummary {
+  id: string;
+  latest: { date: string; value: number } | null;
+  unit: string;
+  usual_range: { low: number; high: number; median: number; n: number } | null;
+  series: { date: string; value: number | null }[];
+  source: 'garmin' | 'calculated';
+  method_id: string | null;
+  value_label: string | null;
+}
+
 export interface StreamData {
   index: number[];
   time: number[];

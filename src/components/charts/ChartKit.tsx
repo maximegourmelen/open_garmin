@@ -55,7 +55,10 @@ export function TrendLine({
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 12, right: 12, left: -18, bottom: 0 }}>
+        <LineChart
+          data={data}
+          margin={{ top: 12, right: 12, left: size === 'S' ? 4 : -18, bottom: 0 }}
+        >
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="2 4" vertical={false} />
           {band && (
             <ReferenceArea
@@ -72,6 +75,7 @@ export function TrendLine({
             tick={{ fill: chartColor('text-3'), fontSize: 12 }}
           />
           <YAxis
+            width={size === 'S' ? 52 : 60}
             axisLine={false}
             tickLine={false}
             tick={{ fill: chartColor('text-3'), fontSize: 12 }}
@@ -91,6 +95,7 @@ export function TrendLine({
           <Line
             type="linear"
             dataKey="value"
+            isAnimationActive={false}
             stroke={chartColor('data-1')}
             strokeWidth={1.75}
             dot={false}
