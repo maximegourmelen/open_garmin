@@ -25,7 +25,7 @@ const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
 const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
 const WelcomePage = lazy(() => import('../pages/Welcome/WelcomePage'));
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'));
-const MethodsPage = lazy(() => import('../pages/Methods/MethodsPage'));
+const GuidePage = lazy(() => import('../pages/Guide/GuidePage'));
 
 function NotFoundRedirect() {
   const showToast = useToast();
@@ -137,7 +137,7 @@ export default function AppShell() {
             {!welcome && !gallery && preferences.data?.onboarded && (
               <div className="mb-5 space-y-3">
                 {location.pathname === '/' && <WelcomeTourOffer />}
-                {pageId(location.pathname) && (
+                {pageId(location.pathname) && pageId(location.pathname) !== 'guide' && (
                   <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
                 )}
               </div>
@@ -156,8 +156,8 @@ export default function AppShell() {
                   ))}
                   <Route path="/trends" element={<ProgressPage />} />
                   <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
-                  <Route path="/guide" element={<MethodsPage />} />
-                  <Route path="/guide/:topic" element={<MethodsPage />} />
+                  <Route path="/guide" element={<GuidePage />} />
+                  <Route path="/guide/:topic" element={<GuidePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/welcome" element={<WelcomePage />} />
                   {import.meta.env.DEV && (
@@ -184,7 +184,7 @@ export default function AppShell() {
                   />
                   <Route path="/recovery" element={<Navigate to="/health/heart" replace />} />
                   <Route path="/methods" element={<Navigate to="/guide/methods" replace />} />
-                  <Route path="/research" element={<Navigate to="/guide/methods" replace />} />
+                  <Route path="/research" element={<Navigate to="/guide/research" replace />} />
                   <Route path="*" element={<NotFoundRedirect />} />
                 </Routes>
               </Suspense>

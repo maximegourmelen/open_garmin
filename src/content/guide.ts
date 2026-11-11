@@ -36,8 +36,8 @@ export const guideTopics = {
     summary: 'Connect your Garmin account to import readings into this computer.',
     paragraphs: [
       'Open Settings, then Garmin connection. Follow the steps to provide your Garmin key. The app stores it encrypted and uses it to sync your data.',
-      'Recent days arrive first. Older history continues in the background. The sidebar shows the latest sync state. You can request a longer history import or disconnect in Settings.',
-      'If a key expires or Garmin limits requests, check the connection status and try again later. If a reading is missing, make sure your watch recorded it and wait for the next sync.',
+      'Recent days arrive first. Older history continues in the background. Sync runs about once an hour while the app is open. The sidebar shows the latest sync state. You can request a longer history import or disconnect in Settings.',
+      'If a key expires, reconnect in Settings. If Garmin limits requests (a 429 error), wait and try again later. If no data appears yet, check that your watch synced to Garmin Connect, then wait for the next Open Garmin sync.',
     ],
   },
   metrics: {

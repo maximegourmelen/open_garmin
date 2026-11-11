@@ -20,7 +20,7 @@ vi.mock('../pages/Today/TodayPage', () => ({
 vi.mock('../pages/Health/HealthPage', () => ({
   default: () => <h2>Health page</h2>,
 }));
-vi.mock('../pages/Methods/MethodsPage', () => ({
+vi.mock('../pages/Guide/GuidePage', () => ({
   default: () => <h2>Guide page</h2>,
 }));
 afterEach(() => {
@@ -71,7 +71,7 @@ test.each([
   ['/health/energy', '/health/body-battery'],
   ['/recovery', '/health/heart'],
   ['/methods', '/guide/methods'],
-  ['/research', '/guide/methods'],
+  ['/research', '/guide/research'],
 ])('%s redirects to %s', async (from, to) => {
   renderAt(from);
   await waitFor(() => expect(screen.getByTestId('location').textContent).toBe(to));
