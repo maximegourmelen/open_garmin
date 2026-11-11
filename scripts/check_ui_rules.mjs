@@ -28,7 +28,7 @@ const checks = [
   ['uppercase class', /(?:\buppercase\b|tracking-\[|\btracking-wide\b)/],
   ['banned copy', /\b(?:Pip|companion|confetti|streak flame|Hey\s|Nice\b|Great job)\b/i],
   ['monotone chart', /type\s*=\s*["']monotone["']/],
-  ['native select', /<select\b/i],
+  ['native select', /<select\b/],
 ];
 const violations = [];
 for (const file of files) {

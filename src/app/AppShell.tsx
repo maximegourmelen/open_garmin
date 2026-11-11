@@ -19,7 +19,7 @@ const ActivitiesPage = lazy(() => import('../pages/Activities/ActivitiesPage'));
 const ActivityDetailPage = lazy(() => import('../pages/ActivityDetail/ActivityDetailPage'));
 const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
 const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
-const OnboardingPage = lazy(() => import('../pages/Onboarding/OnboardingPage'));
+const WelcomePage = lazy(() => import('../pages/Welcome/WelcomePage'));
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'));
 const MethodsPage = lazy(() => import('../pages/Methods/MethodsPage'));
 
@@ -132,7 +132,7 @@ export default function AppShell() {
                   <Route path="/guide" element={<MethodsPage />} />
                   <Route path="/guide/:topic" element={<MethodsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/welcome" element={<OnboardingPage />} />
+                  <Route path="/welcome" element={<WelcomePage />} />
                   {import.meta.env.DEV && (
                     <Route path="/dev/components" element={<GalleryPage />} />
                   )}

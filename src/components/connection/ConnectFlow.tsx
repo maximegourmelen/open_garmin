@@ -6,6 +6,7 @@ import { useWorkspace } from '../../app/workspace-context';
 import { request, setCsrfToken } from '../../lib/api';
 import type { Session } from '../../app/workspace-context';
 import { Button } from '../ui';
+import { Select } from '../ui/Controls';
 
 const inputClass =
   'mt-1 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 text-text';
@@ -66,7 +67,7 @@ export function ConnectFlow({ onConnected }: { onConnected: () => void }) {
   }
   return (
     <form onSubmit={(event) => void submit(event)} className="space-y-4">
-      <p className="text-sm text-text-2">
+      <p className="type-body text-text-2">
         {keyFlow
           ? 'Connect with a revocable Personal API key. Your Garmin password is never needed.'
           : authMode === 'register'
@@ -137,21 +138,45 @@ export function ConnectFlow({ onConnected }: { onConnected: () => void }) {
         </>
       ) : (
         <>
-          <ol className="space-y-2 text-sm text-text-2">
+          <ol className="space-y-5 border-y border-border py-5 type-body text-text">
             <li>
-              1. Open{' '}
+              <span className="font-medium">1. Open the Garmin Connect key page.</span>
+              <br />
               <a
-                className="inline-flex items-center gap-1 text-accent underline"
+                className="mt-1 inline-flex items-center gap-1 text-accent underline"
                 href="https://connect.garmin.com/app/settings/personalApiToken"
                 target="_blank"
                 rel="noreferrer"
               >
-                Garmin’s Personal API key page <ExternalLink size={13} />
+                Open Garmin Connect <ExternalLink size={13} />
               </a>
-              .
+              <details className="mt-1 type-caption text-text-2">
+                <summary className="cursor-pointer">Why?</summary>
+                <p className="mt-1">
+                  This page lets you create a key without sharing your Garmin password.
+                </p>
+              </details>
             </li>
-            <li>2. Create a key, choose its expiry, and copy it.</li>
-            <li>3. Paste it below. Your recent training loads first.</li>
+            <li>
+              <span className="font-medium">2. Create a personal key.</span>
+              <p className="mt-1 text-text-2">Choose an expiry and copy the key.</p>
+              <details className="mt-1 type-caption text-text-2">
+                <summary className="cursor-pointer">Why?</summary>
+                <p className="mt-1">You can revoke or replace the key in Garmin Connect.</p>
+              </details>
+            </li>
+            <li>
+              <span className="font-medium">3. Paste it here.</span>
+              <p className="mt-1 text-text-2">
+                Recent readings import first; older history follows.
+              </p>
+              <details className="mt-1 type-caption text-text-2">
+                <summary className="cursor-pointer">Why?</summary>
+                <p className="mt-1">
+                  Open Garmin uses the key to request your readings during sync.
+                </p>
+              </details>
+            </li>
           </ol>
           <label className="block text-sm">
             Personal API key
@@ -166,20 +191,21 @@ export function ConnectFlow({ onConnected }: { onConnected: () => void }) {
               required
             />
           </label>
-          <label className="block text-sm">
-            Garmin account region
-            <select
-              className={inputClass}
+          <div className="space-y-2 type-body">
+            <p>Garmin account region</p>
+            <Select
+              label="Garmin account region"
               value={region}
-              onChange={(event) => setRegion(event.target.value as 'com' | 'cn')}
-            >
-              <option value="com">Global · garmin.com</option>
-              <option value="cn">China · garmin.cn</option>
-            </select>
-          </label>
+              onChange={(value) => setRegion(value as 'com' | 'cn')}
+              options={[
+                { value: 'com', label: 'Global · garmin.com' },
+                { value: 'cn', label: 'China · garmin.cn' },
+              ]}
+            />
+          </div>
           <p className="flex items-center gap-2 text-xs text-text-2">
             <ShieldCheck size={16} />
-            Encrypted in your workspace. Read-only access. You can disconnect at any time.
+            Stored encrypted on this computer. You can remove it any time.
           </p>
         </>
       )}
