@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { useWorkspaceQuery } from '../../lib/queries';
 import { formatDuration } from '../../lib/format';
 import type { ActivitySummary, HealthSeries } from '../../lib/types';
-import { Button, Dialog } from '../../components/ui';
+import { Button, Drawer } from '../../components/ui';
+import { SPORT_ICONS } from './activityConstants';
 
 type SleepDay = { date: string; minutes: number | null; sentence?: string };
 
@@ -116,14 +117,15 @@ export function ActivityCalendar({
                 className={`min-h-16 rounded-lg border p-1 text-left transition-colors hover:bg-surface-2 ${day === todayDate ? 'border-accent' : 'border-border'}`}
               >
                 <span className="font-medium text-text">{Number(day.slice(-2))}</span>
-                <span className="mt-1 flex flex-wrap gap-0.5">
-                  {items.slice(0, 3).map((item) => (
-                    <span
-                      key={item.id}
-                      className="size-1.5 rounded-full"
-                      style={{ background: `var(--sport-${item.sport})` }}
-                    />
-                  ))}
+                <span className="mt-1 flex flex-wrap gap-0.5 text-text-2">
+                  {items.slice(0, 3).map((item) => {
+                    const Icon = SPORT_ICONS[item.sport];
+                    return (
+                      <span key={item.id} aria-hidden="true">
+                        <Icon size={12} />
+                      </span>
+                    );
+                  })}
                 </span>
                 {minutes > 0 && (
                   <span className="mt-1 block text-[0.65rem] text-text-2">{minutes}m</span>
@@ -149,11 +151,10 @@ export function ActivityCalendar({
           </div>,
         ])}
       </div>
-      <Dialog
+      <Drawer
         open={Boolean(selectedDate)}
         onOpenChange={(open) => !open && setSelectedDate(null)}
         title={selectedDate ?? 'Day'}
-        description="Activity and sleep for this day"
       >
         <div className="space-y-3">
           {selected.length ? (
@@ -180,7 +181,7 @@ export function ActivityCalendar({
             </p>
           </div>
         </div>
-      </Dialog>
+      </Drawer>
     </section>
   );
 }

@@ -23,7 +23,13 @@ function suffix(id: MetricId, unit: string) {
 
 export function formatMetricValue(id: MetricId, value: number, unit: string) {
   if (id === 'sleep_duration' || id === 'sleep_need') return minutes(value);
-  const formatted = ['load', 'efficiency', 'vo2max', 'training_effect'].includes(id)
+  const formatted = [
+    'load',
+    'efficiency',
+    'vo2max',
+    'training_effect',
+    'activity_distance',
+  ].includes(id)
     ? decimal.format(value)
     : whole.format(value);
   return `${formatted}${suffix(id, unit)}`;
@@ -31,7 +37,13 @@ export function formatMetricValue(id: MetricId, value: number, unit: string) {
 
 export function formatMetricRange(id: MetricId, low: number, high: number, unit: string) {
   if (id === 'sleep_duration' || id === 'sleep_need') return `${minutes(low)}–${minutes(high)}`;
-  const formatter = ['load', 'efficiency', 'vo2max', 'training_effect'].includes(id)
+  const formatter = [
+    'load',
+    'efficiency',
+    'vo2max',
+    'training_effect',
+    'activity_distance',
+  ].includes(id)
     ? decimal
     : whole;
   return `${formatter.format(low)}–${formatter.format(high)}${suffix(id, unit)}`;

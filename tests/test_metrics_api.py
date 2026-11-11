@@ -37,3 +37,16 @@ def test_metric_summary_validates_id_and_window_and_requires_live_auth():
             *client.get("/api/demo/metrics/hrv/summary").json()["series"][-7:]
         ]
         assert client.get("/api/metrics/hrv/summary").status_code == 401
+
+
+def test_activity_distance_summary_uses_selected_units():
+    with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
+        metric = client.get("/api/demo/metrics/activity_distance/summary").json()
+        assert metric["unit"] == "km"
+        assert metric["latest"]["value"] > 0
+        prefs = client.get("/api/demo/preferences").json()
+        prefs["units"] = "imperial"
+        assert client.put("/api/demo/preferences", json=prefs).status_code == 200
+        imperial = client.get("/api/demo/metrics/activity_distance/summary").json()
+        assert imperial["unit"] == "mi"
+        assert imperial["latest"]["value"] < metric["latest"]["value"]

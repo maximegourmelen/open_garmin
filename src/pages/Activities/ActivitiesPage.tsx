@@ -1,46 +1,36 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Search, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useWorkspace } from '../../app/workspace-context';
-import { StatGrid, StatTile } from '../../components/data';
-import { Button, EmptyState, ErrorState, SegmentedControl, Skeleton } from '../../components/ui';
+import { Button, EmptyState, ErrorState, Skeleton } from '../../components/ui';
+import { PageHeader } from '../../layout/PageHeader';
 import { workspaceRequest } from '../../lib/api';
-import { formatDistance, formatDuration } from '../../lib/format';
 import { usePreferences } from '../../lib/queries';
 import type { ActivityList, Sport } from '../../lib/types';
 import { ActivityCalendar } from './ActivityCalendar';
+import { ActivityFilters, ActivityViewControls } from './ActivityFilters';
 import { ActivityListView } from './ActivityList';
-import { CompareActivities } from './CompareActivities';
+import { ActivityStats } from './ActivityStats';
+import { SPORTS } from './activityConstants';
+import { localDate, rangeDays } from './activityDates';
 
-const SPORTS: Sport[] = [
-  'walking',
-  'running',
-  'cycling',
-  'swimming',
-  'strength',
-  'hiking',
-  'other',
-];
-type DateRange = '4W' | '3M' | '1Y' | 'All';
-
-function localDate(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+type DateRange = '7D' | '30D' | '90D' | '1Y' | 'All';
 
 export default function ActivitiesPage() {
   const { mode } = useWorkspace();
   const prefs = usePreferences();
+  const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const [now] = useState(() => new Date());
   const [month, setMonth] = useState(() => new Date(now.getFullYear(), now.getMonth(), 1));
   const [search, setSearch] = useState(() => params.get('q') ?? '');
   const [compareMode, setCompareMode] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
-  const [compareOpen, setCompareOpen] = useState(false);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const range = (
-    ['4W', '3M', '1Y', 'All'].includes(params.get('range') ?? '') ? params.get('range') : '4W'
+    ['7D', '30D', '90D', '1Y', 'All'].includes(params.get('range') ?? '')
+      ? params.get('range')
+      : '30D'
   ) as DateRange;
   const view = params.get('view') === 'calendar' ? 'calendar' : 'list';
   const sports = (params.get('sport') ?? '')
@@ -49,8 +39,7 @@ export default function ActivitiesPage() {
   const query = params.get('q') ?? '';
   const dateFrom = new Date(now);
   if (view === 'calendar') dateFrom.setFullYear(month.getFullYear(), month.getMonth(), 1);
-  else if (range !== 'All')
-    dateFrom.setDate(dateFrom.getDate() - { '4W': 28, '3M': 90, '1Y': 365 }[range]);
+  else if (range !== 'All') dateFrom.setDate(dateFrom.getDate() - rangeDays[range] + 1);
   const dateTo = new Date(month.getFullYear(), month.getMonth() + 1, 0);
   const filter = new URLSearchParams();
   if (view === 'calendar' || range !== 'All') filter.set('from', localDate(dateFrom));
@@ -69,7 +58,6 @@ export default function ActivitiesPage() {
   const { hasNextPage, fetchNextPage } = activities;
   const items = activities.data?.pages.flatMap((page) => page.items) ?? [];
   const totals = activities.data?.pages[0]?.totals;
-  const todayDate = localDate(now);
   useEffect(() => {
     if (search === query) return;
     const timer = setTimeout(
@@ -119,148 +107,93 @@ export default function ActivitiesPage() {
     );
   }
   return (
-    <div className="mx-auto max-w-7xl space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="text-sm text-text-2">
-            See what you’ve done and how your routine is growing.
-          </p>
-        </div>
-        <Button
-          size="sm"
-          onClick={() => {
-            setCompareMode((old) => !old);
-            setSelected([]);
-          }}
-        >
-          <SlidersHorizontal size={16} />
-          {compareMode ? 'Done comparing' : 'Compare'}
-        </Button>
-      </header>
-      <StatGrid>
-        <StatTile label="Sessions" value={totals?.sessions} />
-        <StatTile label="Time" value={totals ? formatDuration(totals.duration) : null} />
-        <StatTile
-          label="Distance"
-          value={totals ? formatDistance(totals.distance, prefs.data?.units) : null}
-        />
-        <StatTile label="Effort points" value={totals?.effort_points} />
-      </StatGrid>
-      <section
-        className="space-y-3 rounded-card border border-border bg-surface p-4"
-        aria-label="Activity filters"
-      >
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex min-w-48 flex-1 items-center gap-2 rounded-control border border-border bg-surface-2 px-3">
-            <Search size={17} className="text-text-3" />
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search activities"
-              aria-label="Search activities"
-              className="min-h-10 w-full bg-transparent text-sm text-text outline-none"
-            />
-          </label>
-          <SegmentedControl
-            label="Date range"
-            value={range}
-            onChange={(value) => setParam('range', value)}
-            options={(['4W', '3M', '1Y', 'All'] as DateRange[]).map((value) => ({
-              value,
-              label: value,
-            }))}
-          />
-          <SegmentedControl
-            label="View"
-            value={view}
-            onChange={(value) => setParam('view', value === 'calendar' ? value : null)}
-            options={[
-              { value: 'list', label: 'List' },
-              { value: 'calendar', label: 'Calendar' },
-            ]}
-          />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {SPORTS.map((sport) => (
-            <button
-              key={sport}
-              type="button"
-              aria-pressed={sports.includes(sport)}
-              onClick={() => toggleSport(sport)}
-              className={`rounded-full border px-3 py-1 text-xs capitalize ${sports.includes(sport) ? 'border-accent bg-accent-soft text-accent' : 'border-border bg-surface-2 text-text-2'}`}
-            >
-              {sport}
-            </button>
-          ))}
-        </div>
-      </section>
-      {activities.isPending && (
-        <div className="space-y-3" aria-label="Loading activities">
-          <Skeleton className="h-20" />
-          <Skeleton className="h-20" />
-          <Skeleton className="h-20" />
-        </div>
-      )}
-      {activities.isError && (
-        <ErrorState
-          message={activities.error.message}
-          retry={() => {
-            void activities.refetch();
-          }}
-        />
-      )}
-      {activities.isSuccess && !items.length && (
-        <EmptyState
-          title="Your activities will appear here"
-          text="Try a different filter, or sync your watch to bring in recent sessions."
-        />
-      )}
-      {activities.isSuccess &&
-        items.length > 0 &&
-        (view === 'calendar' ? (
-          <ActivityCalendar
-            month={month}
-            onMonthChange={setMonth}
-            activities={items}
-            todayDate={todayDate}
-          />
-        ) : (
-          <ActivityListView
-            items={items}
-            todayDate={todayDate}
-            units={prefs.data?.units}
-            compareMode={compareMode}
-            selected={selected}
-            onToggle={toggleSelected}
-          />
-        ))}
-      {activities.hasNextPage && (
-        <div ref={sentinel} className="flex justify-center">
-          <Button
-            disabled={activities.isFetchingNextPage}
-            onClick={() => {
-              void activities.fetchNextPage();
+    <div className="space-y-8">
+      <PageHeader
+        title="Activities"
+        pageId="activities"
+        action={
+          <ActivityViewControls
+            range={range}
+            view={view}
+            onRange={(value) => setParam('range', value)}
+            onView={(value) => {
+              setParam('view', value === 'calendar' ? value : null);
+              setSelected([]);
+              setCompareMode(false);
             }}
-          >
-            {activities.isFetchingNextPage ? 'Loading more…' : 'Load more'}
-          </Button>
+          />
+        }
+      />
+      {activities.isPending ? (
+        <div aria-label="Loading activities" className="space-y-4">
+          <Skeleton className="h-28" />
+          <Skeleton className="h-20" />
+          <Skeleton className="h-52" />
         </div>
-      )}
-      {compareMode && selected.length > 0 && (
-        <div className="fixed inset-x-4 bottom-20 z-30 mx-auto flex max-w-xl items-center gap-3 rounded-card border border-border-strong bg-surface p-3 shadow-xl md:bottom-4">
-          <span className="flex-1 text-sm">{selected.length} selected · choose 2–4</span>
-          <Button size="sm" disabled={selected.length < 2} onClick={() => setCompareOpen(true)}>
-            Compare selected
-          </Button>
-        </div>
-      )}
-      {compareOpen && (
-        <CompareActivities
-          ids={selected}
-          open
-          onClose={() => setCompareOpen(false)}
-          prefs={prefs.data}
-        />
+      ) : activities.isError ? (
+        <ErrorState message={activities.error.message} retry={() => void activities.refetch()} />
+      ) : (
+        <>
+          <ActivityStats totals={totals} units={prefs.data?.units} />
+          <ActivityFilters
+            view={view}
+            search={search}
+            onSearch={setSearch}
+            sports={sports}
+            onSport={toggleSport}
+            compareMode={compareMode}
+            onCompare={() => {
+              setCompareMode((old) => !old);
+              setSelected([]);
+            }}
+          />
+          {!items.length ? (
+            <EmptyState
+              title="Your activities will appear here"
+              text="Try a different filter, or sync your watch to bring in recent activities."
+            />
+          ) : view === 'calendar' ? (
+            <ActivityCalendar
+              month={month}
+              onMonthChange={setMonth}
+              activities={items}
+              todayDate={localDate(now)}
+            />
+          ) : (
+            <ActivityListView
+              items={items}
+              todayDate={localDate(now)}
+              units={prefs.data?.units}
+              weekStartDay={prefs.data?.week_start}
+              compareMode={compareMode}
+              selected={selected}
+              onToggle={toggleSelected}
+            />
+          )}
+          {activities.hasNextPage && (
+            <div ref={sentinel} className="flex justify-center">
+              <Button
+                disabled={activities.isFetchingNextPage}
+                onClick={() => void activities.fetchNextPage()}
+              >
+                {activities.isFetchingNextPage ? 'Loading more…' : 'Load more'}
+              </Button>
+            </div>
+          )}
+          {compareMode && selected.length > 0 && (
+            <div className="fixed inset-x-4 bottom-20 z-30 mx-auto flex max-w-xl items-center gap-3 rounded-card border border-border-strong bg-surface p-3 shadow-xl md:bottom-4">
+              <span className="flex-1 type-body">{selected.length} selected · choose 2–4</span>
+              <Button
+                disabled={selected.length < 2}
+                onClick={() =>
+                  navigate(`/activities/compare?ids=${selected.map(encodeURIComponent).join(',')}`)
+                }
+              >
+                Compare selected
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

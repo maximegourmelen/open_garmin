@@ -11,7 +11,9 @@ export const metricIds = [
   'stress',
   'steps',
   'active_minutes',
+  'activity_count',
   'activity_time',
+  'activity_distance',
   'effort',
   'hr_zones',
   'training_effect',
@@ -114,12 +116,26 @@ export const glossary = {
     howToRead: 'Health guidelines suggest at least 150 per week. Your weekly goal is in Settings.',
     source: 'Garmin',
   },
+  activity_count: {
+    title: 'Activities',
+    what: 'The number of recorded activities in the selected period.',
+    howToRead:
+      'Counts activities once each, including imported FIT files. It does not count ordinary movement outside a recorded activity.',
+    source: 'Calculated',
+  },
   activity_time: {
     title: 'Activity time',
     what: 'Total recorded time of your activities.',
     howToRead:
       'Includes easy parts and pauses inside activities, so it is usually higher than active minutes.',
     source: 'Garmin',
+  },
+  activity_distance: {
+    title: 'Distance',
+    what: 'Total recorded distance across activities in the selected period.',
+    howToRead:
+      'Includes activities with usable distance data. It may differ from Garmin Connect when an activity has not finished syncing.',
+    source: 'Calculated',
   },
   effort: {
     title: 'Effort',

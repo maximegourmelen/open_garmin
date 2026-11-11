@@ -1,59 +1,34 @@
-import { Activity, Bike, Dumbbell, Footprints, Mountain, Star, Waves } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { RunIcon } from '../../components/icons/RunIcon';
-import { formatDistance, formatDuration, formatPace, formatSpeed } from '../../lib/format';
-import type { ActivitySummary, Sport } from '../../lib/types';
+import { MetricLabel } from '../../components/data/Metric';
+import { Tag } from '../../components/ui/Structure';
+import {
+  formatDateList,
+  formatDistance,
+  formatDurationClock,
+  formatDurationSummary,
+  formatHeartRate,
+  formatNumber,
+  formatPace,
+  formatSpeed,
+} from '../../lib/format';
+import type { ActivitySummary } from '../../lib/types';
+import { SPORT_ICONS } from './activityConstants';
+import { ActivityZoneBar } from './ActivityZoneBar';
 
-const SPORT_ICONS: Record<Sport, React.ComponentType<{ size?: number }>> = {
-  walking: Footprints,
-  running: RunIcon,
-  cycling: Bike,
-  swimming: Waves,
-  strength: Dumbbell,
-  hiking: Mountain,
-  other: Activity,
-};
-
-function weekStart(date: string) {
+function weekStart(date: string, start: 'monday' | 'sunday') {
   const day = new Date(`${date}T12:00:00Z`);
-  day.setUTCDate(day.getUTCDate() - ((day.getUTCDay() + 6) % 7));
+  day.setUTCDate(day.getUTCDate() - ((day.getUTCDay() + (start === 'monday' ? 6 : 0)) % 7));
   return day.toISOString().slice(0, 10);
 }
 
-function activityDate(item: ActivitySummary, todayDate: string) {
-  const yesterday = new Date(`${todayDate}T12:00:00Z`);
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  const prefix =
-    item.date === todayDate
-      ? 'Today'
-      : item.date === yesterday.toISOString().slice(0, 10)
-        ? 'Yesterday'
-        : new Date(`${item.date}T12:00:00`).toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric',
-          });
-  const time = item.start?.split('T')[1]?.slice(0, 5);
-  return time ? `${prefix}, ${time}` : prefix;
-}
-
-function MiniZones({ values }: { values: (number | null)[] | null }) {
-  if (!values) return null;
-  const total = values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
+function ActivityName({ item }: { item: ActivitySummary }) {
+  const Icon = SPORT_ICONS[item.sport];
   return (
-    <div
-      className="flex h-1.5 w-12 overflow-hidden rounded-full bg-surface-3"
-      aria-label="Heart rate zone mix"
-    >
-      {values.map((value, i) => (
-        <span
-          key={i}
-          style={{
-            width: `${total ? ((value ?? 0) / total) * 100 : 0}%`,
-            background: `var(--z${i + 1})`,
-          }}
-        />
-      ))}
-    </div>
+    <span className="inline-flex items-center gap-3">
+      <Icon size={18} />
+      <span>{item.name}</span>
+      {item.is_best && <Tag>Record</Tag>}
+    </span>
   );
 }
 
@@ -64,6 +39,7 @@ export function ActivityListView({
   compareMode,
   selected,
   onToggle,
+  weekStartDay = 'monday',
 }: {
   items: ActivitySummary[];
   todayDate: string;
@@ -71,90 +47,134 @@ export function ActivityListView({
   compareMode: boolean;
   selected: string[];
   onToggle: (id: string) => void;
+  weekStartDay?: 'monday' | 'sunday';
 }) {
   const groups = items.reduce<Record<string, ActivitySummary[]>>((result, item) => {
-    (result[weekStart(item.date)] ??= []).push(item);
+    (result[weekStart(item.date, weekStartDay)] ??= []).push(item);
     return result;
   }, {});
-  const currentWeek = weekStart(todayDate);
+  const currentWeek = weekStart(todayDate, weekStartDay);
   return (
-    <div className="space-y-5">
+    <div className="space-y-8">
       {Object.entries(groups).map(([start, group]) => (
-        <section key={start}>
-          <h2 className="mb-2 text-sm font-semibold text-text-2">
+        <section key={start} aria-label={start === currentWeek ? 'This week' : `Week of ${start}`}>
+          <h2 className="mb-3 type-caption text-text-2">
             {start === currentWeek
               ? 'This week'
               : `Week of ${new Date(`${start}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`}{' '}
-            · {group.length} sessions ·{' '}
-            {formatDuration(group.reduce((sum, item) => sum + (item.duration ?? 0), 0))}
+            · {group.length} {group.length === 1 ? 'activity' : 'activities'} ·{' '}
+            {formatDurationSummary(group.reduce((sum, item) => sum + (item.duration ?? 0), 0))}{' '}
+            recorded
           </h2>
-          <div className="overflow-hidden rounded-card border border-border bg-surface">
-            {group.map((item) => {
-              const Icon = SPORT_ICONS[item.sport];
-              const pace = ['running', 'walking', 'hiking'].includes(item.sport)
-                ? formatPace(item.average_speed, units)
-                : formatSpeed(item.average_speed, units);
-              return (
-                <div
-                  key={item.id}
-                  className="flex items-center border-b border-border last:border-0 hover:bg-surface-2"
-                >
-                  {compareMode && (
-                    <input
-                      type="checkbox"
-                      aria-label={`Compare ${item.name}`}
-                      checked={selected.includes(item.id)}
-                      onChange={() => onToggle(item.id)}
-                      className="ml-3 size-4 accent-accent"
-                    />
-                  )}
-                  <Link
-                    to={`/activities/${item.id}`}
-                    className="flex min-w-0 flex-1 items-center gap-3 px-3 py-3 md:px-4"
-                  >
-                    <span
-                      className="flex size-10 shrink-0 items-center justify-center rounded-full"
-                      style={{
-                        color: `var(--sport-${item.sport})`,
-                        background: 'var(--surface-3)',
-                      }}
-                    >
-                      <Icon size={20} />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">
-                        {item.name}
-                        {item.is_best && (
-                          <Star
-                            size={13}
-                            className="ml-1 inline text-celebrate"
-                            aria-label="Personal best"
-                          />
-                        )}
-                      </span>
-                      <span className="block text-xs text-text-3">
-                        {activityDate(item, todayDate)}
-                      </span>
-                    </span>
-                    <span className="hidden w-20 text-right text-sm font-semibold sm:block">
-                      {formatDistance(item.distance, units)}
-                    </span>
-                    <span className="w-16 text-right text-sm text-text-2">
-                      {formatDuration(item.duration)}
-                    </span>
-                    <span className="hidden w-20 text-right text-xs text-text-2 md:block">
-                      {pace}
-                    </span>
-                    <span className="hidden w-14 text-right text-xs text-text-2 lg:block">
-                      {item.average_hr ? `${Math.round(item.average_hr)} bpm` : '—'}
-                    </span>
-                    <span className="hidden w-12 lg:block">
-                      <MiniZones values={item.zone_minutes} />
-                    </span>
+          <ul className="border-t border-border lg:hidden">
+            {group.map((item) => (
+              <li key={item.id} className="flex items-start gap-3 border-b border-border py-4">
+                {compareMode && (
+                  <input
+                    type="checkbox"
+                    aria-label={`Compare ${item.name}`}
+                    checked={selected.includes(item.id)}
+                    onChange={() => onToggle(item.id)}
+                    className="mt-1 size-4 accent-accent"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <Link to={`/activities/${item.id}`} className="font-medium text-text">
+                    <ActivityName item={item} />
                   </Link>
+                  <p className="mt-1 type-caption text-text-2">
+                    {formatDateList(item.date, todayDate, item.start?.slice(11, 16))} ·{' '}
+                    {formatDurationClock(item.duration)}
+                  </p>
                 </div>
-              );
-            })}
+                <span className="shrink-0 type-body tabular-nums text-text-2">
+                  {formatDistance(item.distance, units, true)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden overflow-x-auto lg:block">
+            <table className="w-full min-w-[760px] border-collapse text-left type-body">
+              <caption className="sr-only">Activities for week of {start}</caption>
+              <thead>
+                <tr className="border-y border-border text-text-2">
+                  {compareMode && (
+                    <th scope="col" className="w-10 py-3">
+                      <span className="sr-only">Select</span>
+                    </th>
+                  )}
+                  <th scope="col" className="py-3 font-normal">
+                    Sport / activity
+                  </th>
+                  <th scope="col" className="py-3 font-normal">
+                    Date
+                  </th>
+                  <th scope="col" className="py-3 text-right font-normal">
+                    Distance
+                  </th>
+                  <th scope="col" className="py-3 text-right font-normal">
+                    Time
+                  </th>
+                  <th scope="col" className="py-3 text-right font-normal">
+                    Pace / speed
+                  </th>
+                  <th scope="col" className="py-3 text-right font-normal">
+                    Avg HR
+                  </th>
+                  <th scope="col" className="py-3 text-right font-normal">
+                    <MetricLabel id="effort" label="Effort" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {group.map((item) => (
+                  <tr key={item.id} className="border-b border-border hover:bg-surface-2">
+                    {compareMode && (
+                      <td className="py-3">
+                        <input
+                          type="checkbox"
+                          aria-label={`Compare ${item.name}`}
+                          checked={selected.includes(item.id)}
+                          onChange={() => onToggle(item.id)}
+                          className="size-4 accent-accent"
+                        />
+                      </td>
+                    )}
+                    <td className="py-3 pr-3">
+                      <Link
+                        to={`/activities/${item.id}`}
+                        className="font-medium text-text hover:text-accent"
+                      >
+                        <ActivityName item={item} />
+                      </Link>
+                    </td>
+                    <td className="py-3 text-text-2">
+                      {formatDateList(item.date, todayDate, item.start?.slice(11, 16))}
+                    </td>
+                    <td className="py-3 text-right tabular-nums text-text-2">
+                      {formatDistance(item.distance, units, true)}
+                    </td>
+                    <td className="py-3 text-right tabular-nums text-text-2">
+                      {formatDurationClock(item.duration)}
+                    </td>
+                    <td className="py-3 text-right tabular-nums text-text-2">
+                      {['running', 'walking', 'hiking'].includes(item.sport)
+                        ? formatPace(item.average_speed, units)
+                        : formatSpeed(item.average_speed, units)}
+                    </td>
+                    <td className="py-3 text-right tabular-nums text-text-2">
+                      {formatHeartRate(item.average_hr)}
+                    </td>
+                    <td className="py-3">
+                      <div className="flex items-center justify-end gap-2 tabular-nums text-text-2">
+                        <span>{formatNumber(item.effort_points)}</span>
+                        <ActivityZoneBar values={item.zone_minutes} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       ))}

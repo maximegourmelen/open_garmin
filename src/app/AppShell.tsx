@@ -20,6 +20,7 @@ import type { PageId } from '../content/pageIntros';
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
 const ActivitiesPage = lazy(() => import('../pages/Activities/ActivitiesPage'));
+const CompareActivitiesPage = lazy(() => import('../pages/Activities/CompareActivities'));
 const ActivityDetailPage = lazy(() => import('../pages/ActivityDetail/ActivityDetailPage'));
 const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
 const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
@@ -138,7 +139,7 @@ export default function AppShell() {
               <div className="mb-5 space-y-3">
                 {location.pathname === '/' && <WelcomeTourOffer />}
                 {pageId(location.pathname) &&
-                  !['guide', 'overview'].includes(pageId(location.pathname)!) && (
+                  !['guide', 'overview', 'activities'].includes(pageId(location.pathname)!) && (
                     <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
                   )}
               </div>
@@ -150,7 +151,7 @@ export default function AppShell() {
                 <Routes>
                   <Route path="/" element={<TodayPage />} />
                   <Route path="/activities" element={<ActivitiesPage />} />
-                  <Route path="/activities/compare" element={<ActivitiesPage />} />
+                  <Route path="/activities/compare" element={<CompareActivitiesPage />} />
                   <Route path="/activities/:id" element={<ActivityDetailPage />} />
                   {['sleep', 'heart', 'body-battery', 'stress', 'steps'].map((tab) => (
                     <Route key={tab} path={`/health/${tab}`} element={<HealthPage />} />

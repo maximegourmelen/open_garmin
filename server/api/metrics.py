@@ -30,7 +30,9 @@ SPECS = {
     "stress": ("score", "garmin", None, None),
     "steps": ("steps", "garmin", None, None),
     "active_minutes": ("min", "garmin", "active_minutes@1", None),
+    "activity_count": ("activities", "calculated", None, "Recorded activities"),
     "activity_time": ("min", "garmin", None, None),
+    "activity_distance": ("km", "calculated", None, "Recorded distance"),
     "effort": ("points", "calculated", "effort_points@1", None),
     "hr_zones": ("min", "calculated", "zones_from_samples@1", "Time in zone 2"),
     "training_effect": ("score", "garmin", None, "Aerobic training effect"),
@@ -41,7 +43,9 @@ SPECS = {
     "record": ("records", "calculated", "bests@1", "New records"),
 }
 ACTIVITY_METRICS = {
+    "activity_count",
     "activity_time",
+    "activity_distance",
     "effort",
     "hr_zones",
     "training_effect",
@@ -93,6 +97,10 @@ def daily_value(metric_id: str, day: dict, bedtime_usual: float | None):
 def activity_value(metric_id: str, items: list[tuple[dict, dict]]):
     if not items:
         return None
+    if metric_id == "activity_count":
+        return float(len(items))
+    if metric_id == "activity_distance":
+        return round(sum(number(data.get("distance")) or 0 for data, _ in items), 1)
     if metric_id == "activity_time":
         return round(sum(number(data.get("duration")) or 0 for data, _ in items) / 60, 1)
     if metric_id == "record":
@@ -183,6 +191,9 @@ def metric_summary(request: Request, metric_id: str, days: int = Query(default=3
             value = trend.get(date) if trend else None
         elif metric_id in ACTIVITY_METRICS:
             value = activity_value(metric_id, by_day.get(date, []))
+            if metric_id == "activity_distance" and value is not None:
+                divisor = 1609.344 if (user.preferences or {}).get("units") == "imperial" else 1000
+                value = round(value / divisor, 2)
         else:
             value = daily_value(metric_id, daily.get(date, {}), bedtime_usual)
             if metric_id == "active_minutes" and value is None:
@@ -198,6 +209,8 @@ def metric_summary(request: Request, metric_id: str, days: int = Query(default=3
         series.append({"date": date, "value": value})
     latest = next((item for item in reversed(series) if item["value"] is not None), None)
     unit, source, method_id, value_label = SPECS[metric_id]
+    if metric_id == "activity_distance" and (user.preferences or {}).get("units") == "imperial":
+        unit = "mi"
     return {
         "id": metric_id,
         "latest": latest,
