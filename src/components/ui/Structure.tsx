@@ -72,24 +72,32 @@ export function Banner({ children, action }: { children: ReactNode; action?: Rea
       role="status"
       className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2 px-4 py-2 type-body text-text"
     >
-      <span>{children}</span>
+      <div className="min-w-0">{children}</div>
       {action}
     </div>
   );
 }
 
-export function Callout({ children, onDismiss }: { children: ReactNode; onDismiss?: () => void }) {
+export function Callout({
+  children,
+  onDismiss,
+  dismissLabel = 'Dismiss hint',
+}: {
+  children: ReactNode;
+  onDismiss?: () => void;
+  dismissLabel?: string;
+}) {
   return (
     <aside className="flex items-start justify-between gap-4 rounded-control bg-surface-2 p-4 type-body text-text-2">
-      <span>{children}</span>
+      <div className="min-w-0">{children}</div>
       {onDismiss && (
         <button
           type="button"
           className="shrink-0 text-text"
           onClick={onDismiss}
-          aria-label="Dismiss hint"
+          aria-label={dismissLabel}
         >
-          Dismiss
+          {dismissLabel === 'Dismiss hint' ? 'Dismiss' : dismissLabel}
         </button>
       )}
     </aside>

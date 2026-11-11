@@ -41,6 +41,7 @@ export interface Preferences {
   reduce_motion: boolean;
   onboarded: boolean;
   tour_completed: ('overview' | 'activity')[];
+  dismissed_hints: string[];
   goal_focus: 'move_more' | 'start_running' | 'build_habit' | 'sleep_better' | 'curious';
   companion_enabled: boolean;
   companion_name: string;

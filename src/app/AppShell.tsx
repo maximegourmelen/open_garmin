@@ -13,6 +13,9 @@ import { useDemoBannerVisibility } from './useDemoBannerVisibility';
 import { Banner, Tag } from '../components/ui/Structure';
 import { MetricDrawerProvider } from '../features/metric-drawer/MetricDrawerProvider';
 import { TourLauncher } from '../features/tour/TourLauncher';
+import { PageHint } from '../features/guidance/PageHint';
+import { WelcomeTourOffer } from '../features/guidance/WelcomeTourOffer';
+import type { PageId } from '../content/pageIntros';
 
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
@@ -28,6 +31,21 @@ function NotFoundRedirect() {
   const showToast = useToast();
   useEffect(() => showToast({ message: 'Page not found' }), [showToast]);
   return <Navigate to="/" replace />;
+}
+
+function pageId(path: string): PageId | null {
+  if (path === '/') return 'overview';
+  if (/^\/activities\/[^/]+$/.test(path) && path !== '/activities/compare') return 'activity';
+  if (path.startsWith('/activities')) return 'activities';
+  if (path.startsWith('/health/')) {
+    const tab = path.split('/')[2];
+    if (['sleep', 'heart', 'body-battery', 'stress', 'steps'].includes(tab))
+      return `health-${tab}` as PageId;
+  }
+  if (path.startsWith('/trends')) return 'trends';
+  if (path.startsWith('/guide')) return 'guide';
+  if (path === '/settings') return 'settings';
+  return null;
 }
 
 export default function AppShell() {
@@ -116,6 +134,14 @@ export default function AppShell() {
                   </Banner>
                 </div>
               ))}
+            {!welcome && !gallery && preferences.data?.onboarded && (
+              <div className="mb-5 space-y-3">
+                {location.pathname === '/' && <WelcomeTourOffer />}
+                {pageId(location.pathname) && (
+                  <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
+                )}
+              </div>
+            )}
             {preferences.data?.onboarded === false && !welcome && !gallery ? (
               <Navigate to="/welcome" replace />
             ) : (

@@ -30,6 +30,7 @@ const prefs: Preferences = {
   reduce_motion: false,
   onboarded: true,
   tour_completed: [],
+  dismissed_hints: [],
   goal_focus: 'move_more',
   companion_enabled: true,
   companion_name: 'Legacy',

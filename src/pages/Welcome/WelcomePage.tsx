@@ -54,6 +54,11 @@ export default function WelcomePage() {
     onSuccess: (next) => {
       client.setQueryData([mode, 'preferences'], next);
       void client.invalidateQueries({ queryKey: [mode] });
+      try {
+        sessionStorage.setItem('og_welcome_tour_offer', '1');
+      } catch {
+        /* storage unavailable */
+      }
       navigate('/');
     },
     onError: (error) => toast({ message: error.message }),

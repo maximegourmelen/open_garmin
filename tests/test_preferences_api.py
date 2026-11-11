@@ -38,6 +38,18 @@ def test_tour_completion_is_persisted_and_validated_in_sample_workspace():
         assert client.put("/api/demo/preferences", json=prefs).status_code == 422
 
 
+def test_page_hint_dismissals_are_scoped_to_sample_preferences():
+    app = create_app(Store(in_memory=True), start_worker=False)
+    with TestClient(app) as client:
+        prefs = client.get("/api/demo/preferences").json()
+        prefs["dismissed_hints"] = ["activities", "health-sleep"]
+        assert client.put("/api/demo/preferences", json=prefs).status_code == 200
+        assert client.get("/api/demo/preferences").json()["dismissed_hints"] == ["activities", "health-sleep"]
+        prefs["dismissed_hints"] = ["unknown"]
+        assert client.put("/api/demo/preferences", json=prefs).status_code == 422
+        assert client.get("/api/preferences").status_code == 401
+
+
 def test_finishing_onboarding_persists_preference():
     app = create_app(Store(in_memory=True), start_worker=False)
     with TestClient(app) as client:
@@ -49,8 +61,11 @@ def test_finishing_onboarding_persists_preference():
         client.headers["X-CSRF-Token"] = signed_in.json()["csrf_token"]
         prefs = client.get("/api/preferences").json()
         prefs["onboarded"] = True
+        prefs["dismissed_hints"] = ["overview"]
         assert client.put("/api/preferences", json=prefs).status_code == 200
-        assert client.get("/api/preferences").json()["onboarded"] is True
+        saved = client.get("/api/preferences").json()
+        assert saved["onboarded"] is True
+        assert saved["dismissed_hints"] == ["overview"]
 
 
 def test_display_name_update_is_scoped_and_rejects_blank_names():
