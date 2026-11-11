@@ -51,8 +51,19 @@ test('old routes redirect into the new shell', async () => {
 test('primary navigation and command palette work', async () => {
   renderAt('/journey');
   expect(await screen.findByRole('heading', { name: 'Journey', level: 2 })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Search activities' }));
+  fireEvent.click(screen.getByRole('button', { name: /^Search$/ }));
   expect(screen.getByRole('dialog', { name: 'Search and jump' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Progress' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Trends' }));
   expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
+});
+
+test('the new shell highlights the active destination', async () => {
+  renderAt('/trends');
+  expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
+  expect(
+    screen
+      .getAllByRole('link', { name: 'Trends' })
+      .some((link) => link.getAttribute('aria-current') === 'page'),
+  ).toBe(true);
+  expect(screen.queryByText('Workspace /')).toBeNull();
 });

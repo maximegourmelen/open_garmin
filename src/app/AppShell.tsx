@@ -1,9 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { BottomTabBar } from '../layout/BottomTabBar';
 import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
-import { TopBar } from '../layout/TopBar';
+import { MobileTopBar } from '../layout/MobileTopBar';
+import { Dialog } from '../components/ui/Controls';
 import { usePreferences } from '../lib/queries';
 
 const GalleryPage = lazy(() => import('../gallery'));
@@ -19,7 +20,9 @@ const MethodsPage = lazy(() => import('../pages/Methods/MethodsPage'));
 
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const preferences = usePreferences();
   const welcome = location.pathname === '/welcome';
   const gallery = import.meta.env.DEV && location.pathname === '/dev/components';
@@ -52,10 +55,19 @@ export default function AppShell() {
       >
         Skip to content
       </a>
-      {!welcome && !gallery && <SideNav />}
+      {!welcome && !gallery && (
+        <SideNav onSearch={() => setSearchOpen(true)} onShortcuts={() => setShortcutsOpen(true)} />
+      )}
       <div className="min-w-0 flex-1">
-        {!welcome && !gallery && <TopBar onSearch={() => setSearchOpen(true)} />}
-        <main id="main-content" className={gallery ? '' : 'px-4 pb-24 pt-6 md:px-8 md:pb-8'}>
+        {!welcome && !gallery && (
+          <MobileTopBar onSearch={() => setSearchOpen(true)} onHelp={() => navigate('/guide')} />
+        )}
+        <main
+          id="main-content"
+          className={
+            gallery ? '' : 'mx-auto max-w-[1120px] px-4 pb-24 pt-5 md:px-10 md:pb-12 md:pt-12'
+          }
+        >
           {preferences.data?.onboarded === false && !welcome && !gallery ? (
             <Navigate to="/welcome" replace />
           ) : (
@@ -70,6 +82,10 @@ export default function AppShell() {
                 <Route path="/health/:tab" element={<HealthPage />} />
                 <Route path="/progress" element={<ProgressPage />} />
                 <Route path="/methods" element={<MethodsPage />} />
+                <Route path="/trends" element={<ProgressPage />} />
+                <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
+                <Route path="/guide" element={<MethodsPage />} />
+                <Route path="/guide/:topic" element={<MethodsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/welcome" element={<OnboardingPage />} />
                 {import.meta.env.DEV && <Route path="/dev/components" element={<GalleryPage />} />}
@@ -85,9 +101,16 @@ export default function AppShell() {
           )}
         </main>
       </div>
-      {!welcome && !gallery && <BottomTabBar />}
+      {!welcome && !gallery && <BottomTabBar onShortcuts={() => setShortcutsOpen(true)} />}
       {!welcome && !gallery && (
         <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+      )}
+      {!welcome && !gallery && (
+        <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} title="Keyboard shortcuts">
+          <p className="type-body text-text-2">
+            ⌘K or Ctrl K opens search. Press Escape to close a dialog.
+          </p>
+        </Dialog>
       )}
     </div>
   );
