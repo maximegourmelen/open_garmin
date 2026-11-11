@@ -1,133 +1,110 @@
 {
   "$defs": {
-    "CompanionMessage": {
+    "ActivitySummary": {
       "additionalProperties": true,
       "properties": {
-        "data_refs": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Data Refs",
-          "type": "array"
-        },
-        "id": {
-          "title": "Id",
-          "type": "string"
-        },
-        "pose": {
-          "title": "Pose",
-          "type": "string"
-        },
-        "text": {
-          "title": "Text",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "text",
-        "pose",
-        "data_refs"
-      ],
-      "title": "CompanionMessage",
-      "type": "object"
-    },
-    "Insight": {
-      "additionalProperties": true,
-      "properties": {
-        "activity_ids": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Activity Ids",
-          "type": "array"
-        },
-        "body": {
-          "title": "Body",
-          "type": "string"
-        },
-        "category": {
-          "title": "Category",
-          "type": "string"
-        },
-        "claims": {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "title": "Claims",
-          "type": "array"
-        },
-        "dates": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Dates",
-          "type": "array"
-        },
-        "evidence": {
-          "title": "Evidence",
-          "type": "string"
-        },
-        "id": {
-          "title": "Id",
-          "type": "string"
-        },
-        "method": {
-          "title": "Method",
-          "type": "string"
-        },
-        "title": {
-          "title": "Title",
-          "type": "string"
-        },
-        "tone": {
-          "title": "Tone",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "category",
-        "tone",
-        "title",
-        "body",
-        "evidence",
-        "dates",
-        "activity_ids",
-        "method",
-        "claims"
-      ],
-      "title": "Insight",
-      "type": "object"
-    },
-    "Milestone": {
-      "additionalProperties": true,
-      "properties": {
-        "activity_id": {
+        "average_hr": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "number"
             },
             {
               "type": "null"
             }
           ],
-          "title": "Activity Id"
+          "title": "Average Hr"
         },
-        "color": {
-          "title": "Color",
+        "average_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Average Speed"
+        },
+        "date": {
+          "title": "Date",
           "type": "string"
         },
-        "description": {
-          "title": "Description",
+        "detail_state": {
+          "title": "Detail State",
           "type": "string"
         },
-        "earned": {
-          "title": "Earned",
+        "device": {
+          "title": "Device",
+          "type": "string"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Distance"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duration"
+        },
+        "effort_points": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effort Points"
+        },
+        "elevation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Elevation"
+        },
+        "gap_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gap Speed"
+        },
+        "has_route": {
+          "title": "Has Route",
           "type": "boolean"
         },
-        "earned_on": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "is_best": {
+          "title": "Is Best",
+          "type": "boolean"
+        },
+        "location_name": {
           "anyOf": [
             {
               "type": "string"
@@ -136,21 +113,112 @@
               "type": "null"
             }
           ],
-          "title": "Earned On"
+          "title": "Location Name"
         },
-        "how_to_earn": {
-          "title": "How To Earn",
+        "name": {
+          "title": "Name",
           "type": "string"
         },
-        "icon": {
-          "title": "Icon",
+        "source": {
+          "title": "Source",
           "type": "string"
         },
-        "id": {
-          "title": "Id",
+        "sport": {
+          "title": "Sport",
           "type": "string"
         },
-        "progress": {
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "zone_minutes": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Zone Minutes"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sport",
+        "type",
+        "date",
+        "start",
+        "distance",
+        "duration",
+        "average_speed",
+        "gap_speed",
+        "average_hr",
+        "elevation",
+        "effort_points",
+        "zone_minutes",
+        "has_route",
+        "detail_state",
+        "location_name",
+        "is_best",
+        "device",
+        "source"
+      ],
+      "title": "ActivitySummary",
+      "type": "object"
+    },
+    "OverviewMetric": {
+      "additionalProperties": true,
+      "properties": {
+        "delta": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Delta"
+        },
+        "spark": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Spark",
+          "type": "array"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "usual_range": {
           "anyOf": [
             {
               "additionalProperties": true,
@@ -160,156 +228,9 @@
               "type": "null"
             }
           ],
-          "title": "Progress"
+          "title": "Usual Range"
         },
-        "tier": {
-          "title": "Tier",
-          "type": "string"
-        },
-        "title": {
-          "title": "Title",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "description",
-        "how_to_earn",
-        "icon",
-        "tier",
-        "color",
-        "earned",
-        "earned_on",
-        "activity_id",
-        "progress"
-      ],
-      "title": "Milestone",
-      "type": "object"
-    },
-    "Streak": {
-      "additionalProperties": true,
-      "properties": {
-        "at_risk": {
-          "title": "At Risk",
-          "type": "boolean"
-        },
-        "current": {
-          "title": "Current",
-          "type": "integer"
-        },
-        "longest": {
-          "title": "Longest",
-          "type": "integer"
-        },
-        "method": {
-          "title": "Method",
-          "type": "string"
-        },
-        "remaining_minutes": {
-          "title": "Remaining Minutes",
-          "type": "number"
-        },
-        "remaining_sessions": {
-          "title": "Remaining Sessions",
-          "type": "integer"
-        },
-        "weeks": {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "title": "Weeks",
-          "type": "array"
-        }
-      },
-      "required": [
-        "current",
-        "longest",
-        "at_risk",
-        "remaining_minutes",
-        "remaining_sessions",
-        "weeks",
-        "method"
-      ],
-      "title": "Streak",
-      "type": "object"
-    },
-    "Suggestion": {
-      "additionalProperties": true,
-      "properties": {
-        "kind": {
-          "title": "Kind",
-          "type": "string"
-        },
-        "method": {
-          "title": "Method",
-          "type": "string"
-        },
-        "pose": {
-          "title": "Pose",
-          "type": "string"
-        },
-        "signals": {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "title": "Signals",
-          "type": "array"
-        },
-        "text": {
-          "title": "Text",
-          "type": "string"
-        },
-        "title": {
-          "title": "Title",
-          "type": "string"
-        }
-      },
-      "required": [
-        "kind",
-        "title",
-        "text",
-        "pose",
-        "signals",
-        "method"
-      ],
-      "title": "Suggestion",
-      "type": "object"
-    },
-    "WeekProgress": {
-      "additionalProperties": true,
-      "properties": {
-        "by_day": {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "title": "By Day",
-          "type": "array"
-        },
-        "days_left": {
-          "title": "Days Left",
-          "type": "integer"
-        },
-        "end": {
-          "title": "End",
-          "type": "string"
-        },
-        "goal": {
-          "title": "Goal",
-          "type": "number"
-        },
-        "method": {
-          "title": "Method",
-          "type": "string"
-        },
-        "minutes": {
-          "title": "Minutes",
-          "type": "number"
-        },
-        "pct": {
+        "value": {
           "anyOf": [
             {
               "type": "number"
@@ -318,234 +239,86 @@
               "type": "null"
             }
           ],
-          "title": "Pct"
-        },
-        "remaining_minutes": {
-          "title": "Remaining Minutes",
-          "type": "number"
-        },
-        "sentence": {
-          "title": "Sentence",
-          "type": "string"
-        },
-        "sessions": {
-          "title": "Sessions",
-          "type": "integer"
-        },
-        "sessions_goal": {
-          "title": "Sessions Goal",
-          "type": "integer"
-        },
-        "start": {
-          "title": "Start",
-          "type": "string"
+          "title": "Value"
         }
       },
       "required": [
-        "start",
-        "end",
-        "minutes",
-        "goal",
-        "pct",
-        "sessions",
-        "sessions_goal",
-        "remaining_minutes",
-        "days_left",
-        "by_day",
-        "sentence",
-        "method"
+        "value",
+        "unit",
+        "usual_range",
+        "status",
+        "delta",
+        "spark"
       ],
-      "title": "WeekProgress",
+      "title": "OverviewMetric",
       "type": "object"
     }
   },
   "additionalProperties": true,
   "properties": {
-    "body_battery": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Body Battery"
-    },
-    "checkin": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Checkin"
-    },
     "date": {
       "title": "Date",
       "type": "string"
     },
-    "greeting": {
-      "title": "Greeting",
+    "feeling_today": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Feeling Today"
+    },
+    "last_night": {
+      "additionalProperties": {
+        "$ref": "#/$defs/OverviewMetric"
+      },
+      "title": "Last Night",
+      "type": "object"
+    },
+    "notes": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "recent_activities": {
+      "items": {
+        "$ref": "#/$defs/ActivitySummary"
+      },
+      "title": "Recent Activities",
+      "type": "array"
+    },
+    "summary_sentence": {
+      "title": "Summary Sentence",
       "type": "string"
     },
-    "hrv": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Hrv"
-    },
-    "insights": {
-      "items": {
-        "$ref": "#/$defs/Insight"
-      },
-      "title": "Insights",
-      "type": "array"
-    },
-    "journey": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Journey"
-    },
-    "latest_activity": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Latest Activity"
-    },
-    "layout": {
-      "items": {
-        "type": "string"
-      },
-      "title": "Layout",
-      "type": "array"
-    },
-    "message": {
-      "$ref": "#/$defs/CompanionMessage"
-    },
-    "method": {
-      "title": "Method",
-      "type": "string"
-    },
-    "next_milestone": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/Milestone"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "recap_ready": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Recap Ready"
-    },
-    "resting_hr": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Resting Hr"
-    },
-    "sleep": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Sleep"
-    },
-    "steps": {
-      "anyOf": [
-        {
-          "additionalProperties": true,
-          "type": "object"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "title": "Steps"
-    },
-    "streak": {
-      "$ref": "#/$defs/Streak"
-    },
-    "suggestion": {
-      "$ref": "#/$defs/Suggestion"
-    },
-    "unseen_milestones": {
-      "items": {
-        "$ref": "#/$defs/Milestone"
-      },
-      "title": "Unseen Milestones",
-      "type": "array"
+    "today": {
+      "additionalProperties": true,
+      "title": "Today",
+      "type": "object"
     },
     "week": {
-      "$ref": "#/$defs/WeekProgress"
+      "additionalProperties": true,
+      "title": "Week",
+      "type": "object"
     }
   },
   "required": [
     "date",
-    "greeting",
-    "message",
+    "summary_sentence",
+    "last_night",
     "week",
-    "suggestion",
-    "streak",
-    "sleep",
-    "body_battery",
-    "resting_hr",
-    "hrv",
-    "steps",
-    "checkin",
-    "latest_activity",
-    "next_milestone",
-    "journey",
-    "insights",
-    "unseen_milestones",
-    "recap_ready",
-    "layout",
-    "method"
+    "today",
+    "recent_activities",
+    "notes",
+    "feeling_today"
   ],
-  "title": "TodayResponse",
+  "title": "OverviewResponse",
   "type": "object"
 }

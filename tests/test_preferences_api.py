@@ -6,7 +6,7 @@ from server.db.store import Store
 from server.main import create_app
 
 
-def test_demo_preferences_drive_today_layout_without_live_auth():
+def test_legacy_today_layout_preference_is_accepted_but_ignored_by_overview():
     app = create_app(Store(in_memory=True), start_worker=False)
     with TestClient(app) as client:
         original = client.get("/api/demo/preferences")
@@ -15,7 +15,7 @@ def test_demo_preferences_drive_today_layout_without_live_auth():
         prefs["today_layout"] = ["week", "suggestion"]
         assert client.put("/api/demo/preferences", json=prefs).status_code == 200
         assert client.get("/api/demo/preferences").json()["today_layout"] == ["week", "suggestion"]
-        assert client.get("/api/demo/today").json()["layout"] == ["week", "suggestion"]
+        assert "layout" not in client.get("/api/demo/today").json()
         assert client.get("/api/preferences").status_code == 401
 
 

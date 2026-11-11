@@ -35,7 +35,6 @@ from ..db.models import (
 )
 from ..workspace import workspace
 from .activity_views import summary as activity_summary
-from .schemas import TodayResponse
 
 
 def today_view(request: Request):
@@ -141,8 +140,7 @@ def today_view(request: Request):
         }
     hrv_bounds = (
         {"low": current["hrv_balanced_low"], "high": current["hrv_balanced_high"]}
-        if current.get("hrv_balanced_low") is not None
-        and current.get("hrv_balanced_high") is not None
+        if current.get("hrv_balanced_low") is not None and current.get("hrv_balanced_high") is not None
         else usual_range(
             [
                 item.get("hrv")
@@ -280,8 +278,3 @@ def today_view(request: Request):
         "layout": prefs.get("today_layout", []),
         "method": "today_overview@1",
     }
-
-
-def register(app):
-    app.add_api_route("/api/today", today_view, methods=["GET"], response_model=TodayResponse)
-    app.add_api_route("/api/demo/today", today_view, methods=["GET"], response_model=TodayResponse)

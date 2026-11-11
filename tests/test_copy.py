@@ -9,6 +9,7 @@ from server.copy.labels import garmin_label
 from server.copy.sentences import (
     MESSAGES,
     activity_summary,
+    overview_summary,
     record_distance,
     sleep_summary,
     usual_sentence,
@@ -42,7 +43,19 @@ def test_copy_is_neutral_deterministic_and_grounded_in_data():
     assert garmin_label("AEROBIC_BASE", "training_effect") == "Aerobic base"
     assert garmin_label(None, "hrv_status") is None
     assert usual_sentence("resting_hr", 56, {"low": 52, "high": 58}) == (
-        "within", "Resting heart rate is within your usual range (52–58\u202fbpm)."
+        "within",
+        "Resting heart rate is within your usual range (52–58\u202fbpm).",
     )
     assert usual_sentence("hrv", 39, {"low": 42, "high": 60})[0] == "below"
     assert usual_sentence("hrv", None, None)[0] == "missing"
+
+
+def test_overview_summary_keeps_need_and_usual_range_distinct():
+    assert (
+        overview_summary(sleep_short_minutes=46, hrv_below=True, active_minutes=35, goal_minutes=150)
+        == "Sleep was 46 min below need and HRV below your usual range. 35 of 150 active minutes this week."
+    )
+    assert (
+        overview_summary(sleep_short_minutes=None, hrv_below=False, active_minutes=None, goal_minutes=150)
+        == "Active-minute data is not available yet this week."
+    )

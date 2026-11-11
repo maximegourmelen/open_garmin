@@ -8,6 +8,7 @@ import type {
   DeeperResponse,
   HealthSeries,
   Insight,
+  OverviewResponse,
   Method,
   Preferences,
   ProgressResponse,
@@ -15,7 +16,6 @@ import type {
   ResearchResponse,
   RelationshipResponse,
   StatusResponse,
-  TodayResponse,
 } from './types';
 
 export function queryKey(mode: 'demo' | 'live', ...parts: unknown[]) {
@@ -58,8 +58,14 @@ export function useStatus() {
   return query;
 }
 
-export const useToday = () =>
-  useWorkspaceQuery<TodayResponse>(['today'], '/today', { refetchInterval: 60000 });
+export function useOverview() {
+  const { mode } = useWorkspace();
+  return useQuery({
+    queryKey: queryKey(mode, 'overview'),
+    queryFn: () => workspaceRequest<OverviewResponse>(mode, '/overview'),
+    refetchInterval: () => (document.visibilityState === 'visible' ? 60000 : false),
+  });
+}
 export const useActivities = (params = '') =>
   useWorkspaceQuery<ActivityList>(['activities', params], `/activities${params}`);
 export const useActivity = (id: string) =>

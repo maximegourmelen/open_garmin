@@ -4,82 +4,66 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { WorkspaceContext } from '../../app/workspace-context';
 import { ToastProvider } from '../../components/ui';
-import type { Preferences, TodayResponse } from '../../lib/types';
+import { MetricDrawerContext } from '../../features/metric-drawer/metric-drawer-context';
+import type { OverviewResponse } from '../../lib/types';
 import TodayPage from './TodayPage';
 
-const mocks = vi.hoisted(() => ({
-  useToday: vi.fn(),
-  usePreferences: vi.fn(),
-  workspaceRequest: vi.fn(),
-}));
+const mocks = vi.hoisted(() => ({ overview: vi.fn(), preferences: vi.fn(), request: vi.fn() }));
 vi.mock('../../lib/queries', () => ({
-  useToday: mocks.useToday,
-  usePreferences: mocks.usePreferences,
+  useOverview: mocks.overview,
+  usePreferences: mocks.preferences,
 }));
-vi.mock('../../lib/api', () => ({ workspaceRequest: mocks.workspaceRequest }));
+vi.mock('../../lib/api', () => ({ workspaceRequest: mocks.request }));
+vi.mock('../../layout/PageHeader', () => ({
+  PageHeader: ({ title, description }: { title: string; description: string }) => (
+    <header>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+  ),
+}));
 
-const today = {
+const metric = (value: number | null) => ({
+  value,
+  unit: '',
+  usual_range: null,
+  status: value === null ? ('missing' as const) : ('within' as const),
+  delta: null,
+  spark: [],
+});
+const overview = {
   date: '2026-11-09',
-  greeting: 'Good morning, Alex',
-  message: { id: 'hello', text: 'A steady start to the week.', pose: 'wave', data_refs: [] },
+  summary_sentence: '30 of 150 active minutes this week.',
+  last_night: {
+    sleep: metric(435),
+    resting_hr: metric(56),
+    hrv: metric(48),
+    body_battery: metric(72),
+  },
   week: {
+    active_minutes: 30,
+    goal_minutes: 150,
+    activity_count: 1,
+    goal_activities: 3,
+    activity_seconds: 2220,
+    daily_active_minutes: [30, null, null, null, null, null, null],
     start: '2026-11-09',
     end: '2026-11-15',
-    minutes: 30,
-    goal: 150,
-    pct: 20,
-    sessions: 1,
-    sessions_goal: 3,
-    remaining_minutes: 120,
-    days_left: 6,
-    by_day: [
-      { date: '2026-11-09', minutes: 30, sports: ['walking'], is_today: true, is_future: false },
-    ],
-    sentence: 'You moved 30 minutes this week.',
-    method: 'active_minutes@1',
   },
-  suggestion: {
-    kind: 'go',
-    title: 'Good day to move',
-    text: 'A walk would feel good.',
-    pose: 'wave',
-    signals: [],
-    footnote: 'A suggestion.',
-    method: 'today_suggestion@1',
+  today: {
+    kind: 'easy',
+    title: 'Keep it light',
+    sentence: 'A walk fits today.',
+    reasons: [{ label: 'Sleep', value: '7 h 15 min', metric_id: 'sleep' }],
   },
-  streak: {
-    current: 2,
-    longest: 3,
-    at_risk: false,
-    remaining_minutes: 0,
-    remaining_sessions: 0,
-    weeks: [],
-    method: 'streak@1',
-  },
-  sleep: null,
-  body_battery: null,
-  resting_hr: null,
-  hrv: null,
-  steps: null,
-  checkin: { date: '2026-11-09', mood: null, energy: null, soreness: null, note: '' },
-  latest_activity: null,
-  next_milestone: null,
-  journey: null,
-  insights: [],
-  unseen_milestones: [],
-  recap_ready: null,
-  layout: ['week', 'checkin'],
-  method: '',
-} as TodayResponse;
+  recent_activities: [],
+  notes: [
+    { id: 'note', text: 'Your week is building', source: 'Recent activity', href: '/trends' },
+  ],
+  feeling_today: { mood: null, energy: 3, soreness: 1, note: '' },
+} as OverviewResponse;
 
-const prefs = {
-  today_layout: ['week', 'checkin'],
-  units: 'metric',
-  companion_enabled: true,
-  companion_name: 'Legacy',
-} as Preferences;
-
-function mount() {
+function mount(openMetric = vi.fn()) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <MemoryRouter>
@@ -94,7 +78,9 @@ function mount() {
           }}
         >
           <ToastProvider>
-            <TodayPage />
+            <MetricDrawerContext.Provider value={openMetric}>
+              <TodayPage />
+            </MetricDrawerContext.Provider>
           </ToastProvider>
         </WorkspaceContext.Provider>
       </QueryClientProvider>
@@ -103,51 +89,74 @@ function mount() {
 }
 
 beforeEach(() => {
-  mocks.useToday.mockReturnValue({ data: today, isPending: false, isError: false });
-  mocks.usePreferences.mockReturnValue({ data: prefs });
-  mocks.workspaceRequest.mockResolvedValue({ ok: true });
+  mocks.overview.mockReturnValue({ data: overview, isPending: false, isError: false });
+  mocks.preferences.mockReturnValue({ data: { units: 'metric' } });
+  mocks.request.mockResolvedValue({});
 });
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
 
-test('shows the week and saves a check-in in the selected workspace', async () => {
+test('shows the summary, distinct active and recorded time, and the main sections', () => {
   mount();
-  expect(screen.getByText('Your activity and health data at a glance.')).toBeTruthy();
-  expect(screen.getByText('You moved 30 minutes this week.')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Good' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Save check-in' }));
+  expect(screen.getByText('30 of 150 active minutes this week.')).toBeTruthy();
+  expect(screen.getByText(/1 of 3 activities/)).toBeTruthy();
+  expect(screen.getByText(/37.*min recorded/)).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Last night' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Today' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Worth knowing' })).toBeTruthy();
+});
+
+test('every last-night metric label opens its explanation', () => {
+  const open = vi.fn();
+  mount(open);
+  for (const [label, id] of [
+    ['Sleep', 'sleep_duration'],
+    ['Resting HR', 'resting_hr'],
+    ['HRV', 'hrv'],
+    ['Body Battery', 'body_battery'],
+  ]) {
+    fireEvent.click(screen.getByRole('button', { name: `About ${label}` }));
+    expect(open).toHaveBeenLastCalledWith(id);
+  }
+});
+
+test('a one-tap feeling saves in the selected workspace without erasing other check-in fields', async () => {
+  mount();
+  fireEvent.click(screen.getByRole('button', { name: 'Feeling 4 of 5' }));
   await waitFor(() =>
-    expect(mocks.workspaceRequest).toHaveBeenCalledWith(
+    expect(mocks.request).toHaveBeenCalledWith(
       'demo',
       '/checkins/2026-11-09',
       expect.objectContaining({ method: 'PUT' }),
     ),
   );
-  expect(JSON.parse(mocks.workspaceRequest.mock.calls[0][2].body).mood).toBe(4);
+  expect(JSON.parse(mocks.request.mock.calls[0][2].body)).toEqual({
+    mood: 4,
+    energy: 3,
+    soreness: 1,
+    note: '',
+  });
 });
 
-test('loading and error states give a clear retry', () => {
-  mocks.useToday.mockReturnValue({ isPending: true });
+test('loading, error and empty states explain what to do', () => {
+  mocks.overview.mockReturnValue({ isPending: true });
   const view = mount();
-  expect(screen.getByLabelText('Loading Today')).toBeTruthy();
+  expect(screen.getByLabelText('Loading Overview')).toBeTruthy();
   view.unmount();
   const refetch = vi.fn();
-  mocks.useToday.mockReturnValue({
+  mocks.overview.mockReturnValue({
     isPending: false,
     isError: true,
     error: new Error('Connection lost'),
     refetch,
   });
-  mount();
-  expect(screen.getByRole('alert').textContent).toContain('Connection lost');
+  const failed = mount();
   fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
   expect(refetch).toHaveBeenCalled();
-});
-
-test('empty response explains how to begin', () => {
-  mocks.useToday.mockReturnValue({ isPending: false, isError: false, data: null });
+  failed.unmount();
+  mocks.overview.mockReturnValue({ isPending: false, isError: false, data: null });
   mount();
-  expect(screen.getByText('Today is ready for you')).toBeTruthy();
+  expect(screen.getByText('Your overview starts here')).toBeTruthy();
 });

@@ -1,115 +1,82 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWorkspace } from '../../app/workspace-context';
 import { EmptyState, ErrorState, Skeleton, useToast } from '../../components/ui';
+import { PageHeader } from '../../layout/PageHeader';
 import { workspaceRequest } from '../../lib/api';
-import { usePreferences, useToday } from '../../lib/queries';
-import { TodayCard } from './TodayCards';
-
-type CheckinInput = {
-  mood: number | null;
-  energy: number | null;
-  soreness: number | null;
-  note: string;
-};
+import { formatDateTitle } from '../../lib/format';
+import { useOverview, usePreferences } from '../../lib/queries';
+import { OverviewFeeling } from './OverviewFeeling';
+import { OverviewGuidance } from './OverviewGuidance';
+import { OverviewLastNight } from './OverviewLastNight';
+import { OverviewNotes, OverviewRecent } from './OverviewRecent';
+import { OverviewWeek } from './OverviewWeek';
 
 export default function TodayPage() {
   const { mode } = useWorkspace();
-  const today = useToday();
+  const overview = useOverview();
   const preferences = usePreferences();
   const queryClient = useQueryClient();
   const toast = useToast();
   const checkin = useMutation({
-    mutationFn: (body: CheckinInput) =>
-      workspaceRequest<{ reply?: { text: string } }>(mode, `/checkins/${today.data!.date}`, {
+    mutationFn: ({ mood, note }: { mood: number | null; note: string }) =>
+      workspaceRequest(mode, `/checkins/${overview.data!.date}`, {
         method: 'PUT',
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          mood,
+          energy: overview.data?.feeling_today?.energy ?? null,
+          soreness: overview.data?.feeling_today?.soreness ?? null,
+          note,
+        }),
       }),
-    onSuccess: (result) => {
-      toast({ message: result.reply?.text ?? 'Check-in saved' });
-      void queryClient.invalidateQueries({ queryKey: [mode, 'today'] });
+    onSuccess: () => {
+      toast({ message: 'Check-in saved' });
+      void queryClient.invalidateQueries({ queryKey: [mode, 'overview'] });
     },
+    onError: (error) => toast({ message: error.message }),
   });
-
-  if (today.isPending)
+  if (overview.isPending)
     return (
-      <div className="mx-auto max-w-7xl space-y-4" aria-label="Loading Today">
-        <Skeleton className="h-32" />
-        <div className="grid gap-4 md:grid-cols-3">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
+      <div aria-label="Loading Overview" className="space-y-5">
+        <Skeleton className="h-28" />
+        <Skeleton className="h-44" />
+        <div className="grid gap-5 md:grid-cols-2">
+          <Skeleton className="h-56" />
+          <Skeleton className="h-56" />
         </div>
       </div>
     );
-  if (today.isError)
-    return (
-      <ErrorState
-        message={today.error.message}
-        retry={() => {
-          void today.refetch();
-        }}
-      />
-    );
-  if (!today.data)
+  if (overview.isError)
+    return <ErrorState message={overview.error.message} retry={() => void overview.refetch()} />;
+  if (!overview.data)
     return (
       <EmptyState
-        title="Today is ready for you"
-        text="Connect your watch or explore sample data to begin."
+        title="Your overview starts here"
+        text="Connect your Garmin account or explore sample data to see last night's readings and this week's activity."
       />
     );
-  const data = today.data;
-  const layout = (data.layout.length ? data.layout : ['week', 'suggestion', 'checkin']).filter(
-    (id) => !['streak', 'next_milestone', 'journey'].includes(id),
-  );
+  const data = overview.data;
   return (
-    <div className="mx-auto max-w-7xl space-y-5">
-      <section className="flex flex-wrap items-start justify-between gap-4 rounded-card border border-border bg-surface p-5 md:p-7">
-        <div className="max-w-3xl">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-accent">
-            My Day ·{' '}
-            {new Date(`${data.date}T12:00:00`).toLocaleDateString(undefined, {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
-          <h2 className="mb-3 text-2xl font-bold md:text-3xl">{data.greeting}</h2>
-          <p className="type-body text-text-2">Your activity and health data at a glance.</p>
-        </div>
-      </section>
-      <div className="grid gap-4 md:grid-cols-12">
-        {layout.map((id) => (
-          <div
-            key={id}
-            className={
-              id === 'week' || id === 'latest_activity' || id === 'insights'
-                ? 'md:col-span-5 lg:col-span-5'
-                : id === 'suggestion'
-                  ? 'md:col-span-4 lg:col-span-4'
-                  : 'md:col-span-3 lg:col-span-3'
-            }
-          >
-            <div
-              data-tour={
-                id === 'week'
-                  ? 'week'
-                  : id === 'sleep'
-                    ? 'metric-strip'
-                    : id === 'suggestion'
-                      ? 'guidance'
-                      : undefined
-              }
-            >
-              <TodayCard
-                id={id}
-                data={data}
-                prefs={preferences.data}
-                onCheckin={(value) => checkin.mutate(value)}
-                checkinSaving={checkin.isPending}
-              />
-            </div>
-          </div>
-        ))}
+    <div className="space-y-9">
+      <PageHeader
+        title={formatDateTitle(data.date)}
+        description={data.summary_sentence}
+        pageId="overview"
+      />
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-x-6 md:gap-y-10">
+        <OverviewLastNight data={data.last_night} />
+        <OverviewGuidance data={data.today} />
+        <OverviewWeek data={data.week} />
+        <OverviewRecent
+          activities={data.recent_activities}
+          date={data.date}
+          units={preferences.data?.units ?? 'metric'}
+        />
+        <OverviewNotes notes={data.notes} />
+        <OverviewFeeling
+          data={data.feeling_today}
+          saving={checkin.isPending}
+          onSave={(mood, note) => checkin.mutate({ mood, note })}
+        />
       </div>
     </div>
   );

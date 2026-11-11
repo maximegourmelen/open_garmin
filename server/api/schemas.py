@@ -155,27 +155,24 @@ class Milestone(ResponseShape):
     progress: dict | None
 
 
-class TodayResponse(ResponseShape):
+class OverviewMetric(ResponseShape):
+    value: float | None
+    unit: str
+    usual_range: dict | None
+    status: str
+    delta: float | None
+    spark: list[float | None]
+
+
+class OverviewResponse(ResponseShape):
     date: str
-    greeting: str
-    message: CompanionMessage
-    week: WeekProgress
-    suggestion: Suggestion
-    streak: Streak
-    sleep: dict | None
-    body_battery: dict | None
-    resting_hr: dict | None
-    hrv: dict | None
-    steps: dict | None
-    checkin: dict | None
-    latest_activity: dict | None
-    next_milestone: Milestone | None
-    journey: dict | None
-    insights: list[Insight]
-    unseen_milestones: list[Milestone]
-    recap_ready: str | None
-    layout: list[str]
-    method: str
+    summary_sentence: str
+    last_night: dict[str, OverviewMetric]
+    week: dict
+    today: dict
+    recent_activities: list[ActivitySummary]
+    notes: list[dict]
+    feeling_today: dict | None
 
 
 class HealthSeries(ResponseShape):
@@ -276,8 +273,9 @@ EXPORTED_SCHEMAS = {
     "insights": list[Insight],
     "journey": JourneyResponse,
     "methods": list[Method],
+    "overview": OverviewResponse,
     "progress": ProgressResponse,
     "relationship": RelationshipResponse,
     "status": StatusResponse,
-    "today": TodayResponse,
+    "today": OverviewResponse,
 }

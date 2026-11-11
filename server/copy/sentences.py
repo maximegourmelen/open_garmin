@@ -52,6 +52,27 @@ def today_suggestion(kind: str) -> tuple[str, str]:
     return TODAY_SUGGESTIONS[kind]
 
 
+def overview_summary(
+    *,
+    sleep_short_minutes: float | None,
+    hrv_below: bool,
+    active_minutes: float | None,
+    goal_minutes: float,
+) -> str:
+    context = []
+    if sleep_short_minutes is not None and sleep_short_minutes >= 30:
+        context.append(f"Sleep was {round(sleep_short_minutes)} min below need")
+    if hrv_below:
+        context.append("HRV below your usual range")
+    lead = " and ".join(context) + ". " if context else ""
+    progress = (
+        f"{round(active_minutes)} of {round(goal_minutes)} active minutes this week."
+        if active_minutes is not None
+        else "Active-minute data is not available yet this week."
+    )
+    return lead + progress
+
+
 def goal_suggestion(suggested: int, current_goal: int) -> str:
     direction = "above" if suggested > current_goal else "below"
     return f"A weekly goal of {count(suggested)} active minutes is {direction} your current goal."
@@ -148,8 +169,13 @@ def today_observation(user_id: str, day: date, tone: str, context: dict) -> dict
     record = context.get("recent_pb")
     if record:
         return render_message(
-            "pb", user_id, day, tone,
-            distance=record["distance"], time=record["time"], data_refs=[record["activity_id"]],
+            "pb",
+            user_id,
+            day,
+            tone,
+            distance=record["distance"],
+            time=record["time"],
+            data_refs=[record["activity_id"]],
         )
     if context.get("goal_reached_today"):
         return render_message("goal_reached", user_id, day, tone)
@@ -161,7 +187,10 @@ def today_observation(user_id: str, day: date, tone: str, context: dict) -> dict
     streak = context.get("streak") or {}
     if streak.get("at_risk"):
         return render_message(
-            "streak_risk", user_id, day, tone,
+            "streak_risk",
+            user_id,
+            day,
+            tone,
             minutes=count(streak.get("remaining_minutes"), ""),
         )
     last_activity = context.get("last_activity_date")
@@ -169,8 +198,12 @@ def today_observation(user_id: str, day: date, tone: str, context: dict) -> dict
         return render_message("welcome_back", user_id, day, tone)
     week = context.get("week") or {}
     return render_message(
-        "week_progress", user_id, day, tone,
-        minutes=count(week.get("minutes", 0)), pct=percent(week.get("pct")),
+        "week_progress",
+        user_id,
+        day,
+        tone,
+        minutes=count(week.get("minutes", 0)),
+        pct=percent(week.get("pct")),
     )
 
 

@@ -103,6 +103,50 @@ export interface MetricSummary {
   value_label: string | null;
 }
 
+export interface OverviewMetric {
+  value: number | null;
+  unit: string;
+  usual_range: { low: number; high: number; median: number; n?: number } | null;
+  status: 'missing' | 'below' | 'within' | 'above';
+  delta: number | null;
+  spark: (number | null)[];
+}
+
+export interface OverviewResponse {
+  date: string;
+  summary_sentence: string;
+  last_night: {
+    sleep: OverviewMetric;
+    resting_hr: OverviewMetric;
+    hrv: OverviewMetric;
+    body_battery: OverviewMetric;
+  };
+  week: {
+    active_minutes: number | null;
+    goal_minutes: number;
+    activity_count: number;
+    goal_activities: number;
+    activity_seconds: number;
+    daily_active_minutes: (number | null)[];
+    start: string;
+    end: string;
+  };
+  today: {
+    kind: 'go' | 'easy' | 'rest' | 'unknown';
+    title: string;
+    sentence: string;
+    reasons: { label: string; value: string; metric_id: string }[];
+  };
+  recent_activities: ActivitySummary[];
+  notes: { id: string; text: string; source: string; href: string }[];
+  feeling_today: {
+    mood: number | null;
+    energy: number | null;
+    soreness: number | null;
+    note: string;
+  } | null;
+}
+
 export interface StreamData {
   index: number[];
   time: number[];
@@ -244,61 +288,6 @@ export interface Insight {
     summary: string;
     sources: { label: string; url: string }[];
   }[];
-}
-
-export interface TodayResponse {
-  date: string;
-  greeting: string;
-  message: CompanionMessage;
-  week: WeekProgress;
-  suggestion: Suggestion;
-  streak: Streak;
-  sleep: {
-    date: string;
-    minutes: number | null;
-    need_minutes: number | null;
-    score: number | null;
-    stages: Record<string, number | null>;
-    sentence: string;
-  } | null;
-  body_battery: {
-    latest: number | null;
-    at_wake: number | null;
-    charged: number | null;
-    drained: number | null;
-    sentence: string | null;
-  } | null;
-  resting_hr: {
-    value: number | null;
-    usual: number | null;
-    spark: (number | null)[];
-    sentence: string;
-  } | null;
-  hrv: {
-    value: number | null;
-    status: string | null;
-    balanced_low: number | null;
-    balanced_high: number | null;
-    sentence: string;
-  } | null;
-  steps: { value: number | null; goal: number | null } | null;
-  checkin: {
-    date: string;
-    mood: number | null;
-    energy: number | null;
-    soreness: number | null;
-    note: string;
-  } | null;
-  latest_activity:
-    | (ActivitySummary & { route_preview: [number, number][] | null; summary: CompanionMessage })
-    | null;
-  next_milestone: MilestoneView | null;
-  journey: JourneyView | null;
-  insights: Insight[];
-  unseen_milestones: MilestoneView[];
-  recap_ready: string | null;
-  layout: string[];
-  method: string;
 }
 
 export interface HealthSeries<T = Record<string, unknown>> {

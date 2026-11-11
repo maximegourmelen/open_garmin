@@ -16,10 +16,10 @@ from server.api.schemas import (
     Insight,
     Method,
     MetricSummary,
+    OverviewResponse,
     ProgressResponse,
     RelationshipResponse,
     StatusResponse,
-    TodayResponse,
 )
 from server.db.store import Store
 from server.main import create_app
@@ -35,7 +35,8 @@ def test_demo_response_schemas():
     cases = [
         ("status", StatusResponse),
         ("activities", ActivityList),
-        ("today", TodayResponse),
+        ("today", OverviewResponse),
+        ("overview", OverviewResponse),
         ("wellness/sleep", HealthSeries),
         ("wellness/heart", HealthSeries),
         ("wellness/energy", HealthSeries),

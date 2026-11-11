@@ -1,0 +1,324 @@
+{
+  "$defs": {
+    "ActivitySummary": {
+      "additionalProperties": true,
+      "properties": {
+        "average_hr": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Average Hr"
+        },
+        "average_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Average Speed"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "detail_state": {
+          "title": "Detail State",
+          "type": "string"
+        },
+        "device": {
+          "title": "Device",
+          "type": "string"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Distance"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duration"
+        },
+        "effort_points": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effort Points"
+        },
+        "elevation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Elevation"
+        },
+        "gap_speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gap Speed"
+        },
+        "has_route": {
+          "title": "Has Route",
+          "type": "boolean"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "is_best": {
+          "title": "Is Best",
+          "type": "boolean"
+        },
+        "location_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Location Name"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "sport": {
+          "title": "Sport",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "zone_minutes": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Zone Minutes"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sport",
+        "type",
+        "date",
+        "start",
+        "distance",
+        "duration",
+        "average_speed",
+        "gap_speed",
+        "average_hr",
+        "elevation",
+        "effort_points",
+        "zone_minutes",
+        "has_route",
+        "detail_state",
+        "location_name",
+        "is_best",
+        "device",
+        "source"
+      ],
+      "title": "ActivitySummary",
+      "type": "object"
+    },
+    "OverviewMetric": {
+      "additionalProperties": true,
+      "properties": {
+        "delta": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Delta"
+        },
+        "spark": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Spark",
+          "type": "array"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "usual_range": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Usual Range"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "unit",
+        "usual_range",
+        "status",
+        "delta",
+        "spark"
+      ],
+      "title": "OverviewMetric",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "date": {
+      "title": "Date",
+      "type": "string"
+    },
+    "feeling_today": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Feeling Today"
+    },
+    "last_night": {
+      "additionalProperties": {
+        "$ref": "#/$defs/OverviewMetric"
+      },
+      "title": "Last Night",
+      "type": "object"
+    },
+    "notes": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "recent_activities": {
+      "items": {
+        "$ref": "#/$defs/ActivitySummary"
+      },
+      "title": "Recent Activities",
+      "type": "array"
+    },
+    "summary_sentence": {
+      "title": "Summary Sentence",
+      "type": "string"
+    },
+    "today": {
+      "additionalProperties": true,
+      "title": "Today",
+      "type": "object"
+    },
+    "week": {
+      "additionalProperties": true,
+      "title": "Week",
+      "type": "object"
+    }
+  },
+  "required": [
+    "date",
+    "summary_sentence",
+    "last_night",
+    "week",
+    "today",
+    "recent_activities",
+    "notes",
+    "feeling_today"
+  ],
+  "title": "OverviewResponse",
+  "type": "object"
+}
