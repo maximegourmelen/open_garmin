@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
     weekly_sessions: 3,
     units: 'metric',
     theme: 'dark',
-    companion_name: 'Pip',
+    companion_name: 'Legacy',
     companion_tone: 'cheerful',
   },
 }));
@@ -31,7 +31,6 @@ vi.mock('../../lib/queries', () => ({
     isPending: false,
     isError: false,
   }),
-  useJourney: () => ({ data: { goal_suggestion: { minutes: 80 }, goal: { minutes: 150 } } }),
 }));
 afterEach(() => {
   cleanup();
@@ -67,18 +66,16 @@ function mount(mode: 'demo' | 'live' = 'demo') {
   );
 }
 
-test('sample path saves goal, companion and theme choices', async () => {
+test('sample path saves goal, units and theme choices', async () => {
   mocks.request.mockResolvedValue({ ok: true });
   mount();
   fireEvent.click(screen.getByRole('button', { name: 'Look around with sample data' }));
   fireEvent.click(screen.getByRole('button', { name: /Start running/ }));
   fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-  expect(screen.getByText(/Active minutes:/).textContent).toContain('80 min');
+  expect(screen.getByText(/Active minutes:/).textContent).toContain('90 min');
   fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-  fireEvent.change(screen.getByRole('textbox', { name: 'Companion name' }), {
-    target: { value: 'Buddy' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: 'calm' }));
+  fireEvent.click(screen.getByRole('button', { name: 'light' }));
+  fireEvent.click(screen.getByRole('button', { name: 'imperial' }));
   fireEvent.click(screen.getByRole('button', { name: 'Finish' }));
   await waitFor(() =>
     expect(mocks.request).toHaveBeenCalledWith(
@@ -86,7 +83,7 @@ test('sample path saves goal, companion and theme choices', async () => {
       '/preferences',
       expect.objectContaining({
         method: 'PUT',
-        body: expect.stringContaining('"companion_name":"Buddy"'),
+        body: expect.stringContaining('"units":"imperial"'),
       }),
     ),
   );
@@ -94,7 +91,7 @@ test('sample path saves goal, companion and theme choices', async () => {
     mocks.request.mock.calls.find((call) => call[1] === '/preferences')?.[2].body,
   );
   expect(saved.goal_focus).toBe('start_running');
-  expect(saved.journey.id).toBe('walk_to_run_9w');
+  expect(saved.theme).toBe('light');
   expect(saved.onboarded).toBe(true);
   expect(await screen.findByText('You’re all set')).toBeTruthy();
 });

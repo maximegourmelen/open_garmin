@@ -238,9 +238,9 @@ export function NoteEditor({
             aria-label={label}
             aria-pressed={feel === index + 1}
             onClick={() => setFeel(index + 1)}
-            className={`flex size-9 items-center justify-center rounded-full text-xl ${feel === index + 1 ? 'bg-accent-soft ring-2 ring-accent' : 'bg-surface-2'}`}
+            className={`flex size-9 items-center justify-center rounded-full type-body ${feel === index + 1 ? 'bg-accent-soft ring-2 ring-accent' : 'bg-surface-2'}`}
           >
-            {['😫', '😕', '😐', '🙂', '😄'][index]}
+            {index + 1}
           </button>
         ))}
       </div>

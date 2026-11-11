@@ -1,7 +1,6 @@
 import { Activity, CalendarDays, Gauge, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Pip } from '../../components/companion';
 import { BarSeries, CalendarHeatmap, RingGauge } from '../../components/charts';
 import {
   Card,
@@ -58,7 +57,7 @@ function Bests({
           <div key={item.kind} className="rounded-tile border border-border bg-surface-2 p-3">
             <div className="flex items-center gap-2">
               <p className="text-sm text-text-2">{names[item.kind]}</p>
-              {best.is_new && <Pill tone="success">New!</Pill>}
+              {best.is_new && <Pill tone="success">New</Pill>}
             </div>
             <p className="mt-1 font-display text-2xl font-bold">{value}</p>
             <p className="text-xs text-text-3">{shortDate(best.date)}</p>
@@ -114,7 +113,9 @@ export default function ProgressPage() {
             <div key={signal.id} className="flex gap-3 rounded-tile bg-surface-2 p-4">
               <div className="shrink-0">
                 {signal.status === 'insufficient' ? (
-                  <Pip pose="thinking" size={40} />
+                  <span className="flex size-9 items-center justify-center rounded-full bg-surface-3 text-text-3">
+                    —
+                  </span>
                 ) : (
                   <span
                     className={`flex size-9 items-center justify-center rounded-full text-xl ${signal.status === 'improving' ? 'bg-success/15 text-success' : 'bg-accent-soft text-accent'}`}

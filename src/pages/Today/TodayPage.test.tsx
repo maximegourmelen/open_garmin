@@ -76,7 +76,7 @@ const prefs = {
   today_layout: ['week', 'checkin'],
   units: 'metric',
   companion_enabled: true,
-  companion_name: 'Pip',
+  companion_name: 'Legacy',
 } as Preferences;
 
 function mount() {
@@ -114,7 +114,7 @@ afterEach(() => {
 
 test('shows the week and saves a check-in in the selected workspace', async () => {
   mount();
-  expect(screen.getByText('A steady start to the week.')).toBeTruthy();
+  expect(screen.getByText('Your activity and health data at a glance.')).toBeTruthy();
   expect(screen.getByText('You moved 30 minutes this week.')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Good' }));
   fireEvent.click(screen.getByRole('button', { name: 'Save check-in' }));
@@ -126,22 +126,6 @@ test('shows the week and saves a check-in in the selected workspace', async () =
     ),
   );
   expect(JSON.parse(mocks.workspaceRequest.mock.calls[0][2].body).mood).toBe(4);
-});
-
-test('Edit My Day saves card order and visibility', async () => {
-  mount();
-  fireEvent.click(screen.getByRole('button', { name: 'Edit My Day' }));
-  expect(screen.getByRole('dialog', { name: 'Edit My Day' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('switch', { name: 'Show Check-in' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Save layout' }));
-  await waitFor(() =>
-    expect(mocks.workspaceRequest).toHaveBeenCalledWith(
-      'demo',
-      '/preferences',
-      expect.objectContaining({ method: 'PUT' }),
-    ),
-  );
-  expect(JSON.parse(mocks.workspaceRequest.mock.calls[0][2].body).today_layout).toEqual(['week']);
 });
 
 test('loading and error states give a clear retry', () => {

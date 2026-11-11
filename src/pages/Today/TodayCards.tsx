@@ -1,7 +1,6 @@
 import {
   BatteryMedium,
   CalendarDays,
-  Flame,
   Footprints,
   Heart,
   HeartPulse,
@@ -11,7 +10,6 @@ import {
   Sun,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Pip } from '../../components/companion';
 import { RingGauge, RouteMap, Sparkline, StageBar, WeekDots } from '../../components/charts';
 import { BigNumber } from '../../components/data';
 import { Button, Card, Pill, ProgressBar } from '../../components/ui';
@@ -55,9 +53,9 @@ function CheckInCard({
             aria-pressed={mood === i + 1}
             title={label}
             onClick={() => setMood(i + 1)}
-            className={`flex size-9 items-center justify-center rounded-full text-xl ${mood === i + 1 ? 'bg-accent-soft ring-2 ring-accent' : 'bg-surface-2'}`}
+            className={`flex size-9 items-center justify-center rounded-full type-body ${mood === i + 1 ? 'bg-accent-soft ring-2 ring-accent' : 'bg-surface-2'}`}
           >
-            {['😫', '😕', '😐', '🙂', '😄'][i]}
+            {i + 1}
           </button>
         ))}
       </div>
@@ -167,13 +165,8 @@ export function TodayCard({ id, data, prefs, onCheckin, checkinSaving }: Props &
             method: data.suggestion.method,
           }}
         >
-          <div className="flex items-start gap-3">
-            <Pip pose={data.suggestion.pose} size={72} />
-            <div>
-              <h3 className="font-semibold">{data.suggestion.title}</h3>
-              <p className="mt-1 text-sm text-text-2">{data.suggestion.text}</p>
-            </div>
-          </div>
+          <h3 className="font-semibold">{data.suggestion.title}</h3>
+          <p className="mt-1 text-sm text-text-2">{data.suggestion.text}</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {data.suggestion.signals.map((signal) => (
               <Pill
@@ -191,32 +184,6 @@ export function TodayCard({ id, data, prefs, onCheckin, checkinSaving }: Props &
             ))}
           </div>
           <p className="mt-3 text-xs text-text-3">{data.suggestion.footnote}</p>
-        </Card>
-      );
-    case 'streak':
-      return (
-        <Card
-          title="Streak"
-          icon={Flame}
-          href="/journey"
-
-          explainer={{
-            what: 'Consecutive weeks when you met your minutes or sessions goal.',
-            why: 'Consistency matters, and rest days are welcome.',
-            source: 'Open Garmin from weekly activity',
-            method: data.streak.method,
-          }}
-        >
-          <BigNumber
-            value={data.streak.current}
-            unit={data.streak.current === 1 ? 'week' : 'weeks'}
-            size="xl"
-          />
-          <p className="mt-2 text-sm text-text-2">
-            {data.streak.at_risk
-              ? `${Math.ceil(data.streak.remaining_minutes)} more minutes keeps your streak going.`
-              : `Your longest streak is ${data.streak.longest} weeks.`}
-          </p>
         </Card>
       );
     case 'sleep':
@@ -340,36 +307,9 @@ export function TodayCard({ id, data, prefs, onCheckin, checkinSaving }: Props &
           )}
         </Card>
       );
-    case 'next_milestone':
-      return (
-        <Card title="Next milestone" icon={Sparkles} href="/journey">
-          {data.next_milestone ? (
-            <>
-              <h3 className="font-semibold">{data.next_milestone.title}</h3>
-              <p className="mb-3 text-sm text-text-2">{data.next_milestone.description}</p>
-              {data.next_milestone.progress && (
-                <>
-                  <ProgressBar
-                    label={data.next_milestone.title}
-                    value={data.next_milestone.progress.current}
-                    max={data.next_milestone.progress.target}
-                    color="celebrate"
-                  />
-                  <p className="mt-2 text-xs text-text-2">
-                    {data.next_milestone.progress.current} of {data.next_milestone.progress.target}{' '}
-                    {data.next_milestone.progress.unit}
-                  </p>
-                </>
-              )}
-            </>
-          ) : (
-            <p className="text-sm text-text-2">Keep moving and see what you unlock.</p>
-          )}
-        </Card>
-      );
     case 'insights':
       return (
-        <Card title="Things I noticed" icon={Sparkles} href="/progress">
+        <Card title="Things I noticed" icon={Sparkles} href="/trends">
           <div className="space-y-3">
             {data.insights.length ? (
               data.insights.map((insight) => (
@@ -409,15 +349,6 @@ export function TodayCard({ id, data, prefs, onCheckin, checkinSaving }: Props &
           <BigNumber value={data.hrv?.value} unit="ms" size="lg" />
           <p className="mt-2 text-sm text-text-2">
             {data.hrv?.sentence ?? 'Your watch has not reported this yet.'}
-          </p>
-        </Card>
-      );
-    case 'journey':
-      return (
-        <Card title="Your journey" icon={Map} href="/journey">
-          <h3 className="font-semibold">{data.journey?.name ?? 'Choose a journey'}</h3>
-          <p className="mt-2 text-sm text-text-2">
-            {data.journey ? 'See your next small step.' : 'A journey can help you build a routine.'}
           </p>
         </Card>
       );

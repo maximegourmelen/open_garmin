@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../../app/workspace-context';
 import { ConnectFlow } from '../../components/connection/ConnectFlow';
-import { Pip } from '../../components/companion';
 import { Button, Card, Dialog, ErrorState, Pill, Skeleton, useToast } from '../../components/ui';
 import { request } from '../../lib/api';
 import type { StatusResponse } from '../../lib/types';
@@ -51,7 +50,6 @@ export function ConnectionSection() {
     <div className="space-y-4">
       <Card title="Garmin connection" icon={ShieldCheck}>
         <div className="flex items-center gap-4">
-          <Pip pose={live.data?.connection.connected ? 'cheer' : 'thinking'} size={72} />
           <div>
             <Pill tone={live.data?.connection.connected ? 'success' : 'neutral'}>
               {live.data?.connection.connected

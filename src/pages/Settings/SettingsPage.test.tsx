@@ -31,7 +31,7 @@ const prefs: Preferences = {
   onboarded: true,
   goal_focus: 'move_more',
   companion_enabled: true,
-  companion_name: 'Pip',
+  companion_name: 'Legacy',
   companion_tone: 'cheerful',
   zone_source: 'garmin',
   max_hr: null,

@@ -3,14 +3,12 @@ import { ArrowLeft, Download, Star } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWorkspace } from '../../app/workspace-context';
-import { CompanionMessage, Pip } from '../../components/companion';
 import { RouteMap, StreamCharts } from '../../components/charts';
 import {
   Button,
   Card,
   EmptyState,
   ErrorState,
-  Pill,
   SegmentedControl,
   Skeleton,
   useToast,
@@ -180,30 +178,15 @@ export default function ActivityDetailPage() {
         </details>
       </header>
       <section className="rounded-card border border-border bg-surface p-4">
-        <CompanionMessage
-          message={data.summary}
-          showPip={preferences.data?.companion_enabled ?? true}
-          name={preferences.data?.companion_name ?? 'Pip'}
-        />
-        <div className="mt-3 flex flex-wrap gap-2">
-          {data.is_best && <Pill tone="success">⭐ Personal best</Pill>}
-          {data.milestones.map((milestone) => (
-            <Pill key={milestone.id} tone="accent">
-              {milestone.title}
-            </Pill>
-          ))}
-        </div>
+        <p className="type-body text-text-2">{data.summary.text}</p>
       </section>
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           {data.sport !== 'strength' && data.detail_state !== 'ready' ? (
             <Card title="See the full picture">
-              <div className="flex items-center gap-3">
-                <Pip pose="thinking" size={72} />
-                <p className="text-sm text-text-2">
-                  Want the full picture? I can fetch the detailed file from Garmin.
-                </p>
-              </div>
+              <p className="text-sm text-text-2">
+                Download the detailed file from Garmin to see charts and splits.
+              </p>
               <Button
                 className="mt-3"
                 disabled={mode === 'demo' || fetchDetails.isPending}

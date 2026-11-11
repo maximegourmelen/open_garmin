@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../../app/workspace-context';
 import { useTheme } from '../../app/theme-context';
 import { ConnectFlow } from '../../components/connection/ConnectFlow';
-import { Pip } from '../../components/companion';
 import { Button, Card, ErrorState, Skeleton, useToast } from '../../components/ui';
 import { workspaceRequest } from '../../lib/api';
-import { useJourney, usePreferences } from '../../lib/queries';
+import { usePreferences } from '../../lib/queries';
 import type { Preferences } from '../../lib/types';
 
 const goals = [
@@ -16,40 +15,30 @@ const goals = [
     id: 'move_more',
     title: 'Move more',
     detail: 'Make everyday movement feel easier.',
-    journey: 'move_more_8w',
   },
   {
     id: 'start_running',
     title: 'Start running',
     detail: 'Ease from walking into running.',
-    journey: 'walk_to_run_9w',
   },
   {
     id: 'build_habit',
     title: 'Build a habit',
     detail: 'Make room for movement each week.',
-    journey: 'habit_4w',
   },
   {
     id: 'sleep_better',
     title: 'Sleep better',
     detail: 'Find a steadier bedtime rhythm.',
-    journey: 'sleep_rhythm_4w',
   },
   {
     id: 'curious',
     title: 'Exploring',
     detail: 'Explore your data at your own pace.',
-    journey: null,
   },
 ] as const;
 type Goal = (typeof goals)[number]['id'];
 const steps = ['Hello', 'Connect', 'Your goal', 'Weekly target', 'Make it yours', 'Done'];
-function localDate() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const { mode, setMode, session } = useWorkspace();
@@ -57,14 +46,11 @@ export default function OnboardingPage() {
   const client = useQueryClient();
   const toast = useToast();
   const prefs = usePreferences();
-  const journey = useJourney();
   const [step, setStep] = useState(0);
   const [path, setPath] = useState<'demo' | 'live'>('demo');
   const [goal, setGoal] = useState<Goal>('move_more');
   const [minutes, setMinutes] = useState(90);
   const [sessions, setSessions] = useState(3);
-  const [name, setName] = useState('Pip');
-  const [tone, setTone] = useState<'cheerful' | 'calm'>('cheerful');
   const [theme, chooseTheme] = useState<'dark' | 'light' | 'system'>('system');
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const skip = useMutation({
@@ -88,7 +74,6 @@ export default function OnboardingPage() {
   const save = useMutation({
     mutationFn: async () => {
       if (!prefs.data) throw new Error('Preferences are still loading.');
-      const selected = goals.find((item) => item.id === goal)!;
       const targetMode = path === 'live' && session?.user ? 'live' : 'demo';
       const next: Preferences = {
         ...prefs.data,
@@ -96,13 +81,8 @@ export default function OnboardingPage() {
         goal_focus: goal,
         weekly_minutes: minutes,
         weekly_sessions: sessions,
-        companion_name: name.trim() || 'Pip',
-        companion_tone: tone,
         theme,
         units,
-        journey: selected.journey
-          ? { id: selected.journey, started: localDate(), paused: false, repeats: [] }
-          : null,
       };
       await workspaceRequest(targetMode, '/preferences', {
         method: 'PUT',
@@ -124,8 +104,7 @@ export default function OnboardingPage() {
       save.mutate();
       return;
     }
-    if (step === 2)
-      setMinutes(journey.data?.goal_suggestion?.minutes ?? journey.data?.goal.minutes ?? 90);
+    if (step === 2) setMinutes(90);
     setStep((value) => Math.min(5, value + 1));
   };
   if (prefs.isPending)
@@ -165,10 +144,9 @@ export default function OnboardingPage() {
         <div className="space-y-5">
           {step === 0 && (
             <div className="text-center">
-              <Pip pose="wave" size={140} />
-              <h1 className="mt-3 font-display text-3xl font-bold">Hi, I’m Pip</h1>
+              <h1 className="mt-3 font-display text-3xl font-bold">See your Garmin data clearly</h1>
               <p className="mx-auto mt-2 max-w-md text-text-2">
-                I’ll help you make sense of your watch data and cheer you on.
+                Bring your activity and health data into one private place.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <Button
@@ -195,7 +173,6 @@ export default function OnboardingPage() {
           {step === 1 && (
             <>
               <div className="text-center">
-                <Pip pose="thinking" size={72} />
                 <h2 className="mt-2 font-display text-2xl font-bold">Bring your Garmin data in</h2>
               </div>
               <ConnectFlow
@@ -219,7 +196,6 @@ export default function OnboardingPage() {
           {step === 2 && (
             <>
               <div className="text-center">
-                <Pip pose="stretch" size={72} />
                 <h2 className="mt-2 font-display text-2xl font-bold">What’s your main goal?</h2>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -244,7 +220,6 @@ export default function OnboardingPage() {
           {step === 3 && (
             <>
               <div className="text-center">
-                <Pip pose="cheer" size={72} />
                 <h2 className="mt-2 font-display text-2xl font-bold">Your weekly goal</h2>
                 <p className="mt-2 text-sm text-text-2">
                   Most people start with something that feels easy. You can change it any time.
@@ -279,32 +254,7 @@ export default function OnboardingPage() {
           {step === 4 && (
             <>
               <div className="text-center">
-                <Pip pose="proud" size={72} />
                 <h2 className="mt-2 font-display text-2xl font-bold">Make it yours</h2>
-              </div>
-              <label className="block text-sm">
-                Companion name
-                <input
-                  className="mt-1 w-full rounded-control border border-border-strong bg-surface-2 p-2"
-                  maxLength={20}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                />
-              </label>
-              <div>
-                <p className="mb-2 text-sm">Companion tone</p>
-                <div className="flex gap-2">
-                  {(['cheerful', 'calm'] as const).map((item) => (
-                    <button
-                      key={item}
-                      aria-pressed={tone === item}
-                      onClick={() => setTone(item)}
-                      className={`rounded-control px-4 py-2 text-sm capitalize ${tone === item ? 'bg-accent-soft text-accent' : 'bg-surface-2'}`}
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </div>
               </div>
               <div>
                 <p className="mb-2 text-sm">Theme</p>
@@ -340,13 +290,10 @@ export default function OnboardingPage() {
           )}
           {step === 5 && (
             <div className="text-center">
-              <Pip pose="cheer" size={140} />
               <h2 className="mt-3 font-display text-3xl font-bold">You’re all set</h2>
-              <p className="mt-2 text-text-2">
-                First badge unlocked: <strong>Hello there</strong>.
-              </p>
+              <p className="mt-2 text-text-2">Your data is ready to explore.</p>
               <Button className="mt-6" onClick={() => navigate('/')}>
-                Go to My Day <ArrowRight size={16} />
+                Go to Overview <ArrowRight size={16} />
               </Button>
             </div>
           )}

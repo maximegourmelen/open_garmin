@@ -32,7 +32,6 @@ def test_every_demo_method_has_registry_entry():
             "wellness/steps",
             "relationships?x=steps&y=hrv",
             "insights",
-            "journey",
             "progress",
             "progress/deeper",
             "today",

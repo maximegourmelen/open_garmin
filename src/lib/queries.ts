@@ -8,7 +8,6 @@ import type {
   DeeperResponse,
   HealthSeries,
   Insight,
-  JourneyResponse,
   Method,
   Preferences,
   ProgressResponse,
@@ -17,7 +16,6 @@ import type {
   RelationshipResponse,
   StatusResponse,
   TodayResponse,
-  WeeklyRecap,
 } from './types';
 
 export function queryKey(mode: 'demo' | 'live', ...parts: unknown[]) {
@@ -74,7 +72,6 @@ export const useWellness = (kind: string, range: Range = '4W') =>
 export const useProgress = () => useWorkspaceQuery<ProgressResponse>(['progress'], '/progress');
 export const useDeeper = (range: Range = '4W') =>
   useWorkspaceQuery<DeeperResponse>(['deeper', range], `/progress/deeper?range=${range}`);
-export const useJourney = () => useWorkspaceQuery<JourneyResponse>(['journey'], '/journey');
 export const useInsights = () => useWorkspaceQuery<Insight[]>(['insights'], '/insights');
 export const useMethods = () => useWorkspaceQuery<Method[]>(['methods'], '/methods');
 export const useResearch = () => useWorkspaceQuery<ResearchResponse>(['research'], '/research');
@@ -83,7 +80,3 @@ export const useRelationship = (x: string, y: string, lag: number, range: Range)
     ['relationships', x, y, lag, range],
     `/relationships?x=${encodeURIComponent(x)}&y=${encodeURIComponent(y)}&lag=${lag}&range=${range}`,
   );
-export const useRecap = (week: string) =>
-  useWorkspaceQuery<WeeklyRecap>(['recap', week], `/recaps/${week}`, {
-    enabled: Boolean(week),
-  });

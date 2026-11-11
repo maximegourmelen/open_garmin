@@ -4,17 +4,15 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const routes = [
-  ['today', '/'],
+  ['overview', '/'],
   ['activities', '/activities'],
-  ['journey', '/journey'],
-  ['health', '/health'],
   ['sleep', '/health/sleep'],
   ['heart', '/health/heart'],
-  ['energy', '/health/energy'],
+  ['body-battery', '/health/body-battery'],
   ['stress', '/health/stress'],
   ['steps', '/health/steps'],
-  ['progress', '/progress'],
-  ['methods', '/methods'],
+  ['trends', '/trends'],
+  ['guide', '/guide'],
   ['settings', '/settings'],
   ['welcome', '/welcome'],
 ] as const;
@@ -32,11 +30,6 @@ test.beforeEach(async ({ page }, testInfo) => {
 for (const [slug, route] of routes) {
   test(`${slug} renders synthetic demo data`, async ({ page }, testInfo) => {
     const errors: string[] = [];
-    const todayRequests: string[] = [];
-    page.on('request', (request) => {
-      if (request.url().endsWith('/api/demo/today') && request.method() === 'GET')
-        todayRequests.push(request.url());
-    });
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
@@ -48,31 +41,6 @@ for (const [slug, route] of routes) {
     await expect(main.locator('[aria-label^="Loading"]')).toHaveCount(0);
     await expect(main).not.toContainText('view is being prepared');
     await expect(main).not.toContainText('Something went wrong loading this');
-    if (slug === 'today') expect(todayRequests).toHaveLength(1);
-    const celebration = page.getByRole('dialog');
-    if (slug === 'today' && (await celebration.isVisible())) {
-      const celebrationPath = join(
-        'docs',
-        'screenshots',
-        'after',
-        testInfo.project.name,
-        'today-celebration.png',
-      );
-      mkdirSync(dirname(celebrationPath), { recursive: true });
-      await page.screenshot({ path: celebrationPath, fullPage: true, animations: 'disabled' });
-      const milestones = await page.request.get('/api/demo/journey');
-      expect(milestones.ok()).toBe(true);
-      const ids = (
-        (await milestones.json()) as { milestones: { id: string; earned: boolean }[] }
-      ).milestones
-        .filter((item) => item.earned)
-        .map((item) => item.id);
-      const seen = await page.request.post('/api/demo/milestones/seen', { data: { ids } });
-      expect(seen.ok()).toBe(true);
-      await page.reload();
-      await expect(main.locator('h2').first()).toBeVisible();
-      await expect(celebration).toHaveCount(0);
-    }
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(
       accessibility.violations
@@ -80,18 +48,31 @@ for (const [slug, route] of routes) {
         .map((item) => `${item.id}: ${item.nodes.map((node) => node.target.join(' ')).join(', ')}`),
       `${slug} serious accessibility violations`,
     ).toEqual([]);
-    if (testInfo.project.name === 'mobile-dark') {
+    if (testInfo.project.name.startsWith('mobile')) {
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
         `${slug} overflows on mobile`,
       ).toBe(true);
     }
-    const path = join('docs', 'screenshots', 'after', testInfo.project.name, `${slug}.png`);
+    const path = join('docs', 'screenshots', 'v2', testInfo.project.name, `${slug}.png`);
     mkdirSync(dirname(path), { recursive: true });
     await page.screenshot({ path, fullPage: true, animations: 'disabled' });
     expect(errors, `${slug} browser errors`).toEqual([]);
   });
 }
+
+test('legacy destinations redirect to the new route', async ({ page }) => {
+  for (const [oldPath, next] of [
+    ['/today', '/'],
+    ['/journey', '/trends'],
+    ['/progress', '/trends'],
+    ['/health/energy', '/health/body-battery'],
+    ['/methods', '/guide/methods'],
+  ]) {
+    await page.goto(oldPath);
+    await expect(page).toHaveURL(new RegExp(`${next.replaceAll('/', '\\/')}$`));
+  }
+});
 
 test('activity detail opens from the list and charts track the route', async ({ page }) => {
   const response = await page.request.get('/api/demo/activities?limit=50');
@@ -111,15 +92,7 @@ test('activity detail opens from the list and charts track the route', async ({ 
   ).toHaveCount(1);
 });
 
-test('check-in, recap, theme and command palette respond', async ({ page }) => {
-  const milestones = await page.request.get('/api/demo/journey');
-  const ids = (
-    (await milestones.json()) as { milestones: { id: string; earned: boolean }[] }
-  ).milestones
-    .filter((item) => item.earned)
-    .map((item) => item.id);
-  const seen = await page.request.post('/api/demo/milestones/seen', { data: { ids } });
-  expect(seen.ok()).toBe(true);
+test('check-in and command palette respond', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Save check-in' })).toBeVisible();
   await page.getByRole('button', { name: 'Good', exact: true }).click();
@@ -128,55 +101,14 @@ test('check-in, recap, theme and command palette respond', async ({ page }) => {
   );
   await page.getByRole('button', { name: 'Save check-in' }).click();
   expect((await saved).status()).toBe(200);
-  await page.goto('/journey');
-  await page
-    .getByRole('button', { name: /Week of/ })
-    .first()
-    .click();
-  await expect(page.getByRole('dialog', { name: 'Your week in stories' })).toBeVisible();
-  await page.getByRole('button', { name: /^Next$/ }).click();
-  await expect(
-    page.getByRole('dialog', { name: 'Your week in stories' }).getByText(/2 \/ /),
-  ).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog', { name: 'Your week in stories' })).toHaveCount(0);
-  const before = await page.locator('html').getAttribute('data-theme');
-  await page.getByRole('button', { name: 'Account menu' }).click();
-  await page.getByRole('menuitem', { name: 'Switch theme' }).click();
-  await expect(page.locator('html')).toHaveAttribute(
-    'data-theme',
-    before === 'dark' ? 'light' : 'dark',
-  );
   await page.keyboard.press('ControlOrMeta+K');
   await expect(page.getByRole('dialog', { name: 'Search and jump' })).toBeVisible();
-  await page.getByRole('textbox', { name: 'Search activities or pages' }).fill('Progress');
+  await page.getByRole('textbox', { name: 'Search activities or pages' }).fill('Trends');
   await page
     .getByRole('dialog', { name: 'Search and jump' })
-    .getByRole('button', { name: 'Progress' })
+    .getByRole('button', { name: 'Trends' })
     .click();
-  await expect(page).toHaveURL(/\/progress$/);
-});
-
-test('keyboard focus stays visible and inside stories', async ({ page }) => {
-  await page.goto('/journey');
-  await expect(page.getByRole('heading', { name: 'Your Journey', exact: true })).toBeVisible();
-  await page.keyboard.press('Tab');
-  const skip = page.getByRole('link', { name: 'Skip to content' });
-  await expect(skip).toBeFocused();
-  await expect(skip).toHaveCSS('outline-width', '2px');
-  await expect(skip).toHaveCSS('outline-offset', '2px');
-  await page
-    .getByRole('button', { name: /Week of/ })
-    .first()
-    .click();
-  const story = page.getByRole('dialog', { name: 'Your week in stories' });
-  await expect(story).toBeVisible();
-  for (let index = 0; index < 8; index++) {
-    await page.keyboard.press('Tab');
-    expect(await story.evaluate((node) => node.contains(document.activeElement))).toBe(true);
-  }
-  await page.keyboard.press('Escape');
-  await expect(story).toHaveCount(0);
+  await expect(page).toHaveURL(/\/trends$/);
 });
 
 test('health charts offer a data table', async ({ page }) => {

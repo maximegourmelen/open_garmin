@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check, ChevronRight, HeartPulse, Info, Palette, UserRound } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../../app/theme-context';
 import { useWorkspace } from '../../app/workspace-context';
 import {
@@ -19,11 +19,9 @@ import { usePreferences, useStatus } from '../../lib/queries';
 import type { Preferences, Sport } from '../../lib/types';
 import { ConnectionSection, DataSection } from './ConnectionAndData';
 
-type Section =
-  'profile' | 'companion' | 'zones' | 'units' | 'appearance' | 'connection' | 'data' | 'about';
+type Section = 'profile' | 'zones' | 'units' | 'appearance' | 'connection' | 'data' | 'about';
 const sections: { id: Section; label: string }[] = [
   { id: 'profile', label: 'Profile & goals' },
-  { id: 'companion', label: 'Companion' },
   { id: 'zones', label: 'Heart rate zones' },
   { id: 'units', label: 'Units & time' },
   { id: 'appearance', label: 'Appearance' },
@@ -49,7 +47,6 @@ function SettingsEditor({ initial }: { initial: Preferences }) {
   const themeContext = useTheme();
   const client = useQueryClient();
   const toast = useToast();
-  const navigate = useNavigate();
   const status = useStatus();
   const [params, setParams] = useSearchParams();
   const section: Section =
@@ -193,54 +190,6 @@ function SettingsEditor({ initial }: { initial: Preferences }) {
                     />
                   </label>
                 )}
-              </div>
-            </Card>
-          )}
-          {section === 'companion' && (
-            <Card title="Companion">
-              <div className="space-y-4">
-                <Switch
-                  label="Show Pip"
-                  checked={draft.companion_enabled}
-                  onChange={(value) => set('companion_enabled', value)}
-                />
-                <label className="block text-sm">
-                  Companion name
-                  <input
-                    className={inputClass}
-                    maxLength={20}
-                    value={draft.companion_name}
-                    onChange={(event) => set('companion_name', event.target.value)}
-                  />
-                </label>
-                <label className="block text-sm">
-                  Tone
-                  <select
-                    className={inputClass}
-                    value={draft.companion_tone}
-                    onChange={(event) =>
-                      set('companion_tone', event.target.value as Preferences['companion_tone'])
-                    }
-                  >
-                    <option value="cheerful">Cheerful</option>
-                    <option value="calm">Calm</option>
-                  </select>
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="secondary" onClick={() => navigate('/welcome')}>
-                    Replay onboarding
-                  </Button>
-                  <Button
-                    variant="quiet"
-                    onClick={() => {
-                      for (const key of Object.keys(localStorage))
-                        if (key.startsWith('og_tip_')) localStorage.removeItem(key);
-                      toast({ message: 'Dismissed tips reset' });
-                    }}
-                  >
-                    Reset dismissed tips
-                  </Button>
-                </div>
               </div>
             </Card>
           )}
