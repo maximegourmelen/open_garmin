@@ -3,31 +3,19 @@ import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../../lib/cn';
-import type { Source } from '../../lib/types';
 import { Explainer } from './Explainer';
-import { SourceBadge } from './SourceBadge';
 
 type Props = {
   title: string;
   icon?: LucideIcon;
   href?: string;
-  source?: Source;
   explainer?: { what: string; why: string; source: string; method?: string };
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
 };
 
-export function Card({
-  title,
-  icon: Icon,
-  href,
-  source,
-  explainer,
-  children,
-  footer,
-  className,
-}: Props) {
+export function Card({ title, icon: Icon, href, explainer, children, footer, className }: Props) {
   return (
     <section
       className={cn(
@@ -53,7 +41,6 @@ export function Card({
         ) : (
           <h2 className="min-w-0 flex-[1_1_7rem] font-semibold">{title}</h2>
         )}
-        {source && <SourceBadge source={source} />}
         {explainer && <Explainer title={title} {...explainer} />}
       </header>
       {children}

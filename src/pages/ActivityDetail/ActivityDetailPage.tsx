@@ -213,7 +213,7 @@ export default function ActivityDetailPage() {
               </Button>
             </Card>
           ) : data.sport !== 'strength' && hasGps ? (
-            <Card title="Your route" source={mode === 'demo' ? 'demo' : 'garmin'}>
+            <Card title="Your route">
               <SegmentedControl
                 label="Colour route by"
                 value={metric}
@@ -243,7 +243,7 @@ export default function ActivityDetailPage() {
       </div>
       <EffortSection activity={data} />
       {data.sport !== 'strength' && hasChannels && (
-        <Card title="Inside the activity" source={mode === 'demo' ? 'demo' : 'garmin'}>
+        <Card title="Inside the activity">
           <div className="mb-3">
             <SegmentedControl
               label="Chart distance or time"

@@ -144,7 +144,6 @@ export default function TodayPage() {
             <TodayCard
               id={id}
               data={data}
-              mode={mode}
               prefs={preferences.data}
               onCheckin={(value) => checkin.mutate(value)}
               checkinSaving={checkin.isPending}

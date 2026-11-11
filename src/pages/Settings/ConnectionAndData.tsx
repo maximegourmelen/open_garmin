@@ -210,7 +210,7 @@ export function DataSection() {
           <p className="mt-3 text-sm text-text-2">
             {session?.user
               ? 'Switch to your own workspace to export your data.'
-              : 'Sign in to export your own data. Sample data is available in the demo workspace.'}
+              : 'Sign in to export your own data. The demo workspace uses synthetic readings.'}
           </p>
         )}
         <p className="mt-3 text-xs text-text-3">

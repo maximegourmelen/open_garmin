@@ -23,7 +23,10 @@ vi.mock('../pages/Health/HealthPage', () => ({
 vi.mock('../pages/Methods/MethodsPage', () => ({
   default: () => <h2>Guide page</h2>,
 }));
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  sessionStorage.clear();
+});
 window.scrollTo = vi.fn();
 
 function renderAt(path: string) {
@@ -98,4 +101,16 @@ test('the new shell highlights the active destination', async () => {
       .some((link) => link.getAttribute('aria-current') === 'page'),
   ).toBe(true);
   expect(screen.queryByText('Workspace /')).toBeNull();
+});
+
+test('the demo banner collapses for the browser session', async () => {
+  const first = renderAt('/activities');
+  expect(await screen.findByText(/You’re viewing sample data/)).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Hide' }));
+  expect(screen.queryByText(/You’re viewing sample data/)).toBeNull();
+  expect(screen.getAllByText('Sample data').length).toBeGreaterThan(0);
+  first.unmount();
+  renderAt('/activities');
+  expect(screen.queryByText(/You’re viewing sample data/)).toBeNull();
+  expect(sessionStorage.getItem('og_demo_banner_hidden')).toBe('true');
 });

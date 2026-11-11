@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { BottomTabBar } from '../layout/BottomTabBar';
 import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
@@ -7,6 +7,9 @@ import { MobileTopBar } from '../layout/MobileTopBar';
 import { Dialog } from '../components/ui/Controls';
 import { useToast } from '../components/ui/toast-context';
 import { usePreferences } from '../lib/queries';
+import { useWorkspace } from './workspace-context';
+import { useDemoBannerVisibility } from './useDemoBannerVisibility';
+import { Banner, Tag } from '../components/ui/Structure';
 
 const GalleryPage = lazy(() => import('../gallery'));
 const TodayPage = lazy(() => import('../pages/Today/TodayPage'));
@@ -30,6 +33,8 @@ export default function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const preferences = usePreferences();
+  const { mode } = useWorkspace();
+  const { hidden: demoBannerHidden, hide: hideDemoBanner } = useDemoBannerVisibility();
   const welcome = location.pathname === '/welcome';
   const gallery = import.meta.env.DEV && location.pathname === '/dev/components';
   useEffect(() => {
@@ -66,7 +71,11 @@ export default function AppShell() {
       )}
       <div className="min-w-0 flex-1">
         {!welcome && !gallery && (
-          <MobileTopBar onSearch={() => setSearchOpen(true)} onHelp={() => navigate('/guide')} />
+          <MobileTopBar
+            onSearch={() => setSearchOpen(true)}
+            onHelp={() => navigate('/guide')}
+            sample={mode === 'demo' && demoBannerHidden}
+          />
         )}
         <main
           id="main-content"
@@ -74,6 +83,38 @@ export default function AppShell() {
             gallery ? '' : 'mx-auto max-w-[1120px] px-4 pb-24 pt-5 md:px-10 md:pb-12 md:pt-12'
           }
         >
+          {mode === 'demo' &&
+            !welcome &&
+            !gallery &&
+            (demoBannerHidden ? (
+              <div className="mb-4 hidden justify-end md:flex">
+                <Tag>Sample data</Tag>
+              </div>
+            ) : (
+              <div className="mb-6">
+                <Banner
+                  action={
+                    <div className="flex shrink-0 items-center gap-3">
+                      <Link
+                        to="/settings#connection"
+                        className="font-medium text-accent hover:underline"
+                      >
+                        Connect
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={hideDemoBanner}
+                        className="text-text-2 hover:text-text"
+                      >
+                        Hide
+                      </button>
+                    </div>
+                  }
+                >
+                  You’re viewing sample data. Connect your Garmin to see your own.
+                </Banner>
+              </div>
+            ))}
           {preferences.data?.onboarded === false && !welcome && !gallery ? (
             <Navigate to="/welcome" replace />
           ) : (

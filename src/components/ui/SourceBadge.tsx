@@ -10,7 +10,7 @@ const details = {
     icon: Calculator,
   },
   user: { label: 'You', text: 'Entered by you', icon: Pencil },
-  demo: { label: 'Sample data', text: 'Fictional data for exploring the app', icon: Watch },
+  demo: { label: 'Synthetic', text: 'Fictional data for exploring the app', icon: Watch },
   imported_fit: { label: 'Imported FIT', text: 'Read from an imported FIT file', icon: Watch },
 };
 

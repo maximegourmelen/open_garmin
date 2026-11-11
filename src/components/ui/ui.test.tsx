@@ -19,19 +19,18 @@ afterEach(() => {
   localStorage.clear();
 });
 
-test('card exposes a linked title and source', () => {
+test('card exposes a linked title', () => {
   render(
     <BrowserRouter>
-      <Card title="Your week" href="/journey" source="garmin">
+      <Card title="Your week" href="/journey">
         Progress
       </Card>
     </BrowserRouter>,
   );
   expect(screen.getByRole('region', { name: 'Your week' })).toBeTruthy();
   expect(screen.getByRole('link', { name: 'Your week' }).getAttribute('href')).toBe('/journey');
-  expect(screen.getByText('Garmin')).toBeTruthy();
   render(<SourceBadge source="demo" />);
-  expect(screen.getByText('Sample data')).toBeTruthy();
+  expect(screen.getByText('Synthetic')).toBeTruthy();
 });
 
 test('button and segmented control retain accessible states', () => {

@@ -63,7 +63,7 @@ export function EffortSection({ activity }: { activity: ActivityDetail }) {
   return (
     <Card
       title="How hard was it?"
-      source="calculated"
+
       explainer={{
         what: 'Heart rate zones describe how hard your heart was working.',
         why: 'Easy and hard minutes both have a place in training.',
@@ -228,7 +228,7 @@ export function NoteEditor({
     return () => clearTimeout(timer);
   }, [text, rpe, feel, tags, onSave]);
   return (
-    <Card title="How did it feel?" source="user">
+    <Card title="How did it feel?">
       <p className="mb-2 text-sm text-text-2">How did this session feel to you?</p>
       <div className="flex gap-2" role="group" aria-label="How it felt">
         {['Very hard', 'Hard', 'Okay', 'Good', 'Great'].map((label, index) => (

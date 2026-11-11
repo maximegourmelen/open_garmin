@@ -70,7 +70,7 @@ export function Banner({ children, action }: { children: ReactNode; action?: Rea
   return (
     <div
       role="status"
-      className="flex items-center justify-between gap-4 border-b border-border bg-surface-2 px-4 py-2 type-body text-text"
+      className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-2 px-4 py-2 type-body text-text"
     >
       <span>{children}</span>
       {action}

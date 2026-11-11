@@ -20,7 +20,6 @@ import type { Preferences, TodayResponse } from '../../lib/types';
 
 type Props = {
   data: TodayResponse;
-  mode: 'demo' | 'live';
   prefs?: Preferences;
   onCheckin: (value: {
     mood: number | null;
@@ -45,7 +44,7 @@ function CheckInCard({
   const [soreness, setSoreness] = useState<number | null>(data?.soreness ?? null);
   const [note, setNote] = useState(data?.note ?? '');
   return (
-    <Card title="Check-in" icon={Heart} source="user">
+    <Card title="Check-in" icon={Heart}>
       <p className="mb-3 text-sm text-text-2">How are you feeling today?</p>
       <div className="flex gap-2" role="group" aria-label="Mood">
         {['Very low', 'Low', 'Okay', 'Good', 'Great'].map((label, i) => (
@@ -112,22 +111,14 @@ function CheckInCard({
   );
 }
 
-export function TodayCard({
-  id,
-  data,
-  mode,
-  prefs,
-  onCheckin,
-  checkinSaving,
-}: Props & { id: string }) {
-  const sampleSource = mode === 'demo' ? ('demo' as const) : ('garmin' as const);
+export function TodayCard({ id, data, prefs, onCheckin, checkinSaving }: Props & { id: string }) {
   switch (id) {
     case 'week':
       return (
         <Card
           title="This week"
           icon={CalendarDays}
-          source={sampleSource}
+
           explainer={{
             what: 'Active minutes count moderate movement, with vigorous minutes counting double.',
             why: 'They show how your week is adding up.',
@@ -168,7 +159,7 @@ export function TodayCard({
         <Card
           title="Today's suggestion"
           icon={Sun}
-          source="calculated"
+
           explainer={{
             what: 'A friendly suggestion based on recent sleep, recovery, activity, and your check-in.',
             why: 'It helps you choose a pace for today.',
@@ -208,7 +199,7 @@ export function TodayCard({
           title="Streak"
           icon={Flame}
           href="/journey"
-          source="calculated"
+
           explainer={{
             what: 'Consecutive weeks when you met your minutes or sessions goal.',
             why: 'Consistency matters, and rest days are welcome.',
@@ -234,7 +225,7 @@ export function TodayCard({
           title="Sleep"
           icon={Moon}
           href="/health/sleep"
-          source={sampleSource}
+
           explainer={{
             what: 'How long you slept last night, including your stages.',
             why: 'Regular sleep helps you recover.',
@@ -266,7 +257,7 @@ export function TodayCard({
           title="Body Battery"
           icon={BatteryMedium}
           href="/health/energy"
-          source={sampleSource}
+
           explainer={{
             what: 'Garmin’s estimate of your current energy from 0 to 100.',
             why: 'Compare it with your own usual pattern.',
@@ -297,7 +288,7 @@ export function TodayCard({
           title="Resting heart rate"
           icon={Heart}
           href="/health/heart"
-          source={sampleSource}
+
           explainer={{
             what: 'Your lowest steady heart rate during the day.',
             why: 'It may slowly change as your fitness changes; compare only with yourself.',
@@ -324,7 +315,6 @@ export function TodayCard({
           title="Latest activity"
           icon={Map}
           href={data.latest_activity ? `/activities/${data.latest_activity.id}` : '/activities'}
-          source={sampleSource}
         >
           {data.latest_activity ? (
             <>
@@ -352,7 +342,7 @@ export function TodayCard({
       );
     case 'next_milestone':
       return (
-        <Card title="Next milestone" icon={Sparkles} href="/journey" source="calculated">
+        <Card title="Next milestone" icon={Sparkles} href="/journey">
           {data.next_milestone ? (
             <>
               <h3 className="font-semibold">{data.next_milestone.title}</h3>
@@ -379,7 +369,7 @@ export function TodayCard({
       );
     case 'insights':
       return (
-        <Card title="Things I noticed" icon={Sparkles} href="/progress" source="calculated">
+        <Card title="Things I noticed" icon={Sparkles} href="/progress">
           <div className="space-y-3">
             {data.insights.length ? (
               data.insights.map((insight) => (
@@ -401,7 +391,7 @@ export function TodayCard({
       );
     case 'steps':
       return (
-        <Card title="Steps" icon={Footprints} href="/health/steps" source={sampleSource}>
+        <Card title="Steps" icon={Footprints} href="/health/steps">
           <BigNumber
             value={data.steps?.value == null ? null : formatNumber(data.steps.value)}
             size="lg"
@@ -415,7 +405,7 @@ export function TodayCard({
       );
     case 'hrv':
       return (
-        <Card title="HRV" icon={HeartPulse} href="/health/heart" source={sampleSource}>
+        <Card title="HRV" icon={HeartPulse} href="/health/heart">
           <BigNumber value={data.hrv?.value} unit="ms" size="lg" />
           <p className="mt-2 text-sm text-text-2">
             {data.hrv?.sentence ?? 'Your watch has not reported this yet.'}
@@ -424,7 +414,7 @@ export function TodayCard({
       );
     case 'journey':
       return (
-        <Card title="Your journey" icon={Map} href="/journey" source="user">
+        <Card title="Your journey" icon={Map} href="/journey">
           <h3 className="font-semibold">{data.journey?.name ?? 'Choose a journey'}</h3>
           <p className="mt-2 text-sm text-text-2">
             {data.journey ? 'See your next small step.' : 'A journey can help you build a routine.'}
@@ -433,7 +423,7 @@ export function TodayCard({
       );
     case 'stress':
       return (
-        <Card title="Stress" icon={HeartPulse} href="/health/stress" source={sampleSource}>
+        <Card title="Stress" icon={HeartPulse} href="/health/stress">
           <p className="text-sm text-text-2">
             See how your stress and rest changed through the day.
           </p>
