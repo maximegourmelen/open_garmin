@@ -86,7 +86,7 @@ test('an unknown route returns to overview and explains why', async () => {
 test('primary navigation and command palette work', async () => {
   renderAt('/trends');
   expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: /^Search$/ }));
+  fireEvent.click(screen.getAllByRole('button', { name: /Search/ })[0]);
   expect(screen.getByRole('dialog', { name: 'Search and jump' })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Trends' }));
   expect(await screen.findByRole('heading', { name: 'Progress', level: 2 })).toBeTruthy();
@@ -113,4 +113,21 @@ test('the demo banner collapses for the browser session', async () => {
   renderAt('/activities');
   expect(screen.queryByText(/You’re viewing sample data/)).toBeNull();
   expect(sessionStorage.getItem('og_demo_banner_hidden')).toBe('true');
+});
+
+test('keyboard shortcuts open search and navigate with g a', async () => {
+  renderAt('/trends');
+  fireEvent.keyDown(window, { key: 'k', metaKey: true });
+  expect(await screen.findByRole('dialog', { name: 'Search and jump' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Close dialog' }));
+  fireEvent.keyDown(window, { key: 'g' });
+  fireEvent.keyDown(window, { key: 'a' });
+  await waitFor(() => expect(screen.getByTestId('location').textContent).toBe('/activities'));
+});
+
+test('question mark opens keyboard help', async () => {
+  renderAt('/activities');
+  fireEvent.keyDown(window, { key: '?' });
+  expect(await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })).toBeTruthy();
+  expect(screen.getByText('g a')).toBeTruthy();
 });

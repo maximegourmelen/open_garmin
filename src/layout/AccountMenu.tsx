@@ -14,7 +14,7 @@ export function AccountMenu({ onShortcuts }: { onShortcuts: () => void }) {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
         className="flex h-9 w-full items-center gap-2 rounded-control px-2 type-body text-text hover:bg-surface-2"
-        aria-label="Account menu"
+        aria-label={`Account menu for ${name}`}
       >
         <span
           aria-hidden="true"

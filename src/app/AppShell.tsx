@@ -4,7 +4,8 @@ import { BottomTabBar } from '../layout/BottomTabBar';
 import { CommandPalette } from '../layout/CommandPalette';
 import { SideNav } from '../layout/SideNav';
 import { MobileTopBar } from '../layout/MobileTopBar';
-import { Dialog } from '../components/ui/Controls';
+import { ShortcutsDialog } from '../features/shortcuts/ShortcutsDialog';
+import { useGlobalShortcuts } from '../features/shortcuts/useGlobalShortcuts';
 import { useToast } from '../components/ui/toast-context';
 import { usePreferences } from '../lib/queries';
 import { useWorkspace } from './workspace-context';
@@ -44,17 +45,11 @@ export default function AppShell() {
         String(preferences.data.reduce_motion),
       );
   }, [preferences.data]);
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        setSearchOpen((open) => !open);
-      }
-      if (event.key === 'Escape') setSearchOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  useGlobalShortcuts({
+    openSearch: () => setSearchOpen(true),
+    openHelp: () => setShortcutsOpen(true),
+    disabled: searchOpen || shortcutsOpen,
+  });
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
@@ -96,7 +91,7 @@ export default function AppShell() {
                   action={
                     <div className="flex shrink-0 items-center gap-3">
                       <Link
-                        to="/settings#connection"
+                        to="/settings?section=connection"
                         className="font-medium text-accent hover:underline"
                       >
                         Connect
@@ -160,11 +155,7 @@ export default function AppShell() {
         <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
       )}
       {!welcome && !gallery && (
-        <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} title="Keyboard shortcuts">
-          <p className="type-body text-text-2">
-            ⌘K or Ctrl K opens search. Press Escape to close a dialog.
-          </p>
-        </Dialog>
+        <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       )}
     </div>
   );

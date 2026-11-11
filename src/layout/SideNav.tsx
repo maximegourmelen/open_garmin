@@ -84,9 +84,9 @@ export function SideNav({
       <div className="mt-auto space-y-3">
         <button
           type="button"
-          onClick={() => navigate('/settings#connection')}
+          onClick={() => navigate('/settings?section=connection')}
           title={syncText}
-          className="flex w-full items-center gap-2 px-3 type-caption text-text-3 hover:text-text"
+          className="flex w-full items-center gap-2 px-3 type-caption text-text-2 hover:text-text"
         >
           <span
             aria-hidden="true"
