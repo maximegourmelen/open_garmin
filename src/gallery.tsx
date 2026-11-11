@@ -84,12 +84,14 @@ function MockOverview() {
       <Section heading="Last night" footnote="Source: Garmin">
         <MetricStrip>
           <Metric
+            id="sleep_duration"
             label="Sleep"
             value="7 h 15 min"
             onAbout={() => {}}
             status={{ text: 'Within your usual range' }}
           />
           <Metric
+            id="resting_hr"
             label="Resting HR"
             value={60}
             unit="bpm"
@@ -97,13 +99,20 @@ function MockOverview() {
             status={{ text: 'Within your usual range' }}
           />
           <Metric
+            id="hrv"
             label="HRV"
             value={54}
             unit="ms"
             onAbout={() => {}}
             status={{ text: 'Within your usual range' }}
           />
-          <Metric label="Body Battery" value={85} onAbout={() => {}} caption="At wake" />
+          <Metric
+            id="body_battery"
+            label="Body Battery"
+            value={85}
+            onAbout={() => {}}
+            caption="At wake"
+          />
         </MetricStrip>
       </Section>
       <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
@@ -328,6 +337,7 @@ export default function GalleryPage() {
         <div className="space-y-6">
           <MetricStrip>
             <Metric
+              id="active_minutes"
               label="Active minutes"
               value={182}
               unit="min"
@@ -335,14 +345,16 @@ export default function GalleryPage() {
               delta={{ value: 32, unit: 'min', good: 'up' }}
             />
             <Metric
+              id="resting_hr"
               label="Resting HR"
               value={59}
               unit="bpm"
               onAbout={() => setDrawer(true)}
               delta={{ value: -3, unit: 'bpm', good: 'down' }}
             />
-            <Metric label="HRV" value={null} unit="ms" onAbout={() => setDrawer(true)} />
+            <Metric id="hrv" label="HRV" value={null} unit="ms" onAbout={() => setDrawer(true)} />
             <Metric
+              id="body_battery"
               label="Body Battery"
               value={78}
               onAbout={() => setDrawer(true)}

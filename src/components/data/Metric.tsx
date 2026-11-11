@@ -1,13 +1,23 @@
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { Panel } from '../ui/Structure';
+import type { MetricId } from '../../content/glossary';
 
-export function MetricLabel({ label, onAbout }: { label: string; onAbout?: () => void }) {
+export function MetricLabel({
+  id,
+  label,
+  onAbout,
+}: {
+  id: MetricId;
+  label: string;
+  onAbout?: () => void;
+}) {
   return onAbout ? (
     <button
       type="button"
       onClick={onAbout}
       aria-label={`About ${label}`}
+      data-metric-id={id}
       className="inline-flex items-center gap-1 type-label text-text-2 hover:text-text"
     >
       <span>{label}</span>
@@ -16,7 +26,9 @@ export function MetricLabel({ label, onAbout }: { label: string; onAbout?: () =>
       </span>
     </button>
   ) : (
-    <span className="type-label text-text-2">{label}</span>
+    <span data-metric-id={id} className="type-label text-text-2">
+      {label}
+    </span>
   );
 }
 
@@ -71,6 +83,7 @@ export function StatusDot({
 }
 
 export function Metric({
+  id,
   label,
   value,
   unit,
@@ -81,6 +94,7 @@ export function Metric({
   size = 'md',
   onAbout,
 }: {
+  id: MetricId;
   label: string;
   value: string | number | null | undefined;
   unit?: string;
@@ -94,7 +108,7 @@ export function Metric({
   const missing = value === null || value === undefined || value === '';
   return (
     <div className="min-w-0 space-y-2">
-      <MetricLabel label={label} onAbout={onAbout} />
+      <MetricLabel id={id} label={label} onAbout={onAbout} />
       <div className="flex items-end gap-2">
         <div
           className={cn(

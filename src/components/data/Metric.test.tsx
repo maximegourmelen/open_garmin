@@ -3,14 +3,14 @@ import { expect, test, vi } from 'vitest';
 import { Delta, Metric, MetricLabel, MetricStrip, StatusDot } from './Metric';
 
 test('Metric renders missing values with an explicit no-reading caption', () => {
-  render(<Metric label="HRV" value={null} unit="ms" />);
+  render(<Metric id="hrv" label="HRV" value={null} unit="ms" />);
   expect(screen.getByText('—')).toBeTruthy();
   expect(screen.getByText('No reading')).toBeTruthy();
 });
 
 test('MetricLabel is a button named for the metric', () => {
   const open = vi.fn();
-  render(<MetricLabel label="Resting HR" onAbout={open} />);
+  render(<MetricLabel id="resting_hr" label="Resting HR" onAbout={open} />);
   fireEvent.click(screen.getByRole('button', { name: 'About Resting HR' }));
   expect(open).toHaveBeenCalledOnce();
 });
@@ -30,8 +30,8 @@ test('StatusDot adds text and only a small status indicator', () => {
 test('MetricStrip groups readable values in one panel', () => {
   render(
     <MetricStrip>
-      <Metric label="Sleep" value="7:15" />
-      <Metric label="Steps" value={9427} />
+      <Metric id="sleep_duration" label="Sleep" value="7:15" />
+      <Metric id="steps" label="Steps" value={9427} />
     </MetricStrip>,
   );
   expect(screen.getByText('7:15')).toBeTruthy();
