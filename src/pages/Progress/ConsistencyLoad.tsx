@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { BulletChart, CalendarHeatmap } from '../../components/charts';
 import { MetricLabel } from '../../components/data/Metric';
+import { DataTable } from '../../components/ui';
 import { Section } from '../../components/ui/Structure';
 import type { TrendsResponse } from '../../lib/types';
 
 export function ConsistencyLoad({ data }: { data: TrendsResponse }) {
+  const [showCalendarTable, setShowCalendarTable] = useState(false);
   const ramp = data.ramp;
   const average = ramp.average_four_weeks;
   const loadText =
@@ -19,7 +22,33 @@ export function ConsistencyLoad({ data }: { data: TrendsResponse }) {
   return (
     <div className="grid gap-8 lg:grid-cols-2">
       <Section heading="Consistency">
-        <CalendarHeatmap days={data.consistency.days} />
+        {!showCalendarTable && <CalendarHeatmap days={data.consistency.days} />}
+        <button
+          type="button"
+          className="type-caption text-text-2 underline hover:text-text"
+          aria-expanded={showCalendarTable}
+          onClick={() => setShowCalendarTable((show) => !show)}
+        >
+          {showCalendarTable ? 'View calendar' : 'View as table'}
+        </button>
+        {showCalendarTable && (
+          <div className="max-h-72 overflow-y-auto">
+            <DataTable
+              caption="Recorded activity time by day"
+              rows={data.consistency.days}
+              keyFor={(day) => day.date}
+              columns={[
+                { key: 'date', label: 'Date', value: (day) => day.date },
+                {
+                  key: 'minutes',
+                  label: 'Activity time',
+                  value: (day) => `${Math.round(day.minutes)} min`,
+                  numeric: true,
+                },
+              ]}
+            />
+          </div>
+        )}
         <p className="type-body text-text-2">
           Active on {data.consistency.active_days_28} of the last 28 days.
         </p>

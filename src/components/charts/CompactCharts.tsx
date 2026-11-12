@@ -182,7 +182,7 @@ export function CalendarHeatmap({
           key={day.date}
           type="button"
           onClick={() => onSelect?.(day.date)}
-          aria-label={`${day.date}: ${day.minutes} active minutes`}
+          aria-label={`${day.date}: ${day.minutes} recorded activity minutes`}
           className="size-3 rounded-sm focus-visible:outline-2"
           style={{
             background: day.minutes ? chartColor('data-1') : chartColor('surface-2'),
