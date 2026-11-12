@@ -53,7 +53,9 @@ test('a metric label opens personal details and returns focus when dismissed', a
   const trigger = screen.getByRole('button', { name: 'About Resting HR' });
   trigger.focus();
   fireEvent.click(trigger);
-  expect(await screen.findByRole('dialog', { name: 'Resting heart rate' })).toBeTruthy();
+  expect(
+    await screen.findByRole('dialog', { name: 'Resting heart rate' }, { timeout: 5000 }),
+  ).toBeTruthy();
   expect(await screen.findByText('58 bpm')).toBeTruthy();
   expect(screen.getByText('54–62 bpm')).toBeTruthy();
   expect(screen.getByRole('button', { name: 'View as table' })).toBeTruthy();

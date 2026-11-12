@@ -55,3 +55,7 @@ npx playwright test
 ```
 
 Playwright starts a disposable server and uses only synthetic demo data. The current visual review set is in `docs/screenshots/v2/`.
+
+To inspect an existing local workspace without syncing or changing data, run
+`.venv/bin/python scripts/validate_live.py`. It reports coverage counts and sections
+without usable data, without printing personal measurements.

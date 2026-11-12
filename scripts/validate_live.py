@@ -1,55 +1,163 @@
-"""Interactive, private local validation. Keys are entered without terminal echo.
+"""Inspect a local workspace without changing data or contacting Garmin.
 
-Creates a local pilot workspace only on a fresh installation. Never prints keys,
-tokens, measurements, profiles or activity names. Do not run as an automated test.
+Run from the repository root: .venv/bin/python scripts/validate_live.py
+The script opens the existing SQLite database in read-only mode and prints only
+coverage counts and the names of sections that would be empty.
 """
-import getpass
-import json
+
+from __future__ import annotations
+
+import argparse
 import os
-import secrets
+import sqlite3
+from datetime import date
+from pathlib import Path
+from types import SimpleNamespace
 
-from sqlalchemy import func, select
+from fastapi import Request
+from sqlalchemy import create_engine, func, select
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
-from server.app import DEFAULT_PREFS, password_hash
-from server.garmin.client import GarminClient, GarminError
-from server.db.models import Activity, Connection, Daily, Job, User
-from server.db.store import Store
-from server.worker import Worker
+from server.api.overview import overview_view
+from server.api.trends import report_view, trends_view
+from server.api.wellness import health_series
+from server.db.models import Activity, Daily, User
 
-store = Store()
-with store.sessions() as db:
-    if db.scalar(select(func.count()).select_from(User)):
-        raise SystemExit("This workspace already has an owner. Use the app's connection form instead.")
-key = getpass.getpass("Garmin Personal API key (hidden): ").strip()
-client = GarminClient(key)
-try:
-    profile = client.get("/userprofile-service/userprofile/settings")
-    print("Personal API authentication and profile access succeeded.", flush=True)
-except GarminError as exc:
-    raise SystemExit(str(exc)) from None
-finally:
-    client.close()
-password = secrets.token_urlsafe(22)
-with store.sessions.begin() as db:
-    user = User(email="local@open-garmin.invalid", name="Athlete", password_hash=password_hash(password), preferences=DEFAULT_PREFS.copy())
-    db.add(user)
-    db.flush()
-    uid = user.id
-    db.add(Connection(user_id=uid, encrypted_key=store.encrypt(key), region="com", profile=profile, revision=1))
-del key
-path = store.directory / "local-login.json"
-fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-with os.fdopen(fd, "w") as f:
-    json.dump({"email": user.email, "password": password}, f)
-print("Created a private pilot workspace. Login details saved in .runtime/local-login.json.", flush=True)
-worker = Worker(store)
-job_id = worker.enqueue(uid, 90)
-worker.run(job_id)
-with store.sessions() as db:
-    job = db.get(Job, job_id)
-    print("Validation sync:", job.state, job.message, flush=True)
-    print("Imported activity rows:", db.scalar(select(func.count()).select_from(Activity).where(Activity.user_id == uid)), flush=True)
-    print("Imported daily rows:", db.scalar(select(func.count()).select_from(Daily).where(Daily.user_id == uid)), flush=True)
-    for row in db.scalars(select(Daily).where(Daily.user_id == uid).limit(1)):
-        raw = row.raw.get("summary", {})
-        print("V2 summary field names:", {k: list(v.keys()) if isinstance(v, dict) else type(v).__name__ for k, v in raw.items()}, flush=True)
+
+class ReadOnlyStore:
+    def __init__(self, database: Path):
+        def connect():
+            connection = sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)
+            connection.execute("PRAGMA query_only=ON")
+            return connection
+
+        self.engine = create_engine("sqlite://", creator=connect, poolclass=NullPool)
+        self.sessions = sessionmaker(self.engine, expire_on_commit=False)
+
+    def close(self):
+        self.engine.dispose()
+
+
+def _request(store: ReadOnlyStore, user_id: str, path: str) -> Request:
+    app = SimpleNamespace(
+        state=SimpleNamespace(
+            store=store,
+            current_user=lambda request: SimpleNamespace(id=user_id),
+        )
+    )
+    return Request(
+        {"type": "http", "method": "GET", "path": path, "headers": [], "query_string": b"", "app": app}
+    )
+
+
+def _has_health_reading(kind: str, days: list[dict]) -> bool:
+    keys = {
+        "sleep": ("minutes",),
+        "heart": ("resting_hr", "hrv"),
+        "energy": ("latest", "at_wake", "high", "low"),
+        "stress": ("average", "max"),
+        "steps": ("steps",),
+    }[kind]
+    return any(any(day.get(key) is not None for key in keys) for day in days)
+
+
+def validate_database(database: Path) -> list[dict]:
+    if not database.is_file():
+        raise FileNotFoundError("No existing local workspace database was found.")
+    store = ReadOnlyStore(database)
+    try:
+        with store.sessions() as session:
+            user_ids = list(session.scalars(select(User.id)))
+        reports = []
+        for user_id in user_ids:
+            with store.sessions() as session:
+                activity_count = session.scalar(
+                    select(func.count()).select_from(Activity).where(Activity.user_id == user_id)
+                )
+                daily_count = session.scalar(
+                    select(func.count()).select_from(Daily).where(Daily.user_id == user_id)
+                )
+            overview = overview_view(_request(store, user_id, "/api/overview"))
+            trends = trends_view(_request(store, user_id, "/api/trends"))
+            empty = []
+            if not activity_count:
+                empty.append("Activities: no recorded activities")
+            if not overview["recent_activities"]:
+                empty.append("Overview: recent activities")
+            if overview["week"]["active_minutes"] is None:
+                empty.append("Overview: weekly active minutes")
+            if all(metric["value"] is None for metric in overview["last_night"].values()):
+                empty.append("Overview: last-night readings")
+            if not overview["notes"]:
+                empty.append("Overview: notes")
+            if overview["feeling_today"] is None:
+                empty.append("Overview: today's check-in")
+            health_coverage = {}
+            for kind in ("sleep", "heart", "energy", "stress", "steps"):
+                series = health_series(_request(store, user_id, f"/api/wellness/{kind}"), kind, "30D")
+                has_data = _has_health_reading(kind, series["days"])
+                health_coverage[kind] = has_data
+                if not has_data:
+                    empty.append(f"Health: {kind} (last 30 days)")
+            if not any(week["minutes"] is not None for week in trends["volume"]):
+                empty.append("Trends: weekly volume")
+            for signal in trends["signals"]:
+                if signal["status"] == "insufficient":
+                    empty.append(f"Trends: {signal['id']} signal (insufficient history)")
+            if not trends["records"]:
+                empty.append("Trends: personal records")
+            completed_report = next(
+                (week for week in trends["reports"] if not week["partial"] and week["minutes"] is not None),
+                None,
+            )
+            if completed_report is None:
+                empty.append("Trends: weekly report")
+            else:
+                report_view(
+                    _request(store, user_id, f"/api/reports/week/{completed_report['start']}"),
+                    date.fromisoformat(completed_report["start"]),
+                )
+            reports.append(
+                {
+                    "activity_rows": activity_count,
+                    "daily_rows": daily_count,
+                    "health_30d": health_coverage,
+                    "empty_sections": empty,
+                }
+            )
+        return reports
+    finally:
+        store.close()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--database",
+        type=Path,
+        default=Path(os.environ.get("OPEN_GARMIN_DATA_DIR", ".runtime")) / "app.db",
+        help="Existing local SQLite database path (default: OPEN_GARMIN_DATA_DIR/app.db)",
+    )
+    args = parser.parse_args()
+    try:
+        reports = validate_database(args.database.resolve())
+    except (FileNotFoundError, sqlite3.DatabaseError) as error:
+        print(f"Validation unavailable: {error}")
+        return 2
+    if not reports:
+        print("No live workspace exists in the local database.")
+        return 0
+    for number, report in enumerate(reports, start=1):
+        print(f"Workspace {number}: {report['activity_rows']} activities, {report['daily_rows']} daily rows")
+        if report["empty_sections"]:
+            print("Sections without usable data:")
+            for section in report["empty_sections"]:
+                print(f"  - {section}")
+        else:
+            print("All inspected sections have usable data.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
