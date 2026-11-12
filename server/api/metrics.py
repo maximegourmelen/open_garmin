@@ -21,14 +21,26 @@ SPECS = {
     "sleep_duration": ("min", "garmin", None, None),
     "sleep_need": ("min", "garmin", None, None),
     "sleep_score": ("score", "garmin", None, None),
+    "sleep_bedtime": ("clock", "garmin", None, "Bedtime"),
+    "sleep_wake": ("clock", "garmin", None, "Wake time"),
+    "sleep_awakenings": ("times", "garmin", None, None),
     "sleep_stages": ("min", "garmin", None, "Deep sleep"),
     "bedtime_regularity": ("min", "calculated", "bedtime_rhythm@1", "From usual bedtime"),
     "resting_hr": ("bpm", "garmin", None, None),
     "hrv": ("ms", "garmin", None, None),
     "hrv_status": ("ms", "garmin", None, "7-day HRV average"),
     "body_battery": ("points", "garmin", None, "At wake"),
+    "body_battery_high": ("points", "garmin", None, None),
+    "body_battery_low": ("points", "garmin", None, None),
+    "body_battery_charged": ("points", "garmin", None, None),
+    "body_battery_drained": ("points", "garmin", None, None),
     "stress": ("score", "garmin", None, None),
+    "stress_rest": ("min", "garmin", None, None),
+    "stress_low": ("min", "garmin", None, None),
+    "stress_medium": ("min", "garmin", None, None),
+    "stress_high": ("min", "garmin", None, None),
     "steps": ("steps", "garmin", None, None),
+    "steps_floors": ("floors", "garmin", None, None),
     "active_minutes": ("min", "garmin", "active_minutes@1", None),
     "activity_count": ("activities", "calculated", None, "Recorded activities"),
     "activity_time": ("min", "garmin", None, None),
@@ -84,6 +96,12 @@ def daily_value(metric_id: str, day: dict, bedtime_usual: float | None):
     if metric_id == "sleep_stages":
         deep = number(day.get("deep_seconds"))
         return round(deep / 60, 1) if deep is not None else None
+    if metric_id == "sleep_bedtime":
+        return minutes_from_noon(day.get("sleep_start"))
+    if metric_id == "sleep_wake":
+        return minutes_from_noon(day.get("sleep_end"))
+    if metric_id == "sleep_awakenings":
+        return number(day.get("sleep_awake_count"))
     if metric_id == "bedtime_regularity":
         bedtime = minutes_from_noon(day.get("sleep_start"))
         return (
@@ -95,6 +113,19 @@ def daily_value(metric_id: str, day: dict, bedtime_usual: float | None):
         return number(day.get("hrv_weekly"))
     if metric_id == "body_battery":
         return number(day.get("bb_at_wake"))
+    if metric_id in {"body_battery_high", "body_battery_low", "body_battery_charged", "body_battery_drained"}:
+        key = {
+            "body_battery_high": "bb_max",
+            "body_battery_low": "bb_min",
+            "body_battery_charged": "bb_charged",
+            "body_battery_drained": "bb_drained",
+        }[metric_id]
+        return number(day.get(key))
+    if metric_id in {"stress_rest", "stress_low", "stress_medium", "stress_high"}:
+        seconds = number(day.get(f"stress_{metric_id.removeprefix('stress_')}_s"))
+        return round(seconds / 60, 1) if seconds is not None else None
+    if metric_id == "steps_floors":
+        return number(day.get("floors_up"))
     if metric_id == "active_minutes":
         moderate = number(day.get("intensity_moderate"))
         vigorous = number(day.get("intensity_vigorous"))

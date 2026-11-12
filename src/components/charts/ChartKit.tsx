@@ -55,10 +55,7 @@ export function TrendLine({
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 12, right: 12, left: size === 'S' ? 4 : -18, bottom: 0 }}
-        >
+        <LineChart data={data} margin={{ top: 12, right: 12, left: 4, bottom: 0 }}>
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="2 4" vertical={false} />
           {band && (
             <ReferenceArea

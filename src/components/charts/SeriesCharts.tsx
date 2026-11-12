@@ -171,6 +171,19 @@ export function BarSeries({
   partialKey?: string;
   height?: number;
 }) {
+  const largest = Math.max(
+    goal ?? 0,
+    ...data.map((row) => {
+      const stacks = new Map<string, number>();
+      let unstacked = 0;
+      for (const item of series) {
+        const value = typeof row[item.key] === 'number' ? (row[item.key] as number) : 0;
+        if (item.stackId) stacks.set(item.stackId, (stacks.get(item.stackId) ?? 0) + value);
+        else unstacked = Math.max(unstacked, value);
+      }
+      return Math.max(unstacked, ...stacks.values());
+    }),
+  );
   return (
     <ChartFrame
       label={`${label}. ${data.length} observations.`}
@@ -184,10 +197,16 @@ export function BarSeries({
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+        <BarChart data={data} margin={{ top: 10, right: 10, left: -4, bottom: 0 }}>
           <CartesianGrid stroke={chartTheme.grid} strokeDasharray="2 4" vertical={false} />
           <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} />
-          <YAxis tick={axis} tickLine={false} axisLine={false} />
+          <YAxis
+            tick={axis}
+            tickLine={false}
+            axisLine={false}
+            width={52}
+            domain={[0, Math.max(1, Math.ceil(largest * 1.1))]}
+          />
           <Tooltip
             contentStyle={chartTooltipStyle()}
             filterNull={false}
@@ -208,6 +227,7 @@ export function BarSeries({
               name={item.label}
               stackId={item.stackId}
               fill={chartColor(item.color)}
+              isAnimationActive={false}
               radius={[2, 2, 0, 0]}
               maxBarSize={24}
               barSize={24}

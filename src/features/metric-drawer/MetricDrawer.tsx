@@ -89,6 +89,7 @@ export function MetricDrawer({
                 band={data.usual_range ? [data.usual_range.low, data.usual_range.high] : undefined}
                 size="S"
                 unit={data.unit}
+                kind={id === 'sleep_bedtime' || id === 'sleep_wake' ? 'bedtime' : 'plain'}
               />
             ) : (
               <EmptyState

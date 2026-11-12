@@ -24,8 +24,8 @@ from ..db.models import Activity, Daily, User
 from ..workspace import workspace
 from .schemas import HealthSeries
 
-Range = Literal["7D", "4W", "3M", "1Y"]
-DAYS = {"7D": 7, "4W": 28, "3M": 90, "1Y": 365}
+Range = Literal["7D", "30D", "90D", "1Y", "4W", "3M"]
+DAYS = {"7D": 7, "30D": 30, "90D": 90, "1Y": 365, "4W": 28, "3M": 90}
 
 
 def health_series(request: Request, kind: str, range: Range) -> dict:

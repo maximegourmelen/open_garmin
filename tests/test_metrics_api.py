@@ -29,6 +29,20 @@ def test_resting_heart_summary_has_personal_range_and_null_gaps():
         assert any(point["value"] is None for point in hrv["series"])
 
 
+def test_health_supporting_metrics_have_readable_units():
+    with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
+        for metric_id, unit in (
+            ("sleep_bedtime", "clock"),
+            ("sleep_awakenings", "times"),
+            ("body_battery_charged", "points"),
+            ("stress_rest", "min"),
+            ("steps_floors", "floors"),
+        ):
+            data = client.get(f"/api/demo/metrics/{metric_id}/summary").json()
+            assert data["unit"] == unit
+            assert data["latest"]["value"] is not None
+
+
 def test_metric_summary_validates_id_and_window_and_requires_live_auth():
     with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
         assert client.get("/api/demo/metrics/not-a-metric/summary").status_code == 404

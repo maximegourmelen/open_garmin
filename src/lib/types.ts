@@ -3,7 +3,7 @@ export type Source = 'garmin' | 'calculated' | 'user' | 'imported_fit' | 'demo';
 export type Sport =
   'walking' | 'running' | 'cycling' | 'swimming' | 'strength' | 'hiking' | 'other';
 export type Pose = 'wave' | 'cheer' | 'proud' | 'thinking' | 'sleepy' | 'calm' | 'oops' | 'stretch';
-export type Range = '7D' | '4W' | '3M' | '1Y';
+export type Range = '7D' | '30D' | '90D' | '1Y' | '4W' | '3M';
 
 export interface StatusResponse {
   mode: 'live' | 'demo';

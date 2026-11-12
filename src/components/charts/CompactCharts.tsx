@@ -122,9 +122,11 @@ export function StackedBars({
 export function StageBar({
   stages,
   optimal,
+  optimalUnit = 'min',
 }: {
   stages: { key: string; label: string; minutes: number; color: string }[];
   optimal?: { key: string; low: number; high: number }[];
+  optimalUnit?: 'min' | '%';
 }) {
   const total = stages.reduce((sum, stage) => sum + stage.minutes, 0);
   return (
@@ -149,7 +151,8 @@ export function StageBar({
             {optimal?.find((range) => range.key === stage.key) && (
               <span className="text-text-3">
                 ({optimal.find((range) => range.key === stage.key)!.low}–
-                {optimal.find((range) => range.key === stage.key)!.high}m usual)
+                {optimal.find((range) => range.key === stage.key)!.high}
+                {optimalUnit} usual)
               </span>
             )}
           </span>

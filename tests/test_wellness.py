@@ -67,6 +67,14 @@ def test_demo_wellness_endpoints():
         assert client.get("/api/wellness/sleep").status_code == 401
 
 
+def test_health_page_ranges_return_full_calendar_windows():
+    with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
+        for range_name, days in (("7D", 7), ("30D", 30), ("90D", 90), ("1Y", 365)):
+            data = client.get(f"/api/demo/wellness/heart?range={range_name}").json()
+            assert data["range"] == range_name
+            assert len(data["days"]) == days
+
+
 def test_sleep_api_exposes_clock_values_and_range_units():
     with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
         result = client.get("/api/demo/wellness/sleep?range=7D")
