@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   workspaceRequest: vi.fn(),
   refreshSession: vi.fn(),
   setMode: vi.fn(),
+  prefsQuery: vi.fn(),
 }));
 vi.mock('../../lib/api', () => ({
   request: mocks.request,
@@ -61,7 +62,7 @@ const status = {
   unseen: { milestones: 0, recap_week: null },
 } as StatusResponse;
 vi.mock('../../lib/queries', () => ({
-  usePreferences: () => ({ data: prefs, isPending: false, isError: false }),
+  usePreferences: () => mocks.prefsQuery(),
   useStatus: () => ({ data: status }),
 }));
 function mount(mode: 'demo' | 'live' = 'demo', initial = '/settings') {
@@ -97,21 +98,22 @@ beforeEach(() => {
   mocks.request.mockResolvedValue(status);
   mocks.workspaceRequest.mockResolvedValue({ ok: true });
   mocks.refreshSession.mockResolvedValue(undefined);
+  mocks.prefsQuery.mockReturnValue({ data: prefs, isPending: false, isError: false });
 });
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
 
-test('saves profile and goal changes in the selected workspace', async () => {
+test('shows all sections and autosaves number changes after a short pause', async () => {
   mount();
+  expect(screen.getByRole('heading', { name: 'Goals' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Garmin connection' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Your data' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Save changes' })).toBeNull();
   fireEvent.change(screen.getByRole('spinbutton', { name: 'Weekly active minutes' }), {
     target: { value: '120' },
   });
-  fireEvent.change(screen.getByRole('textbox', { name: 'Display name' }), {
-    target: { value: 'Sam' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
   await waitFor(() =>
     expect(mocks.workspaceRequest).toHaveBeenCalledWith(
       'demo',
@@ -119,10 +121,20 @@ test('saves profile and goal changes in the selected workspace', async () => {
       expect.objectContaining({ body: expect.stringContaining('"weekly_minutes":120') }),
     ),
   );
+  expect(screen.getAllByText('Saved').length).toBeGreaterThan(0);
+});
+
+test('saves theme immediately and shows inline errors', async () => {
+  mocks.workspaceRequest.mockRejectedValueOnce(new Error('Could not save preferences'));
+  mount();
+  fireEvent.click(screen.getByRole('button', { name: 'Light' }));
+  await waitFor(() =>
+    expect(screen.getByRole('alert').textContent).toContain('Could not save preferences'),
+  );
   expect(mocks.workspaceRequest).toHaveBeenCalledWith(
     'demo',
-    '/profile',
-    expect.objectContaining({ body: '{"name":"Sam"}' }),
+    '/preferences',
+    expect.objectContaining({ body: expect.stringContaining('"theme":"light"') }),
   );
 });
 
@@ -136,4 +148,23 @@ test('permanent deletion requires an exact typed confirmation', async () => {
   });
   fireEvent.click(remove);
   await waitFor(() => expect(mocks.request).toHaveBeenCalledWith('/data', { method: 'DELETE' }));
+});
+
+test('loading, error, and unavailable preferences have clear states', () => {
+  mocks.prefsQuery.mockReturnValue({ isPending: true });
+  mount();
+  expect(screen.getByLabelText('Loading Settings')).toBeTruthy();
+  cleanup();
+  mocks.prefsQuery.mockReturnValue({
+    isPending: false,
+    isError: true,
+    error: new Error('Offline'),
+    refetch: vi.fn(),
+  });
+  mount();
+  expect(screen.getByText('Offline')).toBeTruthy();
+  cleanup();
+  mocks.prefsQuery.mockReturnValue({ isPending: false, isError: false, data: null });
+  mount();
+  expect(screen.getByText('Settings are unavailable')).toBeTruthy();
 });

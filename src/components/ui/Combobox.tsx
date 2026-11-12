@@ -5,11 +5,13 @@ export function Combobox({
   value,
   onChange,
   options,
+  hideLabel = false,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
+  hideLabel?: boolean;
 }) {
   const id = useId();
   const [query, setQuery] = useState('');
@@ -26,7 +28,9 @@ export function Combobox({
   }
   return (
     <div className="relative grid gap-1 type-label text-text-2">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id} className={hideLabel ? 'sr-only' : undefined}>
+        {label}
+      </label>
       <input
         id={id}
         role="combobox"

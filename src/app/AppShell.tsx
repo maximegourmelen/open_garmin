@@ -151,6 +151,7 @@ export default function AppShell() {
                     'health-stress',
                     'health-steps',
                     'trends',
+                    'settings',
                   ].includes(pageId(location.pathname)!) && (
                     <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
                   )}

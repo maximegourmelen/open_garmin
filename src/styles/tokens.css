@@ -39,6 +39,10 @@
   --sport-strength: #8c79c9;
   --sport-hiking: #7c9a4a;
   --sport-other: #92928e;
+  --preview-light-bg: #fafaf9;
+  --preview-light-surface: #ffffff;
+  --preview-dark-bg: #0b0b0c;
+  --preview-dark-surface: #1a1a1c;
   /* Compatibility aliases for pages migrated in later phases. */
   --surface-3: #ededeb;
   --accent-strong: #314cc0;
