@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Info } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { Panel } from '../ui/Structure';
 import type { MetricId } from '../../content/glossary';
@@ -24,9 +25,7 @@ export function MetricLabel({
       className="inline-flex items-center gap-1 type-label text-text-2 hover:text-text"
     >
       <span>{label}</span>
-      <span aria-hidden="true" className="type-caption text-text-3">
-        ⓘ
-      </span>
+      <Info aria-hidden="true" size={12} />
     </button>
   ) : (
     <span data-metric-id={id} className="type-label text-text-2">

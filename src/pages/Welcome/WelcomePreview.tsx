@@ -9,7 +9,7 @@ const points = [
 
 export function WelcomePreview() {
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:gap-16">
+    <div className="grid items-center gap-10 xl:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:gap-16">
       <div>
         <h1 className="type-title text-text">See your Garmin data clearly.</h1>
         <div className="mt-8 space-y-5">
@@ -27,7 +27,7 @@ export function WelcomePreview() {
         </div>
       </div>
       <div
-        className="min-w-0 rounded-card border border-border bg-surface p-5 shadow-sm lg:scale-[0.9] lg:p-7"
+        className="min-w-0 rounded-card border border-border bg-surface p-5 shadow-sm xl:scale-[0.9] xl:p-7"
         aria-label="Preview of Overview with sample readings"
       >
         <p className="type-caption text-text-2">A look at your Overview</p>

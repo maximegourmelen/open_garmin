@@ -94,12 +94,10 @@ test('activity detail opens from the list and charts track the route', async ({ 
 
 test('check-in and command palette respond', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('button', { name: 'Save check-in' })).toBeVisible();
-  await page.getByRole('button', { name: 'Good', exact: true }).click();
   const saved = page.waitForResponse(
     (response) => response.url().includes('/checkins/') && response.request().method() === 'PUT',
   );
-  await page.getByRole('button', { name: 'Save check-in' }).click();
+  await page.getByRole('button', { name: 'Feeling 4 of 5' }).click();
   expect((await saved).status()).toBe(200);
   await page.keyboard.press('ControlOrMeta+K');
   await expect(page.getByRole('dialog', { name: 'Search and jump' })).toBeVisible();
@@ -128,10 +126,10 @@ test('metric search opens a personal explanation and returns focus', async ({ pa
 
 test('health charts offer a data table', async ({ page }) => {
   await page.goto('/health/sleep');
-  const toggle = page.getByRole('button', { name: 'Show as table' }).first();
+  const toggle = page.getByRole('button', { name: 'View as table' }).first();
   await expect(toggle).toBeVisible();
   await toggle.click();
   await expect(page.getByRole('table').first()).toBeVisible();
-  await page.getByRole('button', { name: 'Hide table' }).first().click();
+  await page.getByRole('button', { name: 'View chart' }).first().click();
   await expect(page.getByRole('table')).toHaveCount(0);
 });

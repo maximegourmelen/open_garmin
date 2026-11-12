@@ -109,14 +109,12 @@ export function SleepPanel({ series }: { series: HealthData }) {
               }))}
             optimalUnit="%"
           />
-          <p className="type-body text-text-2">
-            {string(night.sentence) ?? 'Each stage contributes to a full night of sleep.'}
-          </p>
         </Section>
         <Section
           heading="Bedtime and wake time"
           description={rhythm?.sentence ?? 'Your usual window will appear after more nights.'}
         >
+          <h4 className="type-label text-text-2">Bedtime</h4>
           <ClockScatter
             label="Bedtime"
             data={days.map((day) => ({
@@ -125,6 +123,7 @@ export function SleepPanel({ series }: { series: HealthData }) {
             }))}
             usual={usual}
           />
+          <h4 className="type-label text-text-2">Wake time</h4>
           <ClockScatter
             label="Wake time"
             data={days.map((day) => ({

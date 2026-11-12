@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, UserRound } from 'lucide-react';
 import { DropdownMenu } from 'radix-ui';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../app/theme-context';
@@ -20,7 +20,7 @@ export function AccountMenu({ onShortcuts }: { onShortcuts: () => void }) {
           aria-hidden="true"
           className="flex size-6 items-center justify-center rounded-full bg-surface-2 type-caption"
         >
-          {name.charAt(0).toUpperCase()}
+          <UserRound size={14} />
         </span>
         <span className="hidden min-w-0 flex-1 truncate text-left lg:block">{name}</span>
         <ChevronDown size={14} className="hidden text-text-3 lg:block" aria-hidden="true" />

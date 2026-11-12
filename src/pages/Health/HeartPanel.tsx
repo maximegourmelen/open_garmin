@@ -66,6 +66,7 @@ export function HeartPanel({ series }: { series: HealthData }) {
         >
           <TrendLine label="HRV" data={points(days, 'hrv')} band={band} size="M" unit="ms" />
           <TrendLine
+            title="HRV 7-day average"
             label="HRV 7-day average"
             data={points(days, 'hrv_weekly')}
             size="S"

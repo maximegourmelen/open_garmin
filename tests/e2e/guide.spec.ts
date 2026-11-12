@@ -8,6 +8,8 @@ test('Guide renders across themes and sizes, and method links find their section
   const variants = [
     { name: 'desktop-light', width: 1440, height: 900, theme: 'light' },
     { name: 'desktop-dark', width: 1440, height: 900, theme: 'dark' },
+    { name: 'tablet-light', width: 1024, height: 900, theme: 'light' },
+    { name: 'tablet-dark', width: 1024, height: 900, theme: 'dark' },
     { name: 'mobile-light', width: 390, height: 844, theme: 'light' },
     { name: 'mobile-dark', width: 390, height: 844, theme: 'dark' },
   ] as const;
