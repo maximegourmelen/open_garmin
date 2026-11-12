@@ -9,7 +9,7 @@ import { Drawer } from '../../components/ui/Overlays';
 import { guideTopics } from '../../content/guide';
 import { workspaceRequest } from '../../lib/api';
 import { usePreferences, useStatus, useWorkspaceQuery } from '../../lib/queries';
-import type { JourneyResponse, Preferences } from '../../lib/types';
+import type { Preferences } from '../../lib/types';
 import { WelcomeGoals } from './WelcomeGoals';
 import { WelcomePreview } from './WelcomePreview';
 
@@ -27,9 +27,13 @@ export default function WelcomePage() {
   const [sessionsChoice, setSessions] = useState<number | null>(null);
   const [unitsChoice, setUnits] = useState<'metric' | 'imperial' | null>(null);
   const [weekStartChoice, setWeekStart] = useState<'monday' | 'sunday' | null>(null);
-  const suggestion = useWorkspaceQuery<JourneyResponse>(['welcome-goal'], '/journey', {
-    enabled: step === 2 && Boolean(prefs.data),
-  });
+  const suggestion = useWorkspaceQuery<{ goal_suggestion: { minutes: number; n: number } | null }>(
+    ['welcome-goal'],
+    '/goals/suggestion',
+    {
+      enabled: step === 2 && Boolean(prefs.data),
+    },
+  );
   const recommended = suggestion.data?.goal_suggestion;
   const minutes = minutesChoice ?? recommended?.minutes ?? prefs.data?.weekly_minutes ?? 150;
   const sessions = sessionsChoice ?? prefs.data?.weekly_sessions ?? 3;

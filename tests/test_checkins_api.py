@@ -28,3 +28,11 @@ def test_demo_checkin_stays_available_without_journey_endpoints():
         assert client.get("/api/demo/journey").status_code == 404
         assert client.post("/api/demo/milestones/seen", json={"ids": ["hello"]}).status_code == 405
         assert client.get("/api/demo/recaps/2026-11-02").status_code == 404
+
+
+def test_welcome_goal_suggestion_uses_current_endpoint():
+    with TestClient(create_app(Store(in_memory=True), start_worker=False)) as client:
+        response = client.get("/api/demo/goals/suggestion")
+        assert response.status_code == 200
+        suggestion = response.json()["goal_suggestion"]
+        assert suggestion is None or suggestion["minutes"] > 0

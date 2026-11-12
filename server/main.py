@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import threading
 from contextlib import asynccontextmanager
 from datetime import date
@@ -39,10 +38,8 @@ class NoteInput(BaseModel):
     tags: list[str] = Field(default_factory=list, max_length=12)
 
 
-JOURNEY_IDS = frozenset(
-    journey["id"]
-    for journey in json.loads((Path(__file__).parent / "companion" / "journeys.json").read_text())
-)
+# Legacy preference values remain valid for existing users.
+JOURNEY_IDS = frozenset({"move_more_8w", "walk_to_run_9w", "habit_4w", "sleep_rhythm_4w", "steps_6w"})
 TODAY_LAYOUT_ITEMS = frozenset(
     {
         "week",
@@ -203,8 +200,9 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
 
     from .api import activities as activities_api
     from .api import auth as auth_api
+    from .api import checkins as checkins_api
+    from .api import goals as goals_api
     from .api import insights as insights_api
-    from .api import journey as journey_api
     from .api import methods as methods_api
     from .api import metrics as metrics_api
     from .api import overview as overview_api
@@ -223,7 +221,8 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     metrics_api.register(app)
     relationships_api.register(app)
     insights_api.register(app)
-    journey_api.register(app)
+    checkins_api.register(app)
+    goals_api.register(app)
     methods_api.register(app)
     progress_api.register(app)
     trends_api.register(app)

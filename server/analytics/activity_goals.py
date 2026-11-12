@@ -131,6 +131,22 @@ def goal_suggestion(complete_weeks: list[float], current_goal: int, focus: str =
     }
 
 
+def goal_weeks_in_a_row(weeks: list[dict]) -> tuple[int, int]:
+    """Count consecutive met weeks; an unfinished week cannot break the run."""
+    longest = running = 0
+    for item in weeks:
+        running = running + 1 if item["goal_met"] else 0
+        longest = max(longest, running)
+    current = 0
+    for item in reversed(weeks):
+        if not item["goal_met"]:
+            if item["partial"]:
+                continue
+            break
+        current += 1
+    return current, longest
+
+
 def steps_summary(daily: list[dict], prefs: dict, today: date) -> dict:
     records = {item["date"]: item for item in daily if item.get("date")}
     recent = [records.get((today - timedelta(days=offset)).isoformat(), {}) for offset in range(7)]

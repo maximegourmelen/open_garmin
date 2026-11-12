@@ -52,6 +52,13 @@ def today_suggestion(kind: str) -> tuple[str, str]:
     return TODAY_SUGGESTIONS[kind]
 
 
+def checkin_reply(mood: int | None) -> dict | None:
+    if mood is None:
+        return None
+    key = f"checkin_reply_{mood}"
+    return {"id": key, "text": MESSAGES[key], "pose": "calm", "data_refs": []}
+
+
 def overview_summary(
     *,
     sleep_short_minutes: float | None,

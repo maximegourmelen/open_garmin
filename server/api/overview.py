@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import timedelta
 
 from fastapi import Request
 from sqlalchemy import select
 
-from ..analytics.common import usual_range
+from ..analytics.activity_goals import weekly_active_minutes
+from ..analytics.common import local_today, usual_range
+from ..analytics.insights import insights_for
+from ..analytics.today import suggestion
 from ..copy.sentences import overview_summary
-from ..db.models import Activity, ActivityDerived, Daily
+from ..db.models import Activity, ActivityDerived, BestEffort, CheckIn, Daily, User
 from ..workspace import workspace
 from .activity_views import summary as activity_summary
 from .schemas import OverviewResponse
-from .today import today_view
 
 
 def _metric(value, unit: str, bounds: dict | None, spark: list, *, need: float | None = None) -> dict:
@@ -37,10 +39,10 @@ def _metric(value, unit: str, bounds: dict | None, spark: list, *, need: float |
 
 
 def overview_view(request: Request):
-    legacy = today_view(request)
     ws = workspace(request)
-    today = date.fromisoformat(legacy["date"])
     with ws.store.sessions() as db:
+        prefs = db.get(User, ws.user_id).preferences or {}
+        today = local_today(prefs)
         daily = [
             {"date": row.date, **row.data}
             for row in db.scalars(select(Daily).where(Daily.user_id == ws.user_id))
@@ -50,6 +52,27 @@ def overview_view(request: Request):
             row.activity_id: row.data
             for row in db.scalars(select(ActivityDerived).where(ActivityDerived.user_id == ws.user_id))
         }
+        checkin_row = db.get(CheckIn, (ws.user_id, today.isoformat()))
+        checkin = (
+            {"date": checkin_row.date, "mood": checkin_row.mood, "energy": checkin_row.energy,
+             "soreness": checkin_row.soreness, "note": checkin_row.note}
+            if checkin_row else None
+        )
+        checkins = [
+            {"date": row.date, "mood": row.mood, "energy": row.energy, "soreness": row.soreness,
+             "note": row.note}
+            for row in db.scalars(select(CheckIn).where(CheckIn.user_id == ws.user_id))
+        ]
+        candidates = [
+            {"activity_id": row.activity_id, "kind": row.kind, "date": row.date,
+             "sport": row.sport, "value": row.value}
+            for row in db.scalars(select(BestEffort).where(BestEffort.user_id == ws.user_id))
+        ]
+    activity_data = [{**row.data, **derived.get(row.id, {})} for row in activities]
+    week = weekly_active_minutes(activity_data, daily, prefs, today)
+    week["start"], week["end"] = week["window"]["from"], week["window"]["to"]
+    suggested = suggestion(daily, activity_data, checkin, today)
+    insights = insights_for(activity_data, daily, checkins, today, prefs, candidates)
     by_day = {item["date"]: item for item in daily}
     current = by_day.get(today.isoformat(), {})
 
@@ -75,7 +98,11 @@ def overview_view(request: Request):
         if sleep_seconds_range
         else None
     )
-    hrv_bounds = legacy["hrv"]["usual_range"] if legacy["hrv"] else bounds("hrv")
+    hrv_bounds = (
+        {"low": current["hrv_balanced_low"], "high": current["hrv_balanced_high"]}
+        if current.get("hrv_balanced_low") is not None and current.get("hrv_balanced_high") is not None
+        else bounds("hrv")
+    )
     battery_value = current.get("bb_at_wake")
     last_night = {
         "sleep": _metric(
@@ -88,13 +115,12 @@ def overview_view(request: Request):
         "resting_hr": _metric(
             current.get("resting_hr"),
             "bpm",
-            legacy["resting_hr"]["usual_range"] if legacy["resting_hr"] else bounds("resting_hr"),
+            bounds("resting_hr"),
             values("resting_hr"),
         ),
         "hrv": _metric(current.get("hrv"), "ms", hrv_bounds, values("hrv")),
         "body_battery": _metric(battery_value, "", bounds("bb_at_wake"), values("bb_at_wake")),
     }
-    week = legacy["week"]
     week_view = {
         "active_minutes": week["active_minutes"],
         "goal_minutes": week["goal_minutes"],
@@ -113,7 +139,7 @@ def overview_view(request: Request):
     recent = [activity_summary(row.data, derived.get(row.id)) for row in recent_rows]
     reasons = [
         {"label": signal["label"], "value": signal["value_text"], "metric_id": signal["id"]}
-        for signal in legacy["suggestion"]["signals"]
+        for signal in suggested["signals"]
         if signal["id"] in {"sleep", "hrv", "body_battery", "resting_hr"}
     ][:3]
     notes = [
@@ -127,11 +153,11 @@ def overview_view(request: Request):
             if "hrv" in item["id"] or "rhr" in item["id"]
             else "/trends",
         }
-        for item in legacy["insights"][:3]
+        for item in insights[:3]
     ]
     shortfall = sleep_need - sleep_minutes if sleep_need is not None and sleep_minutes is not None else None
     return {
-        "date": legacy["date"],
+        "date": today.isoformat(),
         "summary_sentence": overview_summary(
             sleep_short_minutes=shortfall,
             hrv_below=last_night["hrv"]["status"] == "below",
@@ -141,14 +167,14 @@ def overview_view(request: Request):
         "last_night": last_night,
         "week": week_view,
         "today": {
-            "kind": legacy["suggestion"]["kind"],
-            "title": legacy["suggestion"]["title"],
-            "sentence": legacy["suggestion"]["text"],
+            "kind": suggested["kind"],
+            "title": suggested["title"],
+            "sentence": suggested["text"],
             "reasons": reasons,
         },
         "recent_activities": recent,
         "notes": notes,
-        "feeling_today": legacy["checkin"],
+        "feeling_today": checkin,
     }
 
 

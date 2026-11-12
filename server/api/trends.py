@@ -8,7 +8,7 @@ from typing import Literal
 
 from fastapi import HTTPException, Request
 
-from ..analytics.activity_goals import weekly_active_minutes
+from ..analytics.activity_goals import goal_weeks_in_a_row, weekly_active_minutes
 from ..analytics.common import daterange, week_start
 from ..analytics.efforts import bests
 from ..analytics.fitness import efficiency_signal, longest_signal, resting_hr_signal, vo2max_signal
@@ -83,25 +83,10 @@ def _spark(signal: dict, activities: list[dict], daily: list[dict], first: date)
     return [signal.get("before"), signal.get("after")]
 
 
-def _streak(weeks: list[dict]) -> tuple[int, int]:
-    longest = running = 0
-    for item in weeks:
-        running = running + 1 if item["goal_met"] else 0
-        longest = max(longest, running)
-    current = 0
-    for item in reversed(weeks):
-        if not item["goal_met"]:
-            if item["partial"]:
-                continue
-            break
-        current += 1
-    return current, longest
-
-
 def trends_view(request: Request, range: Range = "30D") -> dict:
     prefs, today, activities, daily, candidates = _data(request)
     weeks = _weeks(today, prefs, activities, daily, 52)
-    current, longest = _streak(weeks)
+    current, longest = goal_weeks_in_a_row(weeks)
     first = today - timedelta(days={"30D": 29, "90D": 89, "1Y": 364}[range])
     activity_minutes: dict[str, float] = {}
     for item in activities:

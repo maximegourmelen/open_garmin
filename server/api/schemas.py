@@ -118,16 +118,6 @@ class Suggestion(ResponseShape):
     method: str
 
 
-class Streak(ResponseShape):
-    current: int
-    longest: int
-    at_risk: bool
-    remaining_minutes: float
-    remaining_sessions: int
-    weeks: list[dict]
-    method: str
-
-
 class Insight(ResponseShape):
     id: str
     category: str
@@ -139,20 +129,6 @@ class Insight(ResponseShape):
     activity_ids: list[str]
     method: str
     claims: list[dict]
-
-
-class Milestone(ResponseShape):
-    id: str
-    title: str
-    description: str
-    how_to_earn: str
-    icon: str
-    tier: str
-    color: str
-    earned: bool
-    earned_on: str | None
-    activity_id: str | None
-    progress: dict | None
 
 
 class OverviewMetric(ResponseShape):
@@ -243,17 +219,6 @@ class DeeperResponse(ResponseShape):
     method: str
 
 
-class JourneyResponse(ResponseShape):
-    journey: dict | None
-    available: list[dict]
-    goal: dict
-    goal_suggestion: dict | None
-    streak: Streak
-    milestones: list[Milestone]
-    recaps: list[dict]
-    checkins: list[dict]
-
-
 class Method(ResponseShape):
     id: str
     version: int
@@ -271,7 +236,6 @@ EXPORTED_SCHEMAS = {
     "health-series": HealthSeries,
     "metric-summary": MetricSummary,
     "insights": list[Insight],
-    "journey": JourneyResponse,
     "methods": list[Method],
     "overview": OverviewResponse,
     "progress": ProgressResponse,

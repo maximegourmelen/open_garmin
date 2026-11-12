@@ -247,31 +247,6 @@ export interface Suggestion {
   method: string;
 }
 
-export interface Streak {
-  current: number;
-  longest: number;
-  at_risk: boolean;
-  remaining_minutes: number;
-  remaining_sessions: number;
-  weeks: { start: string; pct: number | null; met: boolean }[];
-  method: string;
-}
-
-export interface MilestoneView {
-  id: string;
-  title: string;
-  description: string;
-  how_to_earn: string;
-  icon: string;
-  tier: 'bronze' | 'silver' | 'gold';
-  color: string;
-  earned: boolean;
-  earned_on: string | null;
-  activity_id: string | null;
-  progress: { current: number; target: number; unit: string } | null;
-  seen?: boolean;
-}
-
 export interface Insight {
   id: string;
   category: string;
@@ -462,93 +437,6 @@ export interface RelationshipResponse {
   disclaimer: string;
   method: string;
 }
-
-export interface JourneyView {
-  id: string;
-  name: string;
-  focus: string;
-  started: string;
-  paused: boolean;
-  repeats: number[];
-  weeks: JourneyWeek[];
-  current_slot: number | null;
-  completed: boolean;
-  method: string;
-}
-
-export interface JourneyWeek {
-  week: number;
-  slot: number;
-  start: string;
-  end: string;
-  targets: {
-    minutes?: number;
-    sessions?: number;
-    longest_minutes?: number;
-    nights_at_need?: number;
-    avg_steps?: number;
-    tip?: string;
-  };
-  actual: {
-    minutes: number;
-    sessions: number;
-    longest_minutes: number;
-    nights_at_need: number;
-    avg_steps: number | null;
-  };
-  pct: number;
-  status: 'done' | 'partial' | 'current' | 'upcoming';
-}
-
-export interface JourneyOption {
-  id: string;
-  name: string;
-  focus: string;
-  weeks: { tip?: string; minutes?: number; sessions?: number }[];
-}
-
-export interface WeeklyRecap {
-  week_start: string;
-  week_end: string;
-  slides: {
-    kind: string;
-    title?: string;
-    big?: string;
-    text: string;
-    pose?: Pose;
-    pct?: number;
-    minutes?: number;
-    goal?: number;
-    activity_id?: string;
-  }[];
-  seen: boolean;
-}
-
-export interface JourneyResponse {
-  journey: JourneyView | null;
-  available: JourneyOption[];
-  goal: { minutes: number; sessions: number };
-  goal_suggestion: {
-    minutes: number;
-    current_goal: number;
-    sentence: string;
-    weeks_met: number;
-    n: number;
-    source: Source;
-    method: string;
-  } | null;
-  streak: Streak;
-  milestones: MilestoneView[];
-  recaps: { week_start: string; seen: boolean }[];
-  checkins: {
-    date: string;
-    mood: number | null;
-    energy: number | null;
-    soreness: number | null;
-    note: string;
-  }[];
-}
-
 export interface Method {
   id: string;
   version: number;
