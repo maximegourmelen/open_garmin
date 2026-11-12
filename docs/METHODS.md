@@ -2,7 +2,7 @@
 
 Open Garmin separates Garmin readings, your notes and check-ins, and calculations made in this app. A missing reading stays missing. Each calculated view names a method and version so its meaning can be checked.
 
-This reference is generated from the `/api/methods` registry by `python scripts/export_methods.py`. The in-app **How it works** page provides the same explanations beside research notes.
+This reference is generated from the `/api/methods` registry by `python scripts/export_methods.py`. The in-app **Guide** provides the same explanations beside research notes. Overview combines readings and weekly progress; Trends shows volume, consistency, records and weekly reports.
 
 ## Active minutes
 
@@ -10,9 +10,9 @@ This reference is generated from the `/api/methods` registry by `python scripts/
 
 How much you moved this week.
 
-**Calculation:** Garmin moderate minutes + 2 × vigorous minutes; activity duration when intensity is missing.
+**Calculation:** Garmin moderate minutes + 2 × vigorous minutes; use activity intensity minutes when daily intensity is missing. Leave days without either source empty.
 
-**Inputs:** daily intensity minutes, activity duration.
+**Inputs:** daily intensity minutes, activity intensity minutes.
 
 **Minimum data:** One day or activity.
 
@@ -268,41 +268,29 @@ How two of your daily values moved together.
 
 **Minimum data:** 14 paired days.
 
-## Weekly story
+## Weekly report
 
 **Method:** `weekly_recap@1`
 
-A recap built from your recorded week.
+A report built from your recorded week.
 
-**Calculation:** Select slides when activity, sleep and progress data exist.
+**Calculation:** Include activity, sleep and progress sections when their data exists.
 
 **Inputs:** activities, daily readings, goals.
 
 **Minimum data:** One completed week.
 
-## Weekly streak
+## Goal weeks in a row
 
-**Method:** `streak@1`
+**Method:** `goal_weeks_in_a_row@1`
 
-How many weeks in a row you reached a movement goal.
+How many consecutive weeks met your active-minute goal.
 
-**Calculation:** A week counts when minutes or sessions meet the current goal; an unfinished week cannot end a streak.
+**Calculation:** Count consecutive weeks meeting the active-minute goal; an unfinished week below goal cannot break the run.
 
-**Inputs:** activities, intensity minutes, current goals.
+**Inputs:** weekly active minutes, weekly goal.
 
 **Minimum data:** One complete week.
-
-## Journey progress
-
-**Method:** `journey_progress@1`
-
-How you are doing against each week's chosen targets.
-
-**Calculation:** Mean of each target's completion, capped at 100%.
-
-**Inputs:** activities, daily readings, journey targets.
-
-**Minimum data:** Chosen journey.
 
 ## Health overview
 
@@ -340,7 +328,7 @@ Detailed trends for your recent activities and effort.
 
 **Minimum data:** One recorded activity.
 
-## Today's suggestion
+## Daily suggestion
 
 **Method:** `today_suggestion@1`
 
@@ -352,17 +340,17 @@ A gentle movement idea from your available signals.
 
 **Minimum data:** Two signals for a go suggestion; fewer returns unknown.
 
-## Today overview
+## Trends overview
 
-**Method:** `today_overview@1`
+**Method:** `trends@1`
 
-Your most relevant movement and recovery information in one place.
+Fitness signals, weekly volume, consistency and records in one view.
 
-**Calculation:** Combine the latest readings, week progress and evidence-backed insights.
+**Calculation:** Combine the named calculations in their own evidence windows.
 
-**Inputs:** activities, daily readings, goals, check-ins.
+**Inputs:** activities, daily readings, goals.
 
-**Minimum data:** A workspace; cards appear when data is available.
+**Minimum data:** One activity or daily reading.
 
 ## Sleep history
 
@@ -475,18 +463,6 @@ A pattern in your own recorded data.
 ## Ramp
 
 **Method:** `insight_ramp@1`
-
-A pattern in your own recorded data.
-
-**Calculation:** Show only when this insight's evidence rule is met.
-
-**Inputs:** recorded daily or activity data.
-
-**Minimum data:** Varies by insight; see its evidence card.
-
-## Goal streak
-
-**Method:** `insight_goal_streak@1`
 
 A pattern in your own recorded data.
 

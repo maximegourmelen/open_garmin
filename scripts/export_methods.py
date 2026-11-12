@@ -14,7 +14,8 @@ def main() -> None:
         "A missing reading stays missing. Each calculated view names a method and version so its meaning can be checked.",
         "",
         "This reference is generated from the `/api/methods` registry by `python scripts/export_methods.py`. "
-        "The in-app **How it works** page provides the same explanations beside research notes.",
+        "The in-app **Guide** provides the same explanations beside research notes. "
+        "Overview combines readings and weekly progress; Trends shows volume, consistency, records and weekly reports.",
         "",
     ]
     for method in METHODS:

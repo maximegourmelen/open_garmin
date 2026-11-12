@@ -32,8 +32,9 @@ METHODS = [
         "active_minutes@1",
         "Active minutes",
         "How much you moved this week.",
-        "Garmin moderate minutes + 2 × vigorous minutes; activity duration when intensity is missing.",
-        ["daily intensity minutes", "activity duration"],
+        "Garmin moderate minutes + 2 × vigorous minutes; use activity intensity minutes when "
+        "daily intensity is missing. Leave days without either source empty.",
+        ["daily intensity minutes", "activity intensity minutes"],
         "One day or activity",
     ),
     _entry(
@@ -207,28 +208,20 @@ METHODS = [
     ),
     _entry(
         "weekly_recap@1",
-        "Weekly story",
-        "A recap built from your recorded week.",
-        "Select slides when activity, sleep and progress data exist.",
+        "Weekly report",
+        "A report built from your recorded week.",
+        "Include activity, sleep and progress sections when their data exists.",
         ["activities", "daily readings", "goals"],
         "One completed week",
     ),
     _entry(
-        "streak@1",
-        "Weekly streak",
-        "How many weeks in a row you reached a movement goal.",
-        "A week counts when minutes or sessions meet the current goal; "
-        "an unfinished week cannot end a streak.",
-        ["activities", "intensity minutes", "current goals"],
+        "goal_weeks_in_a_row@1",
+        "Goal weeks in a row",
+        "How many consecutive weeks met your active-minute goal.",
+        "Count consecutive weeks meeting the active-minute goal; an unfinished week below goal "
+        "cannot break the run.",
+        ["weekly active minutes", "weekly goal"],
         "One complete week",
-    ),
-    _entry(
-        "journey_progress@1",
-        "Journey progress",
-        "How you are doing against each week's chosen targets.",
-        "Mean of each target's completion, capped at 100%.",
-        ["activities", "daily readings", "journey targets"],
-        "Chosen journey",
     ),
     _entry(
         "wellness_overview@1",
@@ -256,7 +249,7 @@ METHODS = [
     ),
     _entry(
         "today_suggestion@1",
-        "Today's suggestion",
+        "Daily suggestion",
         "A gentle movement idea from your available signals.",
         "Classify sleep, HRV, Body Battery, resting heart rate, check-in and recent effort; "
         "choose rest, easy, go or unknown by the published rule order.",
@@ -264,12 +257,12 @@ METHODS = [
         "Two signals for a go suggestion; fewer returns unknown",
     ),
     _entry(
-        "today_overview@1",
-        "Today overview",
-        "Your most relevant movement and recovery information in one place.",
-        "Combine the latest readings, week progress and evidence-backed insights.",
-        ["activities", "daily readings", "goals", "check-ins"],
-        "A workspace; cards appear when data is available",
+        "trends@1",
+        "Trends overview",
+        "Fitness signals, weekly volume, consistency and records in one view.",
+        "Combine the named calculations in their own evidence windows.",
+        ["activities", "daily readings", "goals"],
+        "One activity or daily reading",
     ),
 ]
 

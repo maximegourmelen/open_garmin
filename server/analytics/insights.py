@@ -25,7 +25,6 @@ CATALOG_IDS = (
     "sleep-context",
     "hrv-context",
     "ramp",
-    "goal-streak",
     "new-best",
     "rhr-trend",
     "efficiency",
@@ -86,7 +85,6 @@ def insights_for(
     today: date,
     prefs: dict | None = None,
     best_efforts: list[dict] | None = None,
-    streak: dict | None = None,
 ) -> list[dict]:
     prefs = prefs or {}
     top = [item for item in activities if not item.get("parent_id") and item.get("date")]
@@ -217,18 +215,6 @@ def insights_for(
                 f"Current effort {ramp['this_week']} pts; {ramp['n']} prior weeks; "
                 f"ratio {ramp['ratio']}. Method: ramp_check@1.",
                 [current_start.isoformat(), today.isoformat()],
-            )
-        )
-    if streak and streak.get("current", 0) >= 2:
-        results.append(
-            _insight(
-                "goal-streak",
-                "Journey",
-                "positive",
-                f"Weekly goal met {streak['current']} weeks in a row",
-                f"Your weekly goal was met {streak['current']} weeks in a row.",
-                f"{streak['current']} consecutive weeks met the current goal. Method: streak@1.",
-                [current_start.isoformat()],
             )
         )
     recent_best = [
