@@ -44,13 +44,23 @@ test('Settings is one readable page with inline autosave', async ({ browser }) =
       animations: 'disabled',
     });
     if (variant.name === 'mobile-dark') {
+      const minutesGoal = page.getByRole('spinbutton', { name: 'Weekly active minutes' });
+      const original = await minutesGoal.inputValue();
       const saved = page.waitForResponse(
         (response) =>
           response.url().includes('/api/demo/preferences') && response.request().method() === 'PUT',
       );
-      await page.getByRole('spinbutton', { name: 'Weekly active minutes' }).fill('160');
+      await minutesGoal.fill(String(Number(original) + 1));
       expect((await saved).ok()).toBe(true);
       await expect(page.getByText('Saved', { exact: true }).first()).toBeVisible();
+      const restored = page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/demo/preferences') &&
+          response.request().method() === 'PUT' &&
+          response.request().postDataJSON().weekly_minutes === Number(original),
+      );
+      await minutesGoal.fill(original);
+      expect((await restored).ok()).toBe(true);
     }
     expect(errors).toEqual([]);
     await context.close();

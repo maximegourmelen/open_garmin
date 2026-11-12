@@ -1,8 +1,11 @@
-import { useCallback, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { MetricId } from '../../content/glossary';
-import { MetricDrawer } from './MetricDrawer';
 import { MetricDrawerContext } from './metric-drawer-context';
+
+const MetricDrawer = lazy(() =>
+  import('./MetricDrawer').then((module) => ({ default: module.MetricDrawer })),
+);
 
 export function MetricDrawerProvider({ children }: { children: ReactNode }) {
   const [selected, setSelected] = useState<MetricId | null>(null);
@@ -25,7 +28,11 @@ export function MetricDrawerProvider({ children }: { children: ReactNode }) {
   return (
     <MetricDrawerContext.Provider value={open}>
       {children}
-      {selected && <MetricDrawer id={selected} onClose={close} onSelect={setSelected} />}
+      {selected && (
+        <Suspense fallback={null}>
+          <MetricDrawer id={selected} onClose={close} onSelect={setSelected} />
+        </Suspense>
+      )}
     </MetricDrawerContext.Provider>
   );
 }

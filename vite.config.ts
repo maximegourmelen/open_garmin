@@ -10,10 +10,18 @@ export default defineConfig({
     strictPort: true,
     proxy: { '/api': process.env.OPEN_GARMIN_API_TARGET ?? 'http://127.0.0.1:8000' },
   },
+  preview: {
+    proxy: { '/api': process.env.OPEN_GARMIN_API_TARGET ?? 'http://127.0.0.1:8000' },
+  },
   build: {
+    manifest: true,
     rollupOptions: {
       output: {
-        manualChunks: { charts: ['recharts'], react: ['react', 'react-dom', 'react-router-dom'] },
+        manualChunks: {
+          charts: ['recharts'],
+          react: ['react', 'react-dom', 'react-router-dom'],
+          utils: ['clsx'],
+        },
       },
     },
   },

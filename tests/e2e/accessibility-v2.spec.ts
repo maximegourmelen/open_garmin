@@ -72,10 +72,20 @@ test('keyboard walkthrough from Welcome through tour, metric drawer and Settings
     await page.keyboard.press('Enter');
   }
   await expect(page.getByRole('heading', { name: 'Goals' })).toBeVisible();
-  await tabTo(page, page.getByRole('spinbutton', { name: 'Weekly active minutes' }));
+  const minutesGoal = page.getByRole('spinbutton', { name: 'Weekly active minutes' });
+  await tabTo(page, minutesGoal);
+  const original = await minutesGoal.inputValue();
   await page.keyboard.press('ControlOrMeta+A');
-  await page.keyboard.type('170');
+  await page.keyboard.type(String(Number(original) + 1));
   await expect(page.getByText('Saved', { exact: true }).first()).toBeVisible();
+  const restored = page.waitForResponse(
+    (response) =>
+      response.url().includes('/api/demo/preferences') &&
+      response.request().method() === 'PUT' &&
+      response.request().postDataJSON().weekly_minutes === Number(original),
+  );
+  await minutesGoal.fill(original);
+  expect((await restored).ok()).toBe(true);
 });
 
 test('full charts expose data tables across Health, Trends and activity detail', async ({

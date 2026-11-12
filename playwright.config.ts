@@ -39,7 +39,7 @@ export default defineConfig({
       timeout: 60_000,
     },
     {
-      command: 'npm run build && npm run dev -- --port 5174',
+      command: 'npm run build && npm run preview -- --port 5174',
       url: 'http://127.0.0.1:5174',
       env: { OPEN_GARMIN_API_TARGET: 'http://127.0.0.1:8001' },
       reuseExistingServer: false,
