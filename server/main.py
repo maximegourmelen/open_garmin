@@ -212,6 +212,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     from .api import relationships as relationships_api
     from .api import settings as settings_api
     from .api import status as status_api
+    from .api import trends as trends_api
     from .api import wellness as wellness_api
 
     status_api.register(app)
@@ -225,6 +226,7 @@ def create_app(store: Store | None = None, start_worker: bool = True, client_fac
     journey_api.register(app)
     methods_api.register(app)
     progress_api.register(app)
+    trends_api.register(app)
     overview_api.register(app)
 
     dist = Path(__file__).resolve().parent.parent / "dist"

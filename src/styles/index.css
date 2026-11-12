@@ -88,6 +88,31 @@
   }
 }
 
+@media print {
+  body:has(.print-report) aside,
+  body:has(.print-report) header.sticky,
+  body:has(.print-report) #main-content > :not(.print-report),
+  .print-report button {
+    display: none !important;
+  }
+  body:has(.print-report) #main-content {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .print-report {
+    max-width: 720px;
+    --text: CanvasText;
+    --text-2: CanvasText;
+    --text-3: CanvasText;
+    --bg: Canvas;
+    --surface: Canvas;
+    --surface-2: Canvas;
+    --border: ButtonBorder;
+    color: CanvasText;
+    background: Canvas;
+  }
+}
+
 @layer utilities {
   .font-num {
     font-family: var(--font-num);

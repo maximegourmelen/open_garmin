@@ -24,6 +24,7 @@ const CompareActivitiesPage = lazy(() => import('../pages/Activities/CompareActi
 const ActivityDetailPage = lazy(() => import('../pages/ActivityDetail/ActivityDetailPage'));
 const HealthPage = lazy(() => import('../pages/Health/HealthPage'));
 const ProgressPage = lazy(() => import('../pages/Progress/ProgressPage'));
+const WeeklyReportPage = lazy(() => import('../pages/Progress/WeeklyReportPage'));
 const WelcomePage = lazy(() => import('../pages/Welcome/WelcomePage'));
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'));
 const GuidePage = lazy(() => import('../pages/Guide/GuidePage'));
@@ -149,6 +150,7 @@ export default function AppShell() {
                     'health-body-battery',
                     'health-stress',
                     'health-steps',
+                    'trends',
                   ].includes(pageId(location.pathname)!) && (
                     <PageHint key={pageId(location.pathname)} id={pageId(location.pathname)!} />
                   )}
@@ -167,7 +169,7 @@ export default function AppShell() {
                     <Route key={tab} path={`/health/${tab}`} element={<HealthPage />} />
                   ))}
                   <Route path="/trends" element={<ProgressPage />} />
-                  <Route path="/trends/week/:weekStart" element={<ProgressPage />} />
+                  <Route path="/trends/week/:weekStart" element={<WeeklyReportPage />} />
                   <Route path="/guide" element={<GuidePage />} />
                   <Route path="/guide/:topic" element={<GuidePage />} />
                   <Route path="/settings" element={<SettingsPage />} />

@@ -6,12 +6,14 @@ export function RangeControl({
   value,
   onChange,
   includeAll = false,
+  choices,
 }: {
   value: string;
   onChange: (value: string) => void;
   includeAll?: boolean;
+  choices?: readonly string[];
 }) {
-  const options = includeAll ? [...standard, 'All'] : [...standard];
+  const options = choices ?? (includeAll ? [...standard, 'All'] : [...standard]);
   function select(next: string) {
     const url = new URL(window.location.href);
     url.searchParams.set('range', next);

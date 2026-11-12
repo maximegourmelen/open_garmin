@@ -361,6 +361,56 @@ export interface ProgressResponse {
   method: string;
 }
 
+export interface TrendWeek {
+  start: string;
+  end: string;
+  minutes: number | null;
+  goal: number;
+  sessions: number;
+  distance: number;
+  effort: number;
+  by_sport: Record<string, number>;
+  partial: boolean;
+  goal_met: boolean;
+  daily: { date: string; minutes: number | null; source: string; is_future: boolean }[];
+}
+
+export interface TrendsResponse {
+  range: '30D' | '90D' | '1Y';
+  signals: (FitnessSignal & { spark: (number | null)[] })[];
+  volume: TrendWeek[];
+  consistency: {
+    days: { date: string; minutes: number }[];
+    active_days_28: number;
+    streak: number;
+    best_streak: number;
+  };
+  ramp: ProgressResponse['ramp'];
+  records: ProgressResponse['bests'];
+  reports: TrendWeek[];
+  method: string;
+}
+
+export interface WeeklyReport extends TrendWeek {
+  summary: string;
+  activities: {
+    id: string;
+    date: string;
+    name: string;
+    sport: Sport;
+    duration: number | null;
+    distance: number | null;
+    effort: number | null;
+  }[];
+  health: Record<
+    'sleep' | 'resting_hr' | 'hrv',
+    { current: number | null; previous: number | null }
+  >;
+  records: ProgressResponse['bests'];
+  previous_four_average: number | null;
+  method: string;
+}
+
 export interface DeeperResponse {
   range: Range;
   from: string;
